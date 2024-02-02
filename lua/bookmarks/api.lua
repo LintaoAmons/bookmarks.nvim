@@ -1,5 +1,5 @@
 local function api_name()
-	vim.print(vim.g.plugin_name_config.json_db_path)
+	vim.print(vim.g.bookmarks_config.json_db_path)
 end
 
 return {
