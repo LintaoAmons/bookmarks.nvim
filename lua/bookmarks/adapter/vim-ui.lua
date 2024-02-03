@@ -22,6 +22,10 @@ end
 local function goto_bookmark()
 	local bookmark_list = repo.find_or_set_active_bookmark_list()
 
+	table.sort(bookmark_list.bookmarks, function(a, b)
+		return a.createdAt > b.createdAt
+	end)
+
 	vim.ui.select(bookmark_list.bookmarks, {
 		prompt = "Selete bookmark from active list: " .. bookmark_list.name,
 		format_item = function(item)
