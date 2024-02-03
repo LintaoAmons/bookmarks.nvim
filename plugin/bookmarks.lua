@@ -14,3 +14,5 @@ local adapter = require("bookmarks.adapter")
 
 vim.api.nvim_create_user_command("BookmarksAddList", adapter.add_list, {})
 vim.api.nvim_create_user_command("BookmarksMark", adapter.mark, {})
+vim.api.nvim_create_user_command("BookmarksGoto", adapter.goto_bookmark, {})
+vim.api.nvim_create_user_command("BookmarksSetActiveList", adapter.set_active_list, {})

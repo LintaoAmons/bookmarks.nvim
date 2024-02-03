@@ -10,7 +10,7 @@ local function mark(param)
 	---@type Bookmarks.Bookmark
 	local bookmark = {
 		name = param.name,
-		location = { path = filename, line = cursor[0], col = cursor[1] },
+		location = { path = filename, line = cursor[1], col = cursor[2] },
 		content = "content", -- TODO: check if current worktree's line content match this value
 		githash = "githash", -- TODO: if not match, notify user with the githash.
 	}
@@ -33,6 +33,11 @@ end
 ---@param param Bookmarks.NewListParam
 local function add_list(param)
 	local bookmark_lists = repo.get_domains()
+	local non_active_lists = vim.tbl_map(function(value)
+		---@cast value Bookmarks.BookmarkList
+		value.is_active = false
+		return value
+	end, bookmark_lists)
 	---@type Bookmarks.BookmarkList
 	local new_list = {
 		name = param.name,
@@ -40,11 +45,28 @@ local function add_list(param)
 		bookmarks = {},
 		is_active = true,
 	}
-	table.insert(bookmark_lists, new_list)
+	table.insert(non_active_lists, new_list)
 	repo.write_domains(bookmark_lists)
+end
+
+---@param name string
+local function set_active_list(name)
+	local bookmark_lists = repo.get_domains()
+
+	local updated = vim.tbl_map(function(value)
+		---@cast value Bookmarks.BookmarkList
+		if value.name == name then
+			value.is_active = true
+		else
+			value.is_active = false
+		end
+		return value
+	end, bookmark_lists)
+	repo.write_domains(updated)
 end
 
 return {
 	mark = mark,
 	add_list = add_list,
+	set_active_list = set_active_list,
 }

@@ -19,10 +19,7 @@ local json = require("bookmarks.json")
 
 ---@return Bookmarks.BookmarkList[]
 local get_domains = function()
-	print(
-		"DEBUGPRINT[3]: project-repo.lua:23: vim.g.bookmarks_config.projects_config_filepath="
-			.. vim.inspect(vim.g.bookmarks_config.json_db_path)
-	)
+  -- TODO: add cache
 	return json.read_or_init_json_file(vim.g.bookmarks_config.json_db_path)
 end
 
@@ -48,7 +45,7 @@ local function generate_datetime_id()
 	return id
 end
 
----@param bookmark_lists Bookmarks.BookmarkList[]
+---@param bookmark_lists? Bookmarks.BookmarkList[]
 ---@return Bookmarks.BookmarkList
 local function find_or_set_active_bookmark_list(bookmark_lists)
 	bookmark_lists = bookmark_lists or get_domains()
