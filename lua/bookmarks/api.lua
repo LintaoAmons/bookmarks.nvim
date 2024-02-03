@@ -1,4 +1,4 @@
-local repo = require("bookmarks.project-repo")
+local repo = require("bookmarks.repo")
 local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.MarkParam
