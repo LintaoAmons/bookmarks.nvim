@@ -21,6 +21,10 @@ local json = require("bookmarks.json")
 ---@return Bookmarks.BookmarkList[]
 local get_domains = function()
 	-- TODO: add cache
+	if vim.g.bookmarks_cache then
+		return vim.g.bookmarks_cache
+	end
+
 	local ok, result = pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path)
 	if not ok then
 		vim.notify(
@@ -35,6 +39,7 @@ end
 
 ---@param domain Bookmarks.BookmarkList[]
 local write_domains = function(domain)
+	vim.g.bookmarks_cache = domain
 	json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end
 
