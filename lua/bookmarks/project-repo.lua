@@ -24,7 +24,7 @@ local get_domains = function()
 	local ok, result = pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path)
 	if not ok then
 		vim.notify(
-			"Please check your config file at: "
+			"Incorrect config, please check your config file at: "
 				.. vim.g.bookmarks_config.json_db_path
 				.. "\nor just remove it(all your bookmarks will disappear)",
 			vim.log.levels.ERROR
