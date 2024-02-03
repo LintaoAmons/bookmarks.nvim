@@ -20,8 +20,17 @@ local json = require("bookmarks.json")
 
 ---@return Bookmarks.BookmarkList[]
 local get_domains = function()
-  -- TODO: add cache
-	return json.read_or_init_json_file(vim.g.bookmarks_config.json_db_path)
+	-- TODO: add cache
+	local ok, result = pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path)
+	if not ok then
+		vim.notify(
+			"Please check your config file at: "
+				.. vim.g.bookmarks_config.json_db_path
+				.. "\nor just remove it(all your bookmarks will disappear)",
+			vim.log.levels.ERROR
+		)
+	end
+	return result
 end
 
 ---@param domain Bookmarks.BookmarkList[]
@@ -83,6 +92,6 @@ end
 return {
 	get_domains = get_domains,
 	write_domains = write_domains,
-  generate_datetime_id = generate_datetime_id,
+	generate_datetime_id = generate_datetime_id,
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
 }
