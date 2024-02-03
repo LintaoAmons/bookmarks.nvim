@@ -12,6 +12,7 @@ You only need one shortcut to add your bookmarks.
 | `BookmarksAddList`       | add a new BookmarkList and set it as active |
 | `BookmarksSetActiveList` | set a BookmarkList as active                |
 
+https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L73-L75
 
 ## FIND MORE UESR FRIENDLY PLUGINS MADE BY ME
 
