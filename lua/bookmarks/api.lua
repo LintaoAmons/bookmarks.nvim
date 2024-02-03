@@ -1,4 +1,5 @@
 local repo = require("bookmarks.project-repo")
+local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.MarkParam
 ---@field name string
@@ -11,8 +12,8 @@ local function mark(param)
 	local bookmark = {
 		name = param.name,
 		location = { path = filename, line = cursor[1], col = cursor[2] },
-		content = "content", -- TODO: check if current worktree's line content match this value
-		githash = "githash", -- TODO: if not match, notify user with the githash.
+		content = vim.api.nvim_get_current_line(),
+		githash = utils.get_current_version(),
 		createdAt = os.time(),
 	}
 

@@ -5,25 +5,22 @@ local api = require("bookmarks.api")
 
 local function add_list()
 	vim.ui.input({ prompt = "Enter BookmarkList name" }, function(input)
+		input = input or utils.trim(input)
+		if not input or input == "" then
+			return vim.notify("Require a valid name")
+		end
 		require("bookmarks.api").add_list({ name = input })
 	end)
 end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		local name = input or ""
-		if utils.trim(input) == "" then
-			-- TODO: name parse by the content
-			name = "Default name"
-		end
-
-		require("bookmarks.api").mark({ name = name })
+		require("bookmarks.api").mark({ name = (input or "") })
 	end)
 end
 
 local function goto_bookmark()
 	local bookmark_list = repo.find_or_set_active_bookmark_list()
-
 
 	vim.ui.select(bookmark_list.bookmarks, {
 		prompt = "Selete bookmark from active list: " .. bookmark_list.name,

@@ -1,3 +1,8 @@
+local function get_current_version()
+  local result, _ = vim.fn.system("git rev-parse --short HEAD"):gsub("\n", "")
+  return result
+end
+
 local function trim(str)
 	return str:gsub("^%s+", ""):gsub("%s+$", "")
 end
@@ -24,4 +29,5 @@ end
 return {
 	trim = trim,
 	shorten_file_path = shorten_file_path,
+  get_current_version = get_current_version,
 }
