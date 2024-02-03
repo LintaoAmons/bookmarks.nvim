@@ -33,11 +33,12 @@ end
 ---@param param Bookmarks.NewListParam
 local function add_list(param)
 	local bookmark_lists = repo.get_domains()
-	local non_active_lists = vim.tbl_map(function(value)
+	local new_lists = vim.tbl_map(function(value)
 		---@cast value Bookmarks.BookmarkList
 		value.is_active = false
 		return value
 	end, bookmark_lists)
+
 	---@type Bookmarks.BookmarkList
 	local new_list = {
 		name = param.name,
@@ -45,8 +46,9 @@ local function add_list(param)
 		bookmarks = {},
 		is_active = true,
 	}
-	table.insert(non_active_lists, new_list)
-	repo.write_domains(bookmark_lists)
+
+	table.insert(new_lists, new_list)
+	repo.write_domains(new_lists)
 end
 
 ---@param name string
