@@ -85,5 +85,6 @@ end
 return {
 	get_domains = get_domains,
 	write_domains = write_domains,
+  generate_datetime_id = generate_datetime_id,
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
 }

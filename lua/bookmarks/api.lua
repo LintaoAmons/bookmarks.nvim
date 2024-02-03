@@ -5,7 +5,6 @@ local repo = require("bookmarks.project-repo")
 
 ---@param param Bookmarks.MarkParam
 local function mark(param)
-
 	local cursor = vim.api.nvim_win_get_cursor(0)
 	local filename = vim.fn.expand("%:p")
 	---@type Bookmarks.Bookmark
@@ -32,9 +31,20 @@ end
 ---@field name string
 
 ---@param param Bookmarks.NewListParam
-local function new_list(param) end
+local function add_list(param)
+	local bookmark_lists = repo.get_domains()
+	---@type Bookmarks.BookmarkList
+	local new_list = {
+		name = param.name,
+		id = repo.generate_datetime_id(),
+		bookmarks = {},
+		is_active = true,
+	}
+	table.insert(bookmark_lists, new_list)
+	repo.write_domains(bookmark_lists)
+end
 
 return {
 	mark = mark,
-	new_list = new_list,
+	add_list = add_list,
 }
