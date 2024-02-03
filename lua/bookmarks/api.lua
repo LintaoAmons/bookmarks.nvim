@@ -13,6 +13,7 @@ local function mark(param)
 		location = { path = filename, line = cursor[1], col = cursor[2] },
 		content = "content", -- TODO: check if current worktree's line content match this value
 		githash = "githash", -- TODO: if not match, notify user with the githash.
+		createdAt = os.time(),
 	}
 
 	local bookmark_lists = repo.get_domains()

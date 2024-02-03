@@ -10,6 +10,7 @@ local json = require("bookmarks.json")
 ---@field location Bookmarks.Location
 ---@field content string
 ---@field githash string
+---@field createdAt number -- os.time()
 
 ---@class Bookmarks.BookmarkList
 ---@field id string
