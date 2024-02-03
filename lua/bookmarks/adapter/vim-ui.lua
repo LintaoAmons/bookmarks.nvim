@@ -24,18 +24,12 @@ end
 local function goto_bookmark()
 	local bookmark_list = repo.find_or_set_active_bookmark_list()
 
-	local max_len = 0
-	for _, bookmark in ipairs(bookmark_list.bookmarks) do
-		if #bookmark.name > max_len then
-			max_len = #bookmark.name
-		end
-	end
 
 	vim.ui.select(bookmark_list.bookmarks, {
 		prompt = "Selete bookmark from active list: " .. bookmark_list.name,
 		format_item = function(item)
 			---@cast item Bookmarks.Bookmark
-			return common.format(item, max_len)
+			return common.format(item, bookmark_list.bookmarks)
 		end,
 	}, function(choice)
 		if not choice then
