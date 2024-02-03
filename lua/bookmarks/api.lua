@@ -5,7 +5,7 @@ local repo = require("bookmarks.project-repo")
 
 ---@param param Bookmarks.MarkParam
 local function mark(param)
-	-- 1. build bookmark
+
 	local cursor = vim.api.nvim_win_get_cursor(0)
 	local filename = vim.fn.expand("%:p")
 	---@type Bookmarks.Bookmark
@@ -16,14 +16,16 @@ local function mark(param)
 		githash = "githash", -- TODO: if not match, notify user with the githash.
 	}
 
-	-- 2. get active bookmark list
-	local active_bookmark_list = repo.find_or_set_active_bookmark_list()
-  print('DEBUGPRINT[1]: api.lua:20: active_bookmark_list=' .. vim.inspect(active_bookmark_list))
-	-- 3. insert into bookmark list
-  print('DEBUGPRINT[2]: api.lua:23: active_bookmark_list.bookmarks=' .. vim.inspect(active_bookmark_list.bookmarks))
-  active_bookmark_list.bookmarks = vim.tbl_deep_extend("force", active_bookmark_list.bookmarks, bookmark)
-  print('DEBUGPRINT[3]: api.lua:22: active_bookmark_list.bookmarks=' .. vim.inspect(active_bookmark_list))
+	local bookmark_lists = repo.get_domains()
+	local active_bookmark_list = repo.find_or_set_active_bookmark_list(bookmark_lists)
+	table.insert(active_bookmark_list.bookmarks, bookmark)
 
+	local new_bookmark_lists = vim.tbl_filter(function(bookmark_list)
+		---@cast bookmark_list Bookmarks.BookmarkList
+		return bookmark_list.name ~= active_bookmark_list.name
+	end, bookmark_lists)
+	table.insert(new_bookmark_lists, active_bookmark_list)
+	repo.write_domains(new_bookmark_lists)
 end
 
 ---@class Bookmarks.NewListParam

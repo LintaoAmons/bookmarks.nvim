@@ -48,10 +48,10 @@ local function generate_datetime_id()
 	return id
 end
 
+---@param bookmark_lists Bookmarks.BookmarkList[]
 ---@return Bookmarks.BookmarkList
-local function find_or_set_active_bookmark_list()
-	local bookmark_lists = get_domains()
-	print("DEBUGPRINT[1]: project-repo.lua:49: get_domains=" .. vim.inspect(get_domains))
+local function find_or_set_active_bookmark_list(bookmark_lists)
+	bookmark_lists = bookmark_lists or get_domains()
 	local active_bookmark_list = nil
 
 	-- Check if there's an active BookmarkList
