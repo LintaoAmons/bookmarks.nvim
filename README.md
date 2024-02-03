@@ -2,6 +2,7 @@
 
 You only need one shortcut to add your bookmarks.
 
+![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/48ac8aef-f260-40b4-9501-43df12cc7d50)
 
 ## Commands and Apis
 
