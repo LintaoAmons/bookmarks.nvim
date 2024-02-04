@@ -34,6 +34,7 @@ local goto_bookmark = function(opts)
 					}
 				end,
 			}),
+      -- TODO: sort by visitedAt
 			-- sorter = custom_sorter,
 			attach_mappings = function(prompt_bufnr, map)
 				print("DEBUGPRINT[1]: telescope.lua:35: map=" .. vim.inspect(map))

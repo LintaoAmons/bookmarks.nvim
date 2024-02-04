@@ -75,6 +75,7 @@ local function new_bookmark(name)
 		content = vim.api.nvim_get_current_line(),
 		githash = utils.get_current_version(),
 		createdAt = os.time(),
+		visitedAt = os.time(),
 	}
 end
 

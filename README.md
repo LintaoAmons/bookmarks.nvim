@@ -1,3 +1,5 @@
+> v0.2.0 breaking change: add visitedAt to Bookmark structure
+
 # Bookmarks.nvim
 
 You only need one shortcut to add bookmarks.
@@ -43,6 +45,7 @@ return { "LintaoAmons/bookmarks.nvim",
 |--------------------------|---------------------------------------------|
 | `BookmarksMark`          | mark current line into active BookmarkList  |
 | `BookmarksGoto`          | go to selected bookmark                     |
+| `BookmarksGotoRecent`    | go to lastest visited/created Bookmark      |
 | `BookmarksAddList`       | add a new BookmarkList and set it as active |
 | `BookmarksSetActiveList` | set a BookmarkList as active                |
 
@@ -60,6 +63,3 @@ https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efb
 - [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
 - [plugin-template.nvim](https://github.com/LintaoAmons/plugin-template.nvim)
 
-## TODO
-
-- [ ] goto last bookmark
