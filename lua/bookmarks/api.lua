@@ -21,7 +21,7 @@ local function mark(param)
 
 	repo.write_domains(new_bookmark_lists)
 
-	sign.place_signs()
+	sign.refresh_signs()
 end
 
 ---@class Bookmarks.NewListParam

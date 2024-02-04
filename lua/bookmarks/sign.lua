@@ -19,7 +19,7 @@ local function place_sign(line, buf_number, desc)
 end
 
 ---@param bookmarks? Bookmarks.Bookmark[]
-local function place_signs(bookmarks)
+local function refresh_signs(bookmarks)
 	bookmarks = bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
 	local buf_number = vim.api.nvim_get_current_buf()
 	for _, bookmark in ipairs(bookmarks) do
@@ -36,12 +36,12 @@ local function bookmark_sign_autocmd()
 	vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
 		group = ns_name,
 		callback = function(_)
-			place_signs()
+			refresh_signs()
 		end,
 	})
 end
 
 return {
 	bookmark_sign_autocmd = bookmark_sign_autocmd,
-	place_signs = place_signs,
+	refresh_signs = refresh_signs,
 }
