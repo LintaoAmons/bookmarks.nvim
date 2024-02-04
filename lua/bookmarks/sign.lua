@@ -20,6 +20,8 @@ end
 
 ---@param bookmarks? Bookmarks.Bookmark[]
 local function refresh_signs(bookmarks)
+	pcall(vim.fn.sign_unplace, ns_name)
+
 	bookmarks = bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
 	local buf_number = vim.api.nvim_get_current_buf()
 	for _, bookmark in ipairs(bookmarks) do
