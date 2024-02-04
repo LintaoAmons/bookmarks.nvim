@@ -18,9 +18,17 @@ local function place_sign(line, buf_number, desc)
 	})
 end
 
+local function clean()
+	pcall(vim.fn.sign_unplace, ns_name)
+	local all = vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {})
+	for _, extmark in ipairs(all) do
+		vim.api.nvim_buf_del_extmark(0, ns, extmark[1])
+	end
+end
+
 ---@param bookmarks? Bookmarks.Bookmark[]
 local function refresh_signs(bookmarks)
-	pcall(vim.fn.sign_unplace, ns_name)
+	clean()
 
 	bookmarks = bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
 	local buf_number = vim.api.nvim_get_current_buf()
