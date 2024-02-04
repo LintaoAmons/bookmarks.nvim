@@ -10,11 +10,11 @@ local function mark(param)
 	local bookmark = domain.new_bookmark(param.name)
 	local bookmark_lists = repo.get_domains()
 	local active_bookmark_list = repo.find_or_set_active_bookmark_list(bookmark_lists)
-  local updated_bookmark_list = domain.toggle_bookmarks(active_bookmark_list, bookmark)
+	local updated_bookmark_list = domain.toggle_bookmarks(active_bookmark_list, bookmark)
 
 	local new_bookmark_lists = vim.tbl_filter(function(bookmark_list)
 		---@cast bookmark_list Bookmarks.BookmarkList
-		return bookmark_list.name ~= updated_bookmark_list.name
+		return bookmark_list.id ~= updated_bookmark_list.id
 	end, bookmark_lists)
 	table.insert(new_bookmark_lists, updated_bookmark_list)
 
@@ -46,7 +46,7 @@ local function add_list(param)
 	table.insert(new_lists, new_list)
 	repo.write_domains(new_lists)
 
-  sign.refresh_signs()
+	sign.refresh_signs()
 end
 
 ---@param name string
@@ -64,7 +64,7 @@ local function set_active_list(name)
 	end, bookmark_lists)
 	repo.write_domains(updated)
 
-  sign.refresh_signs()
+	sign.refresh_signs()
 end
 
 return {
