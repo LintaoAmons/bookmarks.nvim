@@ -10,7 +10,8 @@ local utils = require("bookmarks.utils")
 ---@field location Bookmarks.Location
 ---@field content string
 ---@field githash string
----@field createdAt number
+---@field createdAt number -- timestamp os.time()
+---@field visitedAt number -- timestamp os.time()
 
 ---@class Bookmarks.BookmarkList
 ---@field id string
