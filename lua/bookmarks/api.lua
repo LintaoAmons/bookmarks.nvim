@@ -46,6 +46,8 @@ local function add_list(param)
 
 	table.insert(new_lists, new_list)
 	repo.write_domains(new_lists)
+
+  sign.refresh_signs()
 end
 
 ---@param name string
@@ -62,6 +64,8 @@ local function set_active_list(name)
 		return value
 	end, bookmark_lists)
 	repo.write_domains(updated)
+
+  sign.refresh_signs()
 end
 
 return {
