@@ -1,6 +1,7 @@
 local repo = require("bookmarks.repo")
 local utils = require("bookmarks.utils")
 local sign = require("bookmarks.sign")
+local domain = require("bookmarks.bookmark")
 
 ---@class Bookmarks.MarkParam
 ---@field name string
@@ -20,14 +21,19 @@ local function mark(param)
 
 	local bookmark_lists = repo.get_domains()
 	local active_bookmark_list = repo.find_or_set_active_bookmark_list(bookmark_lists)
-	table.insert(active_bookmark_list.bookmarks, bookmark)
+  print('DEBUGPRINT[2]: api.lua:23: active_bookmark_list=' .. vim.inspect(active_bookmark_list))
+  local updated_bookmark_list = domain.toggle_bookmarks(active_bookmark_list, bookmark)
+  print('DEBUGPRINT[3]: api.lua:25: updated_bookmark_list=' .. vim.inspect(updated_bookmark_list))
 
 	local new_bookmark_lists = vim.tbl_filter(function(bookmark_list)
 		---@cast bookmark_list Bookmarks.BookmarkList
-		return bookmark_list.name ~= active_bookmark_list.name
+		return bookmark_list.name ~= updated_bookmark_list.name
 	end, bookmark_lists)
-	table.insert(new_bookmark_lists, active_bookmark_list)
+  print('DEBUGPRINT[5]: api.lua:33: new_bookmark_lists=' .. vim.inspect(new_bookmark_lists))
+	table.insert(new_bookmark_lists, updated_bookmark_list)
+
 	repo.write_domains(new_bookmark_lists)
+  print('DEBUGPRINT[4]: api.lua:33: new_bookmark_lists=' .. vim.inspect(new_bookmark_lists))
 
 	sign.place_signs()
 end

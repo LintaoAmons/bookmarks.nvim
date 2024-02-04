@@ -31,13 +31,10 @@ local function place_signs(bookmarks)
 end
 
 local function bookmark_sign_autocmd()
-	-- vim.api.nvim_get_autocmds({ group = "BookmarksNvim" })
-	local buf_number = vim.api.nvim_get_current_buf()
 	-- TODO: check the autocmd
 	vim.api.nvim_create_augroup(ns_name, { clear = true })
 	vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
 		group = ns_name,
-		-- buffer = buf_number,
 		callback = function(_)
 			place_signs()
 		end,

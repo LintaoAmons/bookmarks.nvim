@@ -1,23 +1,5 @@
 local json = require("bookmarks.json")
 
----@class Bookmarks.Location
----@field path string
----@field line number
----@field col number
-
----@class Bookmarks.Bookmark
----@field name string
----@field location Bookmarks.Location
----@field content string
----@field githash string
----@field createdAt number -- os.time()
-
----@class Bookmarks.BookmarkList
----@field id string
----@field name string
----@field is_active boolean
----@field bookmarks Bookmarks.Bookmark[]
-
 ---@return Bookmarks.BookmarkList[]
 local get_domains = function()
 	-- TODO: add cache
@@ -39,6 +21,7 @@ end
 
 ---@param domain Bookmarks.BookmarkList[]
 local write_domains = function(domain)
+	print("DEBUGPRINT[1]: repo.lua:23: domain=" .. vim.inspect(domain))
 	vim.g.bookmarks_cache = domain
 	json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end

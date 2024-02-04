@@ -26,8 +26,24 @@ local function shorten_file_path(file_path)
 	end
 end
 
+---@param original any
+---@return any
+local function deep_copy(original)
+    if type(original) ~= 'table' then
+        return original
+    end
+
+    local copy = {}
+    for key, value in pairs(original) do
+        copy[deep_copy(key)] = deep_copy(value)
+    end
+
+    return copy
+end
+
 return {
 	trim = trim,
 	shorten_file_path = shorten_file_path,
   get_current_version = get_current_version,
+  deep_copy = deep_copy,
 }
