@@ -48,6 +48,10 @@ return { "LintaoAmons/bookmarks.nvim",
 
 https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L73-L75
 
+## Thanks
+
+- [Lspsaga: for the sign released code](https://github.com/nvimdev/lspsaga.nvim)
+
 ## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
 
 - [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
