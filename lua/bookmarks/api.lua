@@ -67,8 +67,15 @@ local function set_active_list(name)
 	sign.refresh_signs()
 end
 
+---@param bookmark Bookmarks.Bookmark
+local function goto_bookmark(bookmark)
+	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
+	vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
+end
+
 return {
 	mark = mark,
 	add_list = add_list,
 	set_active_list = set_active_list,
+  goto_bookmark = goto_bookmark,
 }

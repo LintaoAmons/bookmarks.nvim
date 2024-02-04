@@ -37,8 +37,7 @@ local function goto_bookmark()
 			return
 		end
 		---@cast choice Bookmarks.Bookmark
-		vim.api.nvim_exec2("e" .. " " .. choice.location.path, {})
-		vim.api.nvim_win_set_cursor(0, { choice.location.line, choice.location.col })
+		api.goto_bookmark(choice)
 	end)
 end
 
