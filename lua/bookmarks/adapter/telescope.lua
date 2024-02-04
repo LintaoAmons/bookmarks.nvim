@@ -15,6 +15,7 @@ local goto_bookmark = function(opts)
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
 	local actions = require("telescope.actions")
+	local conf = require("telescope.config").values
 	local action_state = require("telescope.actions.state")
 	opts = opts or {}
 	local active_bookmark_list = repo.find_or_set_active_bookmark_list()
@@ -27,17 +28,17 @@ local goto_bookmark = function(opts)
 				results = bookmarks,
 				---@param bookmark Bookmarks.Bookmark
 				entry_maker = function(bookmark)
+					local display = common.format(bookmark, bookmarks)
 					return {
 						value = bookmark,
-						display = common.format(bookmark, bookmarks),
-						ordinal = bookmark,
+						display = display,
+						ordinal = display,
 					}
 				end,
 			}),
-      -- TODO: sort by visitedAt
-			-- sorter = custom_sorter,
+			-- TODO: sort by visitedAt
+			sorter = conf.generic_sorter(opts),
 			attach_mappings = function(prompt_bufnr, map)
-				print("DEBUGPRINT[1]: telescope.lua:35: map=" .. vim.inspect(map))
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
 					local selected = action_state.get_selected_entry().value
