@@ -7,8 +7,9 @@ You only need one shortcut to add your bookmarks.
 - Icon and virtual text: display icon and name at the marked lines
 - Group your bookmarks: so keep your away from the noises
 - [More usecases](./usecases.md)
+- [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
 
-![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/48ac8aef-f260-40b4-9501-43df12cc7d50)
+![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/82ff1c66-d8ee-4e0b-a1de-b6473ec4aa33)
 
 ## Install and Config
 
