@@ -21,7 +21,6 @@ end
 
 ---@param domain Bookmarks.BookmarkList[]
 local write_domains = function(domain)
-	print("DEBUGPRINT[1]: repo.lua:23: domain=" .. vim.inspect(domain))
 	vim.g.bookmarks_cache = domain
 	json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end
