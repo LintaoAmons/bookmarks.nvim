@@ -1,5 +1,6 @@
 local repo = require("bookmarks.repo")
 local utils = require("bookmarks.utils")
+local sign = require("bookmarks.sign")
 
 ---@class Bookmarks.MarkParam
 ---@field name string
@@ -27,6 +28,8 @@ local function mark(param)
 	end, bookmark_lists)
 	table.insert(new_bookmark_lists, active_bookmark_list)
 	repo.write_domains(new_bookmark_lists)
+
+	sign.place_signs()
 end
 
 ---@class Bookmarks.NewListParam

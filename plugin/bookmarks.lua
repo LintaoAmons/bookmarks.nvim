@@ -10,6 +10,7 @@ end
 vim.g.loaded_bookmarks = 1
 
 require("bookmarks").setup()
+require("bookmarks.sign").bookmark_sign_autocmd()
 local adapter = require("bookmarks.adapter")
 
 vim.api.nvim_create_user_command("BookmarksAddList", adapter.add_list, {})
