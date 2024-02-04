@@ -62,7 +62,23 @@ local function toggle_bookmarks(bookmark_list, new_bookmark)
 	return updated_bookmark_list
 end
 
+---@param name? string
+---@return Bookmarks.Bookmark
+local function new_bookmark(name)
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local filename = vim.fn.expand("%:p")
+
+	return {
+		name = name or "",
+		location = { path = filename, line = cursor[1], col = cursor[2] },
+		content = vim.api.nvim_get_current_line(),
+		githash = utils.get_current_version(),
+		createdAt = os.time(),
+	}
+end
+
 return {
+	new_bookmark = new_bookmark,
 	is_same_location = is_same_location,
 	toggle_bookmarks = toggle_bookmarks,
 }

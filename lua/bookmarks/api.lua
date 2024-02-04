@@ -8,17 +8,7 @@ local domain = require("bookmarks.bookmark")
 
 ---@param param Bookmarks.MarkParam
 local function mark(param)
-	local cursor = vim.api.nvim_win_get_cursor(0)
-	local filename = vim.fn.expand("%:p")
-	---@type Bookmarks.Bookmark
-	local bookmark = {
-		name = param.name,
-		location = { path = filename, line = cursor[1], col = cursor[2] },
-		content = vim.api.nvim_get_current_line(),
-		githash = utils.get_current_version(),
-		createdAt = os.time(),
-	}
-
+	local bookmark = domain.new_bookmark(param.name)
 	local bookmark_lists = repo.get_domains()
 	local active_bookmark_list = repo.find_or_set_active_bookmark_list(bookmark_lists)
   local updated_bookmark_list = domain.toggle_bookmarks(active_bookmark_list, bookmark)
