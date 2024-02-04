@@ -2,7 +2,39 @@
 
 You only need one shortcut to add your bookmarks.
 
+- Toggle mark: Add and Remove mark with one shortcut
+- Mark with name: so you can record more information
+- Icon and virtual text: display icon and name at the marked lines
+- Group your bookmarks: so keep your away from the noises
+- [More usecases](./usecases.md)
+
 ![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/48ac8aef-f260-40b4-9501-43df12cc7d50)
+
+## Install and Config
+
+- Simple version: everything should work out of box if you are ok with the default config.
+
+```lua
+-- with lazy.nvim
+return { "LintaoAmons/bookmarks.nvim" }
+```
+
+<details>
+<summary>Detailed config</summary>
+  
+Right now we have only one config options
+
+```lua
+return { "LintaoAmons/bookmarks.nvim",
+  config = function ()
+    require("bookmarks").setup( {
+      json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
+    })
+  end
+}
+```
+
+</details>
 
 ## Commands and Apis
 

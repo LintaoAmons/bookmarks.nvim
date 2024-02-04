@@ -1,5 +1,4 @@
 local repo = require("bookmarks.repo")
-local utils = require("bookmarks.utils")
 local sign = require("bookmarks.sign")
 local domain = require("bookmarks.bookmark")
 
