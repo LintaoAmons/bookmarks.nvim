@@ -50,7 +50,7 @@ https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efb
 
 ## Thanks
 
-- [Lspsaga: for the sign released code](https://github.com/nvimdev/lspsaga.nvim)
+- [Lspsaga: for the sign related code](https://github.com/nvimdev/lspsaga.nvim)
 
 ## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
 
