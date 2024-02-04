@@ -1,6 +1,6 @@
 # Bookmarks.nvim
 
-You only need one shortcut to add your bookmarks.
+You only need one shortcut to add bookmarks.
 
 - Toggle mark: Add and Remove mark with one shortcut
 - Mark with name: so you can record more information
