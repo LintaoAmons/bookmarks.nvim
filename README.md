@@ -57,9 +57,14 @@ https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efb
 
 ## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
 
-- [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
+- [scratch.nvim](https://githqb.com/LintaoAmons/scratch.nvim)
 - [easy-commands.nvim](https://github.com/LintaoAmons/easy-commands.nvim)
 - [cd-project.nvim](https://github.com/LintaoAmons/cd-project.nvim)
 - [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
 - [plugin-template.nvim](https://github.com/LintaoAmons/plugin-template.nvim)
 
+## TODO
+
+- [ ] Global bookmarks: No matter which one is the current active list, global bookmarks will always show up.
+- [ ] A new command to create bookmark and put it into specific bookmark list (instead current active one)
+- [ ] goto next/prev bookmark
