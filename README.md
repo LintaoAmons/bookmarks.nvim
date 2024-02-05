@@ -66,5 +66,9 @@ https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efb
 ## TODO
 
 - [ ] Global bookmarks: No matter which one is the current active list, global bookmarks will always show up.
+- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
 - [ ] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark
+- [ ] delete bookmark when browsing in telescope
+- [ ] rename bookmark in telescope
+- [ ] switch to another bookmark list in telescope or switch to display all bookmarks in telescope
