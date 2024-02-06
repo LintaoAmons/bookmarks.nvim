@@ -41,13 +41,14 @@ return { "LintaoAmons/bookmarks.nvim",
 
 ## Commands and Apis
 
-| Command                  | Description                                 |
-|--------------------------|---------------------------------------------|
-| `BookmarksMark`          | mark current line into active BookmarkList  |
-| `BookmarksGoto`          | go to selected bookmark                     |
-| `BookmarksGotoRecent`    | go to lastest visited/created Bookmark      |
-| `BookmarksAddList`       | add a new BookmarkList and set it as active |
-| `BookmarksSetActiveList` | set a BookmarkList as active                |
+| Command                  | Description                                       |
+|--------------------------|---------------------------------------------------|
+| `BookmarksMark`          | mark current line into active BookmarkList        |
+| `BookmarksMarkToList`    | mark current line and put it into a specific list |
+| `BookmarksGoto`          | go to selected bookmark                           |
+| `BookmarksGotoRecent`    | go to lastest visited/created Bookmark            |
+| `BookmarksAddList`       | add a new BookmarkList and set it as active       |
+| `BookmarksSetActiveList` | set a BookmarkList as active                      |
 
 https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L73-L75
 
@@ -67,7 +68,7 @@ https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efb
 
 - [ ] Global bookmarks: No matter which one is the current active list, global bookmarks will always show up.
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
-- [ ] A new command to create bookmark and put it into specific bookmark list (instead current active one)
+- [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark
 - [ ] delete bookmark when browsing in telescope
 - [ ] rename bookmark in telescope

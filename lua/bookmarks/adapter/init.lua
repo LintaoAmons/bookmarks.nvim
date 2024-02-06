@@ -6,6 +6,10 @@ local function mark()
 	require("bookmarks.adapter.vim-ui").mark()
 end
 
+local function mark_to_list()
+	require("bookmarks.adapter.vim-ui").mark_to_list()
+end
+
 local function goto_bookmark()
 	local success, _ = pcall(require, "telescope.pickers")
 	if success then
@@ -24,4 +28,5 @@ return {
 	mark = mark,
 	goto_bookmark = goto_bookmark,
 	set_active_list = set_active_list,
+  mark_to_list = mark_to_list,
 }

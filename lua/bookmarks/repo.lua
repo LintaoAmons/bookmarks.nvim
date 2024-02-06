@@ -76,9 +76,35 @@ local function find_or_set_active_bookmark_list(bookmark_lists)
 	return active_bookmark_list
 end
 
+---@param bookmark_list_name string
+---@param bookmark_lists? Bookmarks.BookmarkList[]
+---@return Bookmarks.BookmarkList
+local function must_find_bookmark_list_by_name(bookmark_list_name, bookmark_lists)
+	bookmark_lists = bookmark_lists or get_domains()
+
+	local found = vim.tbl_filter(function(bookmark_list)
+		---@cast bookmark_list Bookmarks.BookmarkList
+		return bookmark_list.name == bookmark_list_name
+	end, bookmark_lists)
+
+	if #found == 1 then
+		return found[1]
+	elseif #found == 0 then
+		error("Can't found bookmark list by name ")
+	else
+		error(
+			"More than one bookmark list have the name "
+				.. bookmark_list_name
+				.. ". Please clean your json db manually at "
+				.. vim.g.bookmarks_config.json_db_path
+		)
+	end
+end
+
 return {
 	get_domains = get_domains,
 	write_domains = write_domains,
 	generate_datetime_id = generate_datetime_id,
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
+	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
 }

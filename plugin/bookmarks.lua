@@ -16,6 +16,7 @@ local api = require("bookmarks.api")
 
 vim.api.nvim_create_user_command("BookmarksAddList", adapter.add_list, {})
 vim.api.nvim_create_user_command("BookmarksMark", adapter.mark, {})
+vim.api.nvim_create_user_command("BookmarksMarkToList", adapter.mark_to_list, {})
 vim.api.nvim_create_user_command("BookmarksGoto", adapter.goto_bookmark, {})
 vim.api.nvim_create_user_command("BookmarksGotoRecent", api.goto_last_visited_bookmark, {})
 vim.api.nvim_create_user_command("BookmarksSetActiveList", adapter.set_active_list, {})

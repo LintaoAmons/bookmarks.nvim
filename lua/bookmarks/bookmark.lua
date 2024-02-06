@@ -79,8 +79,20 @@ local function new_bookmark(name)
 	}
 end
 
+---@param bookmark_lists Bookmarks.BookmarkList[]
+---@return string[]
+local function all_list_names(bookmark_lists)
+	local result = {}
+	for _, bookmark_list in ipairs(bookmark_lists) do
+		table.insert(result, bookmark_list.name)
+	end
+	return result
+end
+
+-- TODO: turn those functions into instance methods
 return {
 	new_bookmark = new_bookmark,
 	is_same_location = is_same_location,
 	toggle_bookmarks = toggle_bookmarks,
+  all_list_names = all_list_names,
 }
