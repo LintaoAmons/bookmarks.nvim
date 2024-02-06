@@ -23,7 +23,7 @@ local goto_bookmark = function(opts)
 
 	pickers
 		.new(opts, {
-			prompt_title = "Goto bookmark",
+			prompt_title = "Current active list: " .. active_bookmark_list.name,
 			finder = finders.new_table({
 				results = bookmarks,
 				---@param bookmark Bookmarks.Bookmark
