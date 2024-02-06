@@ -62,7 +62,7 @@ APIs:
 
 https://github.com/LintaoAmons/bookmarks.nvim/blob/32053ab797cdfb2bc53388bc4b8a82f7aaf0a3b5/lua/bookmarks/api.lua#L97-L101
 
-I have only 3 keybindings for bookmarks, the rest will only be triggered by search commands
+This plugin don't provide any default keybinding. But for your reference, here's my personal nvim config. I have only 3 keybindings for bookmarks, the rest will only be triggered by search the commands
 
 https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76b5020b10/lazyvim/.config/nvim/lua/config/keymaps.lua#L9-L11
 
