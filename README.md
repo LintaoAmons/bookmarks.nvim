@@ -22,7 +22,7 @@ You only need one shortcut to add bookmarks.
 return {
   "LintaoAmons/bookmarks.nvim"
   dependencies = {
-    {"stevearc/dressing.nvim"} -- to have the same UI shown in the GIF
+    {"stevearc/dressing.nvim"} -- optional: to have the same UI shown in the GIF
   }
 }
 ```
