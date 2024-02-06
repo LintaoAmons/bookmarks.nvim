@@ -17,10 +17,12 @@ local fixture = {
 					line = 32,
 				},
 				githash = "e810b62",
-				content = "  print('DEBUGPRINT[5]: api.lua:33: new_bookmark_lists=' .. vim.inspect(new_bookmark_lists))",
+				content = "line content",
+				visitedAt = 1707015831,
 			},
 		},
 	},
+	---@type Bookmarks.Bookmark
 	bookmark = {
 		createdAt = 1707015831,
 		name = "",
@@ -31,6 +33,7 @@ local fixture = {
 		},
 		githash = "e810b62",
 		content = "  print('DEBUGPRINT[5]: api.lua:33: new_bookmark_lists=' .. vim.inspect(new_bookmark_lists))",
+		visitedAt = 1707015831,
 	},
 }
 
