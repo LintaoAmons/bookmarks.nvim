@@ -23,10 +23,15 @@ local function set_active_list()
 	require("bookmarks.adapter.vim-ui").set_active_list()
 end
 
+local function goto_bookmark_in_list()
+	require("bookmarks.adapter.vim-ui").goto_bookmark_in_list()
+end
+
 return {
 	add_list = add_list,
 	mark = mark,
 	goto_bookmark = goto_bookmark,
+	goto_bookmark_in_list = goto_bookmark_in_list,
 	set_active_list = set_active_list,
   mark_to_list = mark_to_list,
 }

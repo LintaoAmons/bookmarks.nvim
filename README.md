@@ -41,16 +41,19 @@ return { "LintaoAmons/bookmarks.nvim",
 
 ## Commands and Apis
 
-| Command                  | Description                                       |
-|--------------------------|---------------------------------------------------|
-| `BookmarksMark`          | mark current line into active BookmarkList        |
-| `BookmarksMarkToList`    | mark current line and put it into a specific list |
-| `BookmarksGoto`          | go to selected bookmark                           |
-| `BookmarksGotoRecent`    | go to lastest visited/created Bookmark            |
-| `BookmarksAddList`       | add a new BookmarkList and set it as active       |
-| `BookmarksSetActiveList` | set a BookmarkList as active                      |
+There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look into the code to find the structure of those two domain objects
 
-https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L73-L75
+| Command                           | Description                                               |
+|-----------------------------------|-----------------------------------------------------------|
+| `BookmarksMark`                   | mark current line into active BookmarkList                |
+| `BookmarksGoto`                   | go to bookmark at current active BookmarkList             |
+| `BookmarksMarkToList`             | mark current line and put it into a specific BookmarkList |
+| `BookmarksMarkGotoBookmarkInList` | go to bookmark at specific BookmarkList                   |
+| `BookmarksGotoRecent`             | go to lastest visited/created Bookmark                    |
+| `BookmarksAddList`                | add a new BookmarkList and set it as active               |
+| `BookmarksSetActiveList`          | set a BookmarkList as active                              |
+
+https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L98-L102
 
 ## Thanks
 

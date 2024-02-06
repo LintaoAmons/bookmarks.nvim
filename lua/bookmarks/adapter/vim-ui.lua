@@ -88,10 +88,39 @@ local function set_active_list()
 	end)
 end
 
+-- TODO: Telescope version
+local function goto_bookmark_in_list()
+	local bookmark_lists = repo.get_domains()
+	vim.ui.select(bookmark_lists, {
+		prompt = "select the bookmark list",
+		format_item = function(bookmark_list)
+			return bookmark_list.name
+		end,
+	}, function(bookmark_list)
+		---@cast bookmark_list  Bookmarks.BookmarkList
+		if not bookmark_list then
+			return
+		end
+
+		vim.ui.select(bookmark_list.bookmarks, {
+			prompt = "Select bookmark",
+			format_item = function(bookmark)
+				return common.format(bookmark, bookmark_list.bookmarks)
+			end,
+		}, function(choice)
+			if not choice then
+				return
+			end
+			api.goto_bookmark(choice)
+		end)
+	end)
+end
+
 return {
 	add_list = add_list,
 	mark = mark,
 	mark_to_list = mark_to_list,
 	goto_bookmark = goto_bookmark,
 	set_active_list = set_active_list,
+	goto_bookmark_in_list = goto_bookmark_in_list,
 }
