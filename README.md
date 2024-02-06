@@ -53,7 +53,7 @@ There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look
 | `BookmarksAddList`                | add a new BookmarkList and set it as active               |
 | `BookmarksSetActiveList`          | set a BookmarkList as active                              |
 
-https://github.com/LintaoAmons/bookmarks.nvim/blob/a72c4c1e30e88df744128b4d24efbf6f0e2b4570/lua/bookmarks/api.lua#L98-L102
+https://github.com/LintaoAmons/bookmarks.nvim/blob/32053ab797cdfb2bc53388bc4b8a82f7aaf0a3b5/lua/bookmarks/api.lua#L97-L101
 
 ## Thanks
 
