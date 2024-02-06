@@ -77,8 +77,8 @@ end
 
 ---@param bookmark Bookmarks.Bookmark
 local function goto_bookmark(bookmark)
-	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
-	vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
+    vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
+    vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
 end
 
 local function goto_last_visited_bookmark()
@@ -90,7 +90,10 @@ local function goto_last_visited_bookmark()
 		return a.visitedAt > b.visitedAt
 	end)
 
-	goto_bookmark(bookmark_list.bookmarks[1])
+    local last_bookmark = bookmark_list.bookmarks[1]
+    if last_bookmark then
+	    goto_bookmark(last_bookmark)
+    end
 end
 
 return {
