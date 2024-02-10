@@ -101,6 +101,7 @@ local function must_find_bookmark_list_by_name(bookmark_list_name, bookmark_list
 	end
 end
 
+-- pcall read method and display hint about correputed json file
 return {
 	get_domains = get_domains,
 	write_domains = write_domains,

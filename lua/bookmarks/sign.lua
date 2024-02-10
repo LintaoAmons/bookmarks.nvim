@@ -27,7 +27,7 @@ local function clean()
 end
 
 ---@param bookmarks? Bookmarks.Bookmark[]
-local function refresh_signs(bookmarks)
+local function _refresh_signs(bookmarks)
 	clean()
 
 	bookmarks = bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
@@ -40,18 +40,23 @@ local function refresh_signs(bookmarks)
 	end
 end
 
+---@param bookmarks? Bookmarks.Bookmark[]
+local function safe_refresh_signs(bookmarks)
+	pcall(_refresh_signs, bookmarks)
+end
+
 local function bookmark_sign_autocmd()
 	-- TODO: check the autocmd
 	vim.api.nvim_create_augroup(ns_name, { clear = true })
 	vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
 		group = ns_name,
 		callback = function(_)
-			refresh_signs()
+			safe_refresh_signs()
 		end,
 	})
 end
 
 return {
 	bookmark_sign_autocmd = bookmark_sign_autocmd,
-	refresh_signs = refresh_signs,
+	refresh_signs = safe_refresh_signs,
 }
