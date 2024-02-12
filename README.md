@@ -81,6 +81,7 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 
 ## TODO
 
+- [ ] Enhance gotoBookmarks: if the prompt didn't match any bookmarks in current active bookmarklist, it will try to search among all bookmarks
 - [ ] more useful information when deal with corrupted json db
 - [ ] delete bookmark when browsing in telescope
 - [ ] rename bookmark in telescope
