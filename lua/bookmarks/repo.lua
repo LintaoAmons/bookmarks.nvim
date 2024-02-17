@@ -16,6 +16,7 @@ local get_domains = function()
 			vim.log.levels.ERROR
 		)
 	end
+	vim.g.bookmarks_cache = result
 	return result
 end
 
@@ -101,11 +102,55 @@ local function must_find_bookmark_list_by_name(bookmark_list_name, bookmark_list
 	end
 end
 
+---@return Bookmarks.BookmarkList
+local function get_recent_files_bookmark_list()
+	local name = "RecentFiles"
+	local bookmark_lists = get_domains()
+	local found = vim.tbl_filter(function(bookmark_list)
+		---@cast bookmark_list Bookmarks.BookmarkList
+		return bookmark_list.name == name
+	end, bookmark_lists)
+
+	if #found == 1 then
+		return found[1]
+	elseif #found == 0 then
+		return {
+			id = generate_datetime_id(),
+			name = name,
+			is_active = false,
+			bookmarks = {},
+		}
+	else
+		error(
+			"More than one bookmark list have the name "
+				.. name
+				.. ". Please clean your json db manually at "
+				.. vim.g.bookmarks_config.json_db_path
+		)
+	end
+end
+
+---@param bookmark_list Bookmarks.BookmarkList
+---@param bookmark_lists? Bookmarks.BookmarkList[]
+local function save_bookmark_list(bookmark_list, bookmark_lists)
+	bookmark_lists = bookmark_lists or get_domains()
+	local new_bookmark_lists = vim.tbl_filter(function(bl)
+		return bl.name ~= bookmark_list.name
+	end, bookmark_lists)
+	table.insert(new_bookmark_lists, bookmark_list)
+
+	write_domains(new_bookmark_lists)
+end
+
 -- pcall read method and display hint about correputed json file
 return {
-	get_domains = get_domains,
 	write_domains = write_domains,
-	generate_datetime_id = generate_datetime_id,
+  save_bookmark_list = save_bookmark_list,
+	get_domains = get_domains,
+
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
 	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
+	get_recent_files_bookmark_list = get_recent_files_bookmark_list,
+
+	generate_datetime_id = generate_datetime_id,
 }

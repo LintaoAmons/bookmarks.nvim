@@ -77,8 +77,8 @@ end
 
 ---@param bookmark Bookmarks.Bookmark
 local function goto_bookmark(bookmark)
-    vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
-    vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
+	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
+	vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
 end
 
 local function goto_last_visited_bookmark()
@@ -90,10 +90,18 @@ local function goto_last_visited_bookmark()
 		return a.visitedAt > b.visitedAt
 	end)
 
-    local last_bookmark = bookmark_list.bookmarks[1]
-    if last_bookmark then
-	    goto_bookmark(last_bookmark)
-    end
+	local last_bookmark = bookmark_list.bookmarks[1]
+	if last_bookmark then
+		goto_bookmark(last_bookmark)
+	end
+end
+
+-- TODO: trigger by `BufferEnter` Event
+local function add_recent()
+	local bookmark = domain.new_bookmark()
+	local recent_files_bookmark_list = repo.get_recent_files_bookmark_list()
+	table.insert(recent_files_bookmark_list.bookmarks, bookmark)
+	repo.save_bookmark_list(recent_files_bookmark_list)
 end
 
 return {
@@ -102,4 +110,5 @@ return {
 	set_active_list = set_active_list,
 	goto_bookmark = goto_bookmark,
 	goto_last_visited_bookmark = goto_last_visited_bookmark,
+	add_recent = add_recent,
 }

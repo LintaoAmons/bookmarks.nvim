@@ -81,11 +81,12 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 
 ## TODO
 
+- [ ] BookmarksMark's input box as a command line. Text start with `!` considered as command.
+  - [ ] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active lsit.
 - [ ] Enhance gotoBookmarks: if the prompt didn't match any bookmarks in current active bookmarklist, it will try to search among all bookmarks
 - [ ] more useful information when deal with corrupted json db
 - [ ] delete bookmark when browsing in telescope
 - [ ] rename bookmark in telescope
-- [ ] Global bookmarks: No matter which one is the current active list, global bookmarks will always show up.
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark
