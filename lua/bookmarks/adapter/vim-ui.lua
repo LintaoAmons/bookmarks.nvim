@@ -2,7 +2,6 @@ local repo = require("bookmarks.repo")
 local utils = require("bookmarks.utils")
 local common = require("bookmarks.adapter.common")
 local api = require("bookmarks.api")
-local domain = require("bookmarks.bookmark")
 
 local function add_list()
 	vim.ui.input({ prompt = "Enter BookmarkList name" }, function(input)
@@ -16,6 +15,16 @@ end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
+		local is_command = vim.startswith(input, "!")
+		if is_command then
+			local command = string.gsub(input, "!", "")
+			if command == "newlist" then
+				local newlist = api.add_list({ name = repo.generate_datetime_id() })
+				vim.print("start mark")
+				api.mark({ name = "", list_name = newlist.name })
+				return
+			end
+		end
 		require("bookmarks.api").mark({ name = (input or "") })
 	end)
 end
