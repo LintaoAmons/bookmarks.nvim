@@ -73,6 +73,7 @@ You can type command which start with `!` to exec other actions, here is the lis
 |-----------------|------------|---------------------------------------------------------------------------------------------|
 | `listnew`       | `ln`       | create a new BookmarkList and set it to active and mark current line into this BookmarkList |
 | `listsetactive` | `lsa`      | set a BookmarkList as active                                                                |
+| `listdelete`    | `ld`       | delete a bookmark list                                                                      |
 
 
 APIs:
@@ -109,4 +110,3 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer
-- [ ] refactor: extract picker logic

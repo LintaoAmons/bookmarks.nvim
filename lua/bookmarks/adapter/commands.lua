@@ -1,12 +1,15 @@
 local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local vimui = require("bookmarks.adapter.vim-ui")
-local common = require("bookmarks.adapter.common")
 
 ---@class Bookmark.Command
 ---@field name string
 ---@field short string
 ---@field callback function
+---@field description? string
+
+
+-- TODO: a helper function to generate this structure to markdown table to put into README file
 
 ---@type Bookmark.Command[]
 local commands = {
@@ -24,6 +27,7 @@ local commands = {
 			local newlist = api.add_list({ name = name })
 			api.mark({ name = "", list_name = newlist.name })
 		end,
+		description = "create a new BookmarkList and set it to active and mark current line into this BookmarkList",
 	},
 	{
 		name = "listdelete",
@@ -56,6 +60,7 @@ local commands = {
 				)
 			end)
 		end,
+		description = "delete a bookmark list",
 	},
 	{
 		name = "listsetactive",
@@ -64,6 +69,7 @@ local commands = {
 			-- TODO: should I have this dependency in this module?
 			vimui.set_active_list()
 		end,
+		description = "set a BookmarkList as active",
 	},
 }
 
