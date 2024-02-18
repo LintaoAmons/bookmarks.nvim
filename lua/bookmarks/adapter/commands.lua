@@ -89,12 +89,23 @@ local commands = {
 				})
 			end)
 		end,
-    description = "bookmark current line and add it to specific bookmark list"
+		description = "bookmark current line and add it to specific bookmark list",
 	},
 }
 
 ---@param parse_command Bookmark.MarkCommand
 local function command_router(parse_command)
+	if parse_command.command == "help" or parse_command.command == "h" then
+		local msg = "Commands you can use:"
+		for _, value in ipairs(commands) do
+			msg = msg .. "\n  - " .. value.name .. " (" .. value.short .. ")"
+			msg = msg .. "\n    " .. value.description
+		end
+		vim.notify(msg, vim.log.levels.INFO, {
+			title = "Bookmarks.nvim",
+			timeout = 6000,
+		})
+	end
 	for _, command in ipairs(commands) do
 		if parse_command.command == command.name or parse_command.command == command.short then
 			return command.callback(parse_command)
