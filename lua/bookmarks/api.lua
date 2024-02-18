@@ -100,11 +100,29 @@ local function add_recent()
 	repo.save_bookmark_list(recent_files_bookmark_list)
 end
 
+local function goto_next_in_current_buffer()
+  vim.notify("todo")
+  -- get bookmarks of current buf of current active list
+  -- get current cursor position
+  -- goto the nearest next bookmark
+  -- if no next bookmark, then go to the first bookmark
+end
+
+local function goto_prev_in_current_buffer()
+  vim.notify("todo")
+  -- get bookmarks of current buf of current active list
+  -- get current cursor position
+  -- goto the nearest prev bookmark
+  -- if no prev bookmark, then go to the last bookmark
+end
+
 return {
 	mark = mark,
 	add_list = add_list,
 	set_active_list = set_active_list,
 	goto_bookmark = goto_bookmark,
 	goto_last_visited_bookmark = goto_last_visited_bookmark,
+  goto_next_in_current_buffer = goto_next_in_current_buffer,
+  goto_prev_in_current_buffer = goto_prev_in_current_buffer,
 	add_recent = add_recent,
 }

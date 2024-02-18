@@ -153,11 +153,13 @@ end
 
 -- pcall read method and display hint about correputed json file
 return {
+  -- write
 	write_domains = write_domains,
 	save_bookmark_list = save_bookmark_list,
 	delete_bookmark_list = delete_bookmark_list,
-	get_domains = get_domains,
 
+  -- read
+	get_domains = get_domains,
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
 	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
 	get_recent_files_bookmark_list = get_recent_files_bookmark_list,
