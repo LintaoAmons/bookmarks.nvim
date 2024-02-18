@@ -7,11 +7,15 @@ end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
+		if not input then
+			require("bookmarks.api").mark({ name = "" })
+		end
+
 		local parse_command = common.parse_command(input)
 		if parse_command.is_command then
 			commands.command_router(parse_command)
 		else
-			require("bookmarks.api").mark({ name = (input or "") })
+			require("bookmarks.api").mark({ name = input })
 		end
 	end)
 end
