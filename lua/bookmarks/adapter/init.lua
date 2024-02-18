@@ -1,9 +1,19 @@
+local common = require("bookmarks.adapter.common")
+local commands = require("bookmarks.adapter.commands")
+
 local function add_list()
 	require("bookmarks.adapter.vim-ui").add_list()
 end
 
 local function mark()
-	require("bookmarks.adapter.vim-ui").mark()
+	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
+		local parse_command = common.parse_command(input)
+		if parse_command.is_command then
+			commands.command_router(parse_command)
+		else
+			require("bookmarks.api").mark({ name = (input or "") })
+		end
+	end)
 end
 
 local function mark_to_list()
@@ -33,5 +43,5 @@ return {
 	goto_bookmark = goto_bookmark,
 	goto_bookmark_in_list = goto_bookmark_in_list,
 	set_active_list = set_active_list,
-  mark_to_list = mark_to_list,
+	mark_to_list = mark_to_list,
 }

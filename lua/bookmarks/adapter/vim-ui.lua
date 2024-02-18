@@ -2,7 +2,6 @@ local repo = require("bookmarks.repo")
 local utils = require("bookmarks.utils")
 local common = require("bookmarks.adapter.common")
 local api = require("bookmarks.api")
-local domain = require("bookmarks.bookmark")
 
 local function add_list()
 	vim.ui.input({ prompt = "Enter BookmarkList name" }, function(input)
@@ -11,12 +10,6 @@ local function add_list()
 			return vim.notify("Require a valid name")
 		end
 		require("bookmarks.api").add_list({ name = input })
-	end)
-end
-
-local function mark()
-	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		require("bookmarks.api").mark({ name = (input or "") })
 	end)
 end
 
@@ -118,7 +111,6 @@ end
 
 return {
 	add_list = add_list,
-	mark = mark,
 	mark_to_list = mark_to_list,
 	goto_bookmark = goto_bookmark,
 	set_active_list = set_active_list,

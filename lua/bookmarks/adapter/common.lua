@@ -25,6 +25,35 @@ local function format(bookmark, bookmarks)
 	)
 end
 
+---@class Bookmark.MarkCommand
+---@field is_command boolean
+---@field command? string
+---@field args? string[]
+
+---@param input string
+---@return Bookmark.MarkCommand
+local function parse_command(input)
+	local is_command = vim.startswith(input, "!")
+	if not is_command then
+		return {
+			is_command = false,
+		}
+	end
+
+	local command = string.gsub(input, "!", "")
+	local splited = vim.split(command, " ", { trimempty = true })
+	if #splited == 0 then
+		error("empty command")
+	end
+
+	return {
+		is_command = is_command,
+		command = splited[1],
+		args = { unpack(splited, 2) },
+	}
+end
+
 return {
 	format = format,
+  parse_command = parse_command
 }

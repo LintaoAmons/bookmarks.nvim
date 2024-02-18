@@ -20,13 +20,7 @@ local function mark(param)
 
 	local updated_bookmark_list = domain.toggle_bookmarks(target_bookmark_list, bookmark)
 
-	local new_bookmark_lists = vim.tbl_filter(function(bookmark_list)
-		---@cast bookmark_list Bookmarks.BookmarkList
-		return bookmark_list.id ~= updated_bookmark_list.id
-	end, bookmark_lists)
-	table.insert(new_bookmark_lists, updated_bookmark_list)
-
-	repo.write_domains(new_bookmark_lists)
+	repo.save_bookmark_list(updated_bookmark_list, bookmark_lists)
 
 	sign.refresh_signs()
 end
@@ -35,6 +29,7 @@ end
 ---@field name string
 
 ---@param param Bookmarks.NewListParam
+---@return Bookmarks.BookmarkList
 local function add_list(param)
 	local bookmark_lists = repo.get_domains()
 	local new_lists = vim.tbl_map(function(value)
@@ -55,6 +50,7 @@ local function add_list(param)
 	repo.write_domains(new_lists)
 
 	sign.refresh_signs()
+	return new_list
 end
 
 ---@param name string
@@ -77,8 +73,8 @@ end
 
 ---@param bookmark Bookmarks.Bookmark
 local function goto_bookmark(bookmark)
-    vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
-    vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
+	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
+	vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
 end
 
 local function goto_last_visited_bookmark()
@@ -90,10 +86,18 @@ local function goto_last_visited_bookmark()
 		return a.visitedAt > b.visitedAt
 	end)
 
-    local last_bookmark = bookmark_list.bookmarks[1]
-    if last_bookmark then
-	    goto_bookmark(last_bookmark)
-    end
+	local last_bookmark = bookmark_list.bookmarks[1]
+	if last_bookmark then
+		goto_bookmark(last_bookmark)
+	end
+end
+
+-- TODO: trigger by `BufferEnter` Event
+local function add_recent()
+	local bookmark = domain.new_bookmark()
+	local recent_files_bookmark_list = repo.get_recent_files_bookmark_list()
+	table.insert(recent_files_bookmark_list.bookmarks, bookmark)
+	repo.save_bookmark_list(recent_files_bookmark_list)
 end
 
 return {
@@ -102,4 +106,5 @@ return {
 	set_active_list = set_active_list,
 	goto_bookmark = goto_bookmark,
 	goto_last_visited_bookmark = goto_last_visited_bookmark,
+	add_recent = add_recent,
 }
