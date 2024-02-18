@@ -100,9 +100,10 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 
 ### V1
 
-- [ ] BookmarksMark's input box as a command line. Text start with `!` considered as command.
+- [x] BookmarksMark's input box as a command line. Text start with `!` considered as command.
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
 - [ ] more useful information when deal with corrupted json db
+- [ ] refactor: extract picker module
 - [ ] telescope enhancement
   - [ ] delete bookmark when browsing in telescope
   - [ ] rename bookmark in telescope
