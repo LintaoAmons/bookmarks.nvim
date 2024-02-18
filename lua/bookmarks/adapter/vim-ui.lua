@@ -13,31 +13,6 @@ local function add_list()
 	end)
 end
 
----@class Bookmark.MarkCommand
----@field is_command boolean
----@field command? string
----@field args? string[]
-
-local function mark()
-	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		local parse_command = common.parse_command(input)
-		if parse_command.is_command then
-			if parse_command.command == "newlist" or parse_command.command == "nl" then
-				local name
-				if #parse_command.args ~= 0 then
-					name = table.concat(parse_command.args, " ")
-				else
-					name = repo.generate_datetime_id()
-				end
-				local newlist = api.add_list({ name = name })
-				api.mark({ name = "", list_name = newlist.name })
-				return
-			end
-		end
-		require("bookmarks.api").mark({ name = (input or "") })
-	end)
-end
-
 local function mark_to_list()
 	local bookmark_lists = repo.get_domains()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(name)
@@ -136,7 +111,6 @@ end
 
 return {
 	add_list = add_list,
-	mark = mark,
 	mark_to_list = mark_to_list,
 	goto_bookmark = goto_bookmark,
 	set_active_list = set_active_list,

@@ -25,6 +25,11 @@ local function format(bookmark, bookmarks)
 	)
 end
 
+---@class Bookmark.MarkCommand
+---@field is_command boolean
+---@field command? string
+---@field args? string[]
+
 ---@param input string
 ---@return Bookmark.MarkCommand
 local function parse_command(input)
