@@ -20,12 +20,16 @@ end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		local is_command = vim.startswith(input, "!")
-		if is_command then
-			local command = string.gsub(input, "!", "")
-			if command == "newlist" then
-				local newlist = api.add_list({ name = repo.generate_datetime_id() })
-				vim.print("start mark")
+		local parse_command = common.parse_command(input)
+		if parse_command.is_command then
+			if parse_command.command == "newlist" or parse_command.command == "nl" then
+				local name
+				if #parse_command.args ~= 0 then
+					name = table.concat(parse_command.args, " ")
+				else
+					name = repo.generate_datetime_id()
+				end
+				local newlist = api.add_list({ name = name })
 				api.mark({ name = "", list_name = newlist.name })
 				return
 			end
