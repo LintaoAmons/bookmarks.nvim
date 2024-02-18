@@ -13,6 +13,11 @@ local function add_list()
 	end)
 end
 
+---@class Bookmark.MarkCommand
+---@field is_command boolean
+---@field command? string
+---@field args? string[]
+
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
 		local is_command = vim.startswith(input, "!")
