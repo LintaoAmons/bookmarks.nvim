@@ -49,15 +49,31 @@ return { "LintaoAmons/bookmarks.nvim",
 
 There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look into the code to find the structure of those two domain objects
 
-| Command                           | Description                                               |
-|-----------------------------------|-----------------------------------------------------------|
-| `BookmarksMark`                   | mark current line into active BookmarkList                |
-| `BookmarksGoto`                   | go to bookmark at current active BookmarkList             |
-| `BookmarksMarkToList`             | mark current line and put it into a specific BookmarkList |
-| `BookmarksMarkGotoBookmarkInList` | go to bookmark at specific BookmarkList                   |
-| `BookmarksGotoRecent`             | go to lastest visited/created Bookmark                    |
-| `BookmarksAddList`                | add a new BookmarkList and set it as active               |
-| `BookmarksSetActiveList`          | set a BookmarkList as active                              |
+| Command                           | Description                                                                                                 |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------------|
+| `BookmarksMark`                   | mark current line into active BookmarkList. if the input start with `!` will execute the specific command   |
+| `BookmarksGoto`                   | go to bookmark at current active BookmarkList                                                               |
+| `BookmarksMarkToList`             | mark current line and put it into a specific BookmarkList                                                   |
+| `BookmarksMarkGotoBookmarkInList` | go to bookmark at specific BookmarkList                                                                     |
+| `BookmarksGotoRecent`             | go to latest visited/created Bookmark                                                                       |
+| `BookmarksAddList`                | add a new BookmarkList and set it as active. Or you can use `BookmarksMark` then type `!newlist [listname]` |
+| `BookmarksSetActiveList`          | set a BookmarkList as active. Or you can use `BookmarksMark` then type `!lsa`                               |
+
+### BookmarkMark Commands
+
+When you trigger the `BookmarkMark` command, there's a input box waiting for you to type in some instruction.
+
+You can leave it empty a unnamed bookmark will create immediately.
+
+You can type in some text, then the content will be the name of that bookmark and the content will also show as a virtual text at the end of the bookmarked line.
+
+You can type command which start with `!` to exec other actions, here is the list of actions you can use.
+
+| name            | short name | Description                                                                                 |
+|-----------------|------------|---------------------------------------------------------------------------------------------|
+| `listnew`       | `ln`       | create a new BookmarkList and set it to active and mark current line into this BookmarkList |
+| `listsetactive` | `lsa`      | set a BookmarkList as active                                                                |
+
 
 APIs:
 
