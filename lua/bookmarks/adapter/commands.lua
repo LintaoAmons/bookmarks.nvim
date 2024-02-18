@@ -1,13 +1,13 @@
 local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local vimui = require("bookmarks.adapter.vim-ui")
+local picker = require("bookmarks.adapter.picker")
 
 ---@class Bookmark.Command
 ---@field name string
 ---@field short string
 ---@field callback function
 ---@field description? string
-
 
 -- TODO: a helper function to generate this structure to markdown table to put into README file
 
@@ -70,6 +70,26 @@ local commands = {
 			vimui.set_active_list()
 		end,
 		description = "set a BookmarkList as active",
+	},
+	{
+		name = "marktolist",
+		short = "ml",
+		---@param parse_command Bookmark.MarkCommand
+		callback = function(parse_command)
+			local name
+			if #parse_command.args ~= 0 then
+				name = table.concat(parse_command.args, " ")
+			else
+				name = ""
+			end
+			picker.pick_bookmark_list(function(choice)
+				api.mark({
+					name = name,
+					list_name = choice.name,
+				})
+			end)
+		end,
+    description = "bookmark current line and add it to specific bookmark list"
 	},
 }
 
