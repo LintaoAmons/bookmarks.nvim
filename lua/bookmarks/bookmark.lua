@@ -13,12 +13,13 @@ local utils = require("bookmarks.utils")
 ---@field createdAt number -- timestamp os.time()
 ---@field visitedAt number -- timestamp os.time()
 
+-- TODO: remove id in bookmark_list, name as identifier
+
 ---@class Bookmarks.BookmarkList
 ---@field id string
 ---@field name string
 ---@field is_active boolean
 ---@field bookmarks Bookmarks.Bookmark[]
---
 
 ---@param b1 Bookmarks.Bookmark
 ---@param b2 Bookmarks.Bookmark

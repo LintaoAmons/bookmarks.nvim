@@ -142,10 +142,20 @@ local function save_bookmark_list(bookmark_list, bookmark_lists)
 	write_domains(new_bookmark_lists)
 end
 
+---@param name string
+local function delete_bookmark_list(name)
+	local bookmark_lists = get_domains()
+	local new_bookmark_lists = vim.tbl_filter(function(bl)
+		return bl.name ~= name
+	end, bookmark_lists)
+	write_domains(new_bookmark_lists)
+end
+
 -- pcall read method and display hint about correputed json file
 return {
 	write_domains = write_domains,
-  save_bookmark_list = save_bookmark_list,
+	save_bookmark_list = save_bookmark_list,
+	delete_bookmark_list = delete_bookmark_list,
 	get_domains = get_domains,
 
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,

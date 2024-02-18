@@ -1,6 +1,7 @@
 local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local vimui = require("bookmarks.adapter.vim-ui")
+local common = require("bookmarks.adapter.common")
 
 ---@class Bookmark.Command
 ---@field name string
@@ -22,6 +23,38 @@ local commands = {
 			end
 			local newlist = api.add_list({ name = name })
 			api.mark({ name = "", list_name = newlist.name })
+		end,
+	},
+	{
+		name = "listdelete",
+		short = "ld",
+		callback = function(_)
+			local bookmark_lists = repo.get_domains()
+
+			vim.ui.select(bookmark_lists, {
+				prompt = "Select the bookmark list you want to delete",
+				format_item = function(item)
+					---@cast item Bookmarks.BookmarkList
+					return item.name
+				end,
+			}, function(choice)
+				---@cast choice Bookmarks.BookmarkList
+				if not choice then
+					return
+				end
+				vim.ui.input(
+					{ prompt = "Are you sure you want to delete list" .. choice.name .. "? Y/N" },
+					function(input)
+						if input == "Y" then
+							repo.delete_bookmark_list(choice.name)
+							vim.notify(choice.name .. " list deleted")
+						else
+							vim.notify("deletion abort")
+							return
+						end
+					end
+				)
+			end)
 		end,
 	},
 	{

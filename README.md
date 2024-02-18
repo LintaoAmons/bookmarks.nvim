@@ -109,3 +109,4 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer
+- [ ] refactor: extract picker logic
