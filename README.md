@@ -90,7 +90,7 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 
 ## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
 
-- [scratch.nvim](https://githqb.com/LintaoAmons/scratch.nvim)
+- [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
 - [easy-commands.nvim](https://github.com/LintaoAmons/easy-commands.nvim)
 - [cd-project.nvim](https://github.com/LintaoAmons/cd-project.nvim)
 - [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
