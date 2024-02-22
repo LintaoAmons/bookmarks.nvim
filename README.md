@@ -88,6 +88,12 @@ https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76
 
 - [Lspsaga: for the sign related code](https://github.com/nvimdev/lspsaga.nvim)
 
+## CONTRIBUTING
+
+Don't hesitate to ask me anything about the codebase if you want to contribute.
+
+You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY9580ZWFl)
+
 ## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
 
 - [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
