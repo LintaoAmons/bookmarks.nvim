@@ -91,8 +91,8 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 
 - [x] BookmarksMark's input box as a command line. Text start with `!` considered as command.
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
-- [ ] remove parse commands, prefer BookmarkCommands instead
-- [ ] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
+- [x] remove parse commands, prefer BookmarkCommands instead
+- [x] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
 - [ ] more useful information when deal with corrupted json db
 - [ ] refactor: extract picker module
 - [ ] Telescope as default picker and will fallback to vim.ui if don't have telescope dependencies
