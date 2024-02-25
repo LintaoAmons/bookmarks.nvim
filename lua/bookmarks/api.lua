@@ -74,7 +74,7 @@ end
 ---@param bookmark Bookmarks.Bookmark
 local function goto_bookmark(bookmark)
 	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
-	vim.api.nvim_win_set_cursor(0, { bookmark.location.line, bookmark.location.col })
+	pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
 end
 
 local function goto_last_visited_bookmark()
@@ -101,19 +101,19 @@ local function add_recent()
 end
 
 local function goto_next_in_current_buffer()
-  vim.notify("todo")
-  -- get bookmarks of current buf of current active list
-  -- get current cursor position
-  -- goto the nearest next bookmark
-  -- if no next bookmark, then go to the first bookmark
+	vim.notify("todo")
+	-- get bookmarks of current buf of current active list
+	-- get current cursor position
+	-- goto the nearest next bookmark
+	-- if no next bookmark, then go to the first bookmark
 end
 
 local function goto_prev_in_current_buffer()
-  vim.notify("todo")
-  -- get bookmarks of current buf of current active list
-  -- get current cursor position
-  -- goto the nearest prev bookmark
-  -- if no prev bookmark, then go to the last bookmark
+	vim.notify("todo")
+	-- get bookmarks of current buf of current active list
+	-- get current cursor position
+	-- goto the nearest prev bookmark
+	-- if no prev bookmark, then go to the last bookmark
 end
 
 return {
@@ -122,7 +122,7 @@ return {
 	set_active_list = set_active_list,
 	goto_bookmark = goto_bookmark,
 	goto_last_visited_bookmark = goto_last_visited_bookmark,
-  goto_next_in_current_buffer = goto_next_in_current_buffer,
-  goto_prev_in_current_buffer = goto_prev_in_current_buffer,
+	goto_next_in_current_buffer = goto_next_in_current_buffer,
+	goto_prev_in_current_buffer = goto_prev_in_current_buffer,
 	add_recent = add_recent,
 }
