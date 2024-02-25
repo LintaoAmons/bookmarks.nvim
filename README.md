@@ -110,6 +110,7 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
 - [ ] more useful information when deal with corrupted json db
 - [ ] refactor: extract picker module
+- [ ] Telescope as default picker and will fallback to vim.ui if don't have telescope dependencies
 - [ ] telescope enhancement
   - [ ] delete bookmark when browsing in telescope
   - [ ] rename bookmark in telescope
