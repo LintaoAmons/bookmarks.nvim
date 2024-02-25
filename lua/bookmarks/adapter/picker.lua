@@ -1,6 +1,7 @@
 local repo = require("bookmarks.repo")
 local common = require("bookmarks.adapter.common")
 
+-- TODO: check dependencies firstly
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local actions = require("telescope.actions")
@@ -14,19 +15,45 @@ local function pick_bookmark_list(callback, opts)
 	opts = opts or {}
 	local prompt = opts.prompt or "Select bookmark list"
 
-	vim.ui.select(bookmark_lists, {
-		prompt = prompt,
-		format_item = function(item)
-			---@cast item Bookmarks.BookmarkList
-			return item.name
-		end,
-	}, function(choice)
-		---@cast choice Bookmarks.BookmarkList
-		if not choice then
-			return
-		end
-		callback(choice)
-	end)
+	pickers
+		.new(opts, {
+			prompt_title = prompt,
+			finder = finders.new_table({
+				results = bookmark_lists,
+				---@param bookmark_list Bookmarks.BookmarkList
+				entry_maker = function(bookmark_list)
+					return {
+						value = bookmark_list,
+						display = bookmark_list.name,
+						ordinal = bookmark_list.name,
+					}
+				end,
+			}),
+			sorter = conf.generic_sorter(opts),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local selected = action_state.get_selected_entry().value
+					callback(selected)
+				end)
+				return true
+			end,
+		})
+		:find()
+
+	-- vim.ui.select(bookmark_lists, {
+	-- 	prompt = prompt,
+	-- 	format_item = function(item)
+	-- 		---@cast item Bookmarks.BookmarkList
+	-- 		return item.name
+	-- 	end,
+	-- }, function(choice)
+	-- 	---@cast choice Bookmarks.BookmarkList
+	-- 	if not choice then
+	-- 		return
+	-- 	end
+	-- 	callback(choice)
+	-- end)
 end
 
 ---@param callback fun(bookmark: Bookmarks.Bookmark): nil
@@ -34,7 +61,7 @@ end
 local function pick_bookmark(callback, opts)
 	opts = opts or {}
 	local bookmark_list = repo.find_or_set_active_bookmark_list()
-	local prompt = opts.prompt or "Select bookmark"
+	local prompt = opts.prompt or ("Select bookmark from: " .. bookmark_list.name)
 
 	local bookmarks = bookmark_list.bookmarks
 	table.sort(bookmarks, function(a, b)
