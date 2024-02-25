@@ -2,14 +2,6 @@ local repo = require("bookmarks.repo")
 local common = require("bookmarks.adapter.common")
 local api = require("bookmarks.api")
 
-local custom_sorter = function(_, _, results)
-	table.sort(results, function(a, b)
-		return a.createdAt > b.createdAt
-	end)
-
-	return results
-end
-
 ---@param opts? table
 local goto_bookmark = function(opts)
 	local pickers = require("telescope.pickers")
