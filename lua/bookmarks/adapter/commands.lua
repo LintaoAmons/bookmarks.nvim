@@ -84,6 +84,17 @@ local commands = {
 		end,
 		description = "rename selected bookmark",
 	},
+	{
+		name = "[Mark] Browsing all",
+		callback = function()
+			picker.pick_bookmark_list(function(bookmark_list)
+				picker.pick_bookmark(function(bookmark)
+					api.goto_bookmark(bookmark, { open_method = "vsplit" })
+				end, { bookmark_list = bookmark_list })
+			end)
+		end,
+		description = "",
+	},
 }
 
 return {

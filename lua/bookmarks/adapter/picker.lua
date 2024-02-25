@@ -9,7 +9,7 @@ local actions = require("telescope.actions")
 local conf = require("telescope.config").values
 local action_state = require("telescope.actions.state")
 
----@param callback fun(bookmark: Bookmarks.BookmarkList): nil
+---@param callback fun(bookmark_list: Bookmarks.BookmarkList): nil
 ---@param opts? {prompt?: string}
 local function pick_bookmark_list(callback, opts)
 	local bookmark_lists = repo.get_domains()
@@ -58,10 +58,10 @@ local function pick_bookmark_list(callback, opts)
 end
 
 ---@param callback fun(bookmark: Bookmarks.Bookmark): nil
----@param opts? {prompt?: string}
+---@param opts? {prompt?: string, bookmark_list?: Bookmarks.BookmarkList}
 local function pick_bookmark(callback, opts)
 	opts = opts or {}
-	local bookmark_list = repo.find_or_set_active_bookmark_list()
+	local bookmark_list = opts.bookmark_list or repo.find_or_set_active_bookmark_list()
 	local prompt = opts.prompt or ("Select bookmark from: " .. bookmark_list.name)
 
 	local bookmarks = bookmark_list.bookmarks

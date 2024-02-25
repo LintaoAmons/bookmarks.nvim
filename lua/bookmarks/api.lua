@@ -72,8 +72,11 @@ local function set_active_list(name)
 end
 
 ---@param bookmark Bookmarks.Bookmark
-local function goto_bookmark(bookmark)
-	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
+---@param opts? {open_method?: string}
+local function goto_bookmark(bookmark, opts)
+  opts = opts or {}
+  local open_method = opts.open_method or "e"
+	vim.api.nvim_exec2(open_method .. " " .. bookmark.location.path, {})
 	pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
 	bookmark.visited_at = os.time()
 	repo.save_bookmark(bookmark)
