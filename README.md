@@ -109,4 +109,4 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 
 ### V2
 
-- [ ] filetree like BookmarkList and Bookmark browsing.
+- [ ] filetree-like BookmarkList and Bookmark browsing.
