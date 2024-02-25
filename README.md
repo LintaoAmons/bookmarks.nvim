@@ -54,11 +54,7 @@ There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look
 | `BookmarksMark`                   | Mark current line into active BookmarkList.                                                                 |
 | `BookmarksGoto`                   | Go to bookmark at current active BookmarkList                                                               |
 | `BookmarksCommands`               | Find and trigger a bookmark command.                                                                        |
-| `BookmarksMarkToList`             | Mark current line and put it into a specific BookmarkList                                                   |
-| `BookmarksMarkGotoBookmarkInList` | Go to bookmark at specific BookmarkList                                                                     |
 | `BookmarksGotoRecent`             | Go to latest visited/created Bookmark                                                                       |
-| `BookmarksAddList`                | Add a new BookmarkList and set it as active.                                                                |
-| `BookmarksSetActiveList`          | Set a BookmarkList as active.                                                                               |
 
 APIs:
 
