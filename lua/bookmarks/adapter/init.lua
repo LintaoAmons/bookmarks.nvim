@@ -1,5 +1,5 @@
-local common = require("bookmarks.adapter.common")
 local commands = require("bookmarks.adapter.commands")
+local picker = require("bookmarks.adapter.picker")
 
 local function add_list()
 	require("bookmarks.adapter.vim-ui").add_list()
@@ -7,16 +7,7 @@ end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		if not input then
-			require("bookmarks.api").mark({ name = "" })
-		end
-
-		local parse_command = common.parse_command(input)
-		if parse_command.is_command then
-			commands.command_router(parse_command)
-		else
-			require("bookmarks.api").mark({ name = input })
-		end
+		require("bookmarks.api").mark({ name = input or "" })
 	end)
 end
 
@@ -41,9 +32,20 @@ local function goto_bookmark_in_list()
 	require("bookmarks.adapter.vim-ui").goto_bookmark_in_list()
 end
 
+local function mark_commands()
+	local cmds = commands.commands
+	picker.pick_commands(vim.tbl_map(function(cmd)
+		return {
+			name = cmd.name,
+			callback = cmd.callback,
+		}
+	end, cmds))
+end
+
 return {
 	add_list = add_list,
 	mark = mark,
+	mark_commands = mark_commands,
 	goto_bookmark = goto_bookmark,
 	goto_bookmark_in_list = goto_bookmark_in_list,
 	set_active_list = set_active_list,

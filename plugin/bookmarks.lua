@@ -21,3 +21,4 @@ vim.api.nvim_create_user_command("BookmarksMarkToList", adapter.mark_to_list, {}
 vim.api.nvim_create_user_command("BookmarksMarkGotoBookmarkInList", adapter.goto_bookmark_in_list, {})
 vim.api.nvim_create_user_command("BookmarksGotoRecent", api.goto_last_visited_bookmark, {})
 vim.api.nvim_create_user_command("BookmarksSetActiveList", adapter.set_active_list, {})
+vim.api.nvim_create_user_command("BookmarksCommands", adapter.mark_commands, {})

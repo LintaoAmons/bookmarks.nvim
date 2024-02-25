@@ -83,7 +83,42 @@ local function pick_bookmark(callback, opts)
 	-- end)
 end
 
+---@param cmds {name: string, callback: function}
+---@param opts? {prompt?: string}
+local function pick_commands(cmds, opts)
+	opts = opts or {}
+	local prompt = opts.prompt or "Select commands"
+
+	pickers
+		.new(opts, {
+			prompt_title = prompt,
+			finder = finders.new_table({
+				results = cmds,
+				---@param cmd Bookmark.Command
+				---@return table
+				entry_maker = function(cmd)
+					return {
+						value = cmd,
+						display = cmd.name, -- TODO: add description
+						ordinal = cmd.name,
+					}
+				end,
+			}),
+			sorter = conf.generic_sorter(opts),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local selected = action_state.get_selected_entry().value
+					selected.callback()
+				end)
+				return true
+			end,
+		})
+		:find()
+end
+
 return {
 	pick_bookmark_list = pick_bookmark_list,
 	pick_bookmark = pick_bookmark,
+	pick_commands = pick_commands,
 }

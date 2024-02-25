@@ -5,8 +5,7 @@ local picker = require("bookmarks.adapter.picker")
 
 ---@class Bookmark.Command
 ---@field name string
----@field short string
----@field callback function
+---@field callback fun(parse_command?: Bookmark.MarkCommand): nil
 ---@field description? string
 
 -- TODO: a helper function to generate this structure to markdown table to put into README file
@@ -14,12 +13,11 @@ local picker = require("bookmarks.adapter.picker")
 ---@type Bookmark.Command[]
 local commands = {
 	{
-		name = "listnew",
-		short = "ln",
-		---@param parse_command Bookmark.MarkCommand
+		name = "[List] new",
 		callback = function(parse_command)
+			parse_command = parse_command or {}
 			local name
-			if #parse_command.args ~= 0 then
+			if parse_command.args and #parse_command.args ~= 0 then
 				name = table.concat(parse_command.args, " ")
 			else
 				name = repo.generate_datetime_id()
@@ -30,8 +28,7 @@ local commands = {
 		description = "create a new BookmarkList and set it to active and mark current line into this BookmarkList",
 	},
 	{
-		name = "listdelete",
-		short = "ld",
+		name = "[List] delete",
 		callback = function(_)
 			local bookmark_lists = repo.get_domains()
 
@@ -63,8 +60,7 @@ local commands = {
 		description = "delete a bookmark list",
 	},
 	{
-		name = "listsetactive",
-		short = "lsa",
+		name = "[List] set active",
 		callback = function(_)
 			-- TODO: should I have this dependency in this module?
 			vimui.set_active_list()
@@ -72,12 +68,11 @@ local commands = {
 		description = "set a BookmarkList as active",
 	},
 	{
-		name = "marktolist",
-		short = "ml",
-		---@param parse_command Bookmark.MarkCommand
+		name = "[Mark] mark to list",
 		callback = function(parse_command)
+			parse_command = parse_command or {}
 			local name
-			if #parse_command.args ~= 0 then
+			if parse_command.args and #parse_command.args ~= 0 then
 				name = table.concat(parse_command.args, " ")
 			else
 				name = ""
@@ -93,26 +88,6 @@ local commands = {
 	},
 }
 
----@param parse_command Bookmark.MarkCommand
-local function command_router(parse_command)
-	if parse_command.command == "help" or parse_command.command == "h" then
-		local msg = "Commands you can use:"
-		for _, value in ipairs(commands) do
-			msg = msg .. "\n  - " .. value.name .. " (" .. value.short .. ")"
-			msg = msg .. "\n    " .. value.description
-		end
-		vim.notify(msg, vim.log.levels.INFO, {
-			title = "Bookmarks.nvim",
-			timeout = 6000,
-		})
-	end
-	for _, command in ipairs(commands) do
-		if parse_command.command == command.name or parse_command.command == command.short then
-			return command.callback(parse_command)
-		end
-	end
-end
-
 return {
-	command_router = command_router,
+	commands = commands,
 }
