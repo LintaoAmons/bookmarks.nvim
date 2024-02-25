@@ -1,6 +1,6 @@
 local function get_current_version()
-  local result, _ = vim.fn.system("git rev-parse --short HEAD"):gsub("\n", "")
-  return result
+	local result, _ = vim.fn.system("git rev-parse --short HEAD"):gsub("\n", "")
+	return result
 end
 
 local function trim(str)
@@ -29,21 +29,28 @@ end
 ---@param original any
 ---@return any
 local function deep_copy(original)
-    if type(original) ~= 'table' then
-        return original
-    end
+	if type(original) ~= "table" then
+		return original
+	end
 
-    local copy = {}
-    for key, value in pairs(original) do
-        copy[deep_copy(key)] = deep_copy(value)
-    end
+	local copy = {}
+	for key, value in pairs(original) do
+		copy[deep_copy(key)] = deep_copy(value)
+	end
 
-    return copy
+	return copy
+end
+
+---@param msg string
+---@param level? integer
+local function log(msg, level)
+	vim.notify(msg, level or vim.log.levels.ERROR)
 end
 
 return {
 	trim = trim,
 	shorten_file_path = shorten_file_path,
-  get_current_version = get_current_version,
-  deep_copy = deep_copy,
+	get_current_version = get_current_version,
+	deep_copy = deep_copy,
+	log = log,
 }

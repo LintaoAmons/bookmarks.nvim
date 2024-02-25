@@ -15,8 +15,8 @@ local commands = {
 	{
 		name = "[List] new",
 		callback = function()
-      -- TODO: ask user to input name
-			local newlist = api.add_list({ name = "" })
+			local newlist = api.add_list({ name = tostring(os.time()) })
+			-- TODO: ask user to input name
 			api.mark({ name = "", list_name = newlist.name })
 		end,
 		description = "create a new BookmarkList and set it to active and mark current line into this BookmarkList",
