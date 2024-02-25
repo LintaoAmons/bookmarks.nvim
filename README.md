@@ -93,13 +93,11 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
 - [x] remove parse commands, prefer BookmarkCommands instead
 - [x] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
-- [ ] more useful information when deal with corrupted json db
+- [ ] user defined commands
+- [x] more useful information when deal with corrupted json db (no issues report yet)
 - [ ] refactor: extract picker module
 - [ ] Telescope as default picker and will fallback to vim.ui if don't have telescope dependencies
-- [ ] telescope enhancement
-  - [ ] delete bookmark when browsing in telescope
-  - [ ] rename bookmark in telescope
-  - [ ] switch to another bookmark list in telescope or switch to display all bookmarks in telescope
+- [x] telescope enhancement (use specific command instead)
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer
