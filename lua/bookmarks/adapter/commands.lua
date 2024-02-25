@@ -73,6 +73,17 @@ local commands = {
 		end,
 		description = "bookmark current line and add it to specific bookmark list",
 	},
+	{
+		name = "[Mark] rename bookmark",
+		callback = function()
+			picker.pick_bookmark(function(bookmark)
+				vim.ui.input({ prompt = "New name of the bookmark" }, function(input)
+					api.rename_bookmark(bookmark.id, input or "")
+				end)
+			end)
+		end,
+		description = "rename selected bookmark",
+	},
 }
 
 return {

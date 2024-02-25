@@ -163,6 +163,19 @@ local function delete_bookmark_list(name)
 	write_domains(new_bookmark_lists)
 end
 
+---@param id number
+local function must_find_bookmark_by_id(id)
+	local bookmark_lists = get_domains()
+	for _, list in ipairs(bookmark_lists) do
+		for _, bookmark in ipairs(list.bookmarks) do
+			if bookmark.id == id then
+				return bookmark
+			end
+		end
+	end
+	error("Can't find the bookmark with id: " .. id)
+end
+
 -- pcall read method and display hint about correputed json file
 return {
 	-- write
@@ -176,6 +189,7 @@ return {
 	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
 	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
 	get_recent_files_bookmark_list = get_recent_files_bookmark_list,
+	must_find_bookmark_by_id = must_find_bookmark_by_id,
 
 	generate_datetime_id = generate_datetime_id,
 }

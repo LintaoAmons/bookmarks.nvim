@@ -118,8 +118,18 @@ local function goto_prev_in_current_buffer()
 	-- if no prev bookmark, then go to the last bookmark
 end
 
+---@param id number
+---@param new_name string
+local function rename_bookmark(id, new_name)
+	local bookmark = repo.must_find_bookmark_by_id(id)
+	bookmark.name = new_name
+	repo.save_bookmark(bookmark)
+end
+
 return {
 	mark = mark,
+	rename_bookmark = rename_bookmark,
+
 	add_list = add_list,
 	set_active_list = set_active_list,
 	goto_bookmark = goto_bookmark,
