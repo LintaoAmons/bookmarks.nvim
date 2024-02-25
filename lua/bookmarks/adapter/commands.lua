@@ -5,7 +5,7 @@ local picker = require("bookmarks.adapter.picker")
 
 ---@class Bookmark.Command
 ---@field name string
----@field callback fun(parse_command?: Bookmark.MarkCommand): nil
+---@field callback fun(): nil
 ---@field description? string
 
 -- TODO: a helper function to generate this structure to markdown table to put into README file
@@ -14,22 +14,16 @@ local picker = require("bookmarks.adapter.picker")
 local commands = {
 	{
 		name = "[List] new",
-		callback = function(parse_command)
-			parse_command = parse_command or {}
-			local name
-			if parse_command.args and #parse_command.args ~= 0 then
-				name = table.concat(parse_command.args, " ")
-			else
-				name = repo.generate_datetime_id()
-			end
-			local newlist = api.add_list({ name = name })
+		callback = function()
+      -- TODO: ask user to input name
+			local newlist = api.add_list({ name = "" })
 			api.mark({ name = "", list_name = newlist.name })
 		end,
 		description = "create a new BookmarkList and set it to active and mark current line into this BookmarkList",
 	},
 	{
 		name = "[List] delete",
-		callback = function(_)
+		callback = function()
 			local bookmark_lists = repo.get_domains()
 
 			vim.ui.select(bookmark_lists, {
@@ -61,7 +55,7 @@ local commands = {
 	},
 	{
 		name = "[List] set active",
-		callback = function(_)
+		callback = function()
 			-- TODO: should I have this dependency in this module?
 			vimui.set_active_list()
 		end,
@@ -69,17 +63,10 @@ local commands = {
 	},
 	{
 		name = "[Mark] mark to list",
-		callback = function(parse_command)
-			parse_command = parse_command or {}
-			local name
-			if parse_command.args and #parse_command.args ~= 0 then
-				name = table.concat(parse_command.args, " ")
-			else
-				name = ""
-			end
+		callback = function()
 			picker.pick_bookmark_list(function(choice)
 				api.mark({
-					name = name,
+					name = "", -- TODO: ask user to input name?
 					list_name = choice.name,
 				})
 			end)
