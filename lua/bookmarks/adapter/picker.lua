@@ -31,20 +31,12 @@ local function pick_bookmark_list(callback, opts)
 				end,
 			}),
 			sorter = conf.generic_sorter(opts),
-			attach_mappings = function(_, map)
-				map({ "i", "n" }, "<CR>", function(prompt_bufnr)
+			attach_mappings = function(prompt_bufnr, _)
+				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
 					local selected = action_state.get_selected_entry().value
 					callback(selected)
 				end)
-
-				map({ "i", "n" }, "d", function(prompt_bufnr)
-					local entry = require("telescope.actions.state").get_selected_entry()
-					require("telescope.actions").close(prompt_bufnr)
-					repo.delete_bookmark_list(entry.value.name)
-					util.log("Bookmark List [" .. entry.value.name .. "] deleted")
-				end)
-
 				return true
 			end,
 		})
