@@ -51,21 +51,26 @@ There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look
 
 | Command                           | Description                                                                                                 |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `BookmarksMark`                   | mark current line into active BookmarkList.                                                                 |
-| `BookmarksGoto`                   | go to bookmark at current active BookmarkList                                                               |
-| `BookmarksMarkToList`             | mark current line and put it into a specific BookmarkList                                                   |
-| `BookmarksMarkGotoBookmarkInList` | go to bookmark at specific BookmarkList                                                                     |
-| `BookmarksGotoRecent`             | go to latest visited/created Bookmark                                                                       |
-| `BookmarksAddList`                | add a new BookmarkList and set it as active.                                                                |
-| `BookmarksSetActiveList`          | set a BookmarkList as active.                                                                               |
+| `BookmarksMark`                   | Mark current line into active BookmarkList.                                                                 |
+| `BookmarksGoto`                   | Go to bookmark at current active BookmarkList                                                               |
+| `BookmarksCommands`               | Find and trigger a bookmark command.                                                                        |
+| `BookmarksMarkToList`             | Mark current line and put it into a specific BookmarkList                                                   |
+| `BookmarksMarkGotoBookmarkInList` | Go to bookmark at specific BookmarkList                                                                     |
+| `BookmarksGotoRecent`             | Go to latest visited/created Bookmark                                                                       |
+| `BookmarksAddList`                | Add a new BookmarkList and set it as active.                                                                |
+| `BookmarksSetActiveList`          | Set a BookmarkList as active.                                                                               |
 
 APIs:
 
 https://github.com/LintaoAmons/bookmarks.nvim/blob/32053ab797cdfb2bc53388bc4b8a82f7aaf0a3b5/lua/bookmarks/api.lua#L97-L101
 
-This plugin don't provide any default keybinding. But for your reference, here's my personal nvim config. I have only 3 keybindings for bookmarks, the rest will only be triggered by search the commands
+This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
 
-https://github.com/LintaoAmons/CoolStuffes/blob/1fdfa7e7776aacc7d2447934a29bdf76b5020b10/lazyvim/.config/nvim/lua/config/keymaps.lua#L9-L11
+```lua
+vim.keymap.set({ "n", "v" }, "mm", "<cmd>BookmarksMark<cr>", { desc = "Mark current line into active BookmarkList." })
+vim.keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark at current active BookmarkList" })
+vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
+```
 
 ## Thanks
 
@@ -101,3 +106,7 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer
+
+### V2
+
+- [ ] filetree like BookmarkList and Bookmark browsing.
