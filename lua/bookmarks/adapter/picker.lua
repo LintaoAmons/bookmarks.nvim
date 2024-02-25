@@ -1,6 +1,13 @@
 local repo = require("bookmarks.repo")
+local common = require("bookmarks.adapter.common")
 
----@param callback function
+local pickers = require("telescope.pickers")
+local finders = require("telescope.finders")
+local actions = require("telescope.actions")
+local conf = require("telescope.config").values
+local action_state = require("telescope.actions.state")
+
+---@param callback fun(bookmark: Bookmarks.BookmarkList): nil
 ---@param opts? {prompt?: string}
 local function pick_bookmark_list(callback, opts)
 	local bookmark_lists = repo.get_domains()
@@ -22,6 +29,61 @@ local function pick_bookmark_list(callback, opts)
 	end)
 end
 
+---@param callback fun(bookmark: Bookmarks.Bookmark): nil
+---@param opts? {prompt?: string}
+local function pick_bookmark(callback, opts)
+	opts = opts or {}
+	local bookmark_list = repo.find_or_set_active_bookmark_list()
+	local prompt = opts.prompt or "Select bookmark"
+
+	local bookmarks = bookmark_list.bookmarks
+	table.sort(bookmarks, function(a, b)
+		return a.visitedAt > b.visitedAt
+	end)
+
+	pickers
+		.new(opts, {
+			prompt_title = prompt,
+			finder = finders.new_table({
+				results = bookmarks,
+				---@param bookmark Bookmarks.Bookmark
+				entry_maker = function(bookmark)
+					local display = common.format(bookmark, bookmarks)
+					return {
+						value = bookmark,
+						display = display,
+						ordinal = display,
+					}
+				end,
+			}),
+			sorter = conf.generic_sorter(opts),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local selected = action_state.get_selected_entry().value
+					callback(selected)
+				end)
+				return true
+			end,
+		})
+		:find()
+
+  -- fallback to vim.ui picker
+	-- vim.ui.select(bookmarks, {
+	-- 	prompt = prompt,
+	-- 	format_item = function(item)
+	-- 		return common.format(item, bookmarks)
+	-- 	end,
+	-- }, function(choice)
+	-- 	---@cast choice Bookmarks.BookmarkList
+	-- 	if not choice then
+	-- 		return
+	-- 	end
+	-- 	callback(choice)
+	-- end)
+end
+
 return {
 	pick_bookmark_list = pick_bookmark_list,
+	pick_bookmark = pick_bookmark,
 }

@@ -95,5 +95,5 @@ return {
 	new_bookmark = new_bookmark,
 	is_same_location = is_same_location,
 	toggle_bookmarks = toggle_bookmarks,
-  all_list_names = all_list_names,
+	all_list_names = all_list_names,
 }
