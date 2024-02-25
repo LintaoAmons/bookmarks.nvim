@@ -9,7 +9,7 @@ local fixture = {
 		is_active = true,
 		bookmarks = {
 			{
-				createdAt = 1707015831,
+				created_at = 1707015831,
 				name = "",
 				location = {
 					col = 21,
@@ -18,13 +18,13 @@ local fixture = {
 				},
 				githash = "e810b62",
 				content = "line content",
-				visitedAt = 1707015831,
+				visited_at = 1707015831,
 			},
 		},
 	},
 	---@type Bookmarks.Bookmark
 	bookmark = {
-		createdAt = 1707015831,
+		created_at = 1707015831,
 		name = "",
 		location = {
 			col = 21,
@@ -33,7 +33,7 @@ local fixture = {
 		},
 		githash = "e810b62",
 		content = "  print('DEBUGPRINT[5]: api.lua:33: new_bookmark_lists=' .. vim.inspect(new_bookmark_lists))",
-		visitedAt = 1707015831,
+		visited_at = 1707015831,
 	},
 }
 

@@ -1,4 +1,4 @@
-> v0.2.0 breaking change: add visitedAt to Bookmark structure
+> v0.2.0 breaking change: add visited_at to Bookmark structure
 
 # Bookmarks.nvim
 
@@ -116,6 +116,6 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
   - [ ] delete bookmark when browsing in telescope
   - [ ] rename bookmark in telescope
   - [ ] switch to another bookmark list in telescope or switch to display all bookmarks in telescope
-- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visitedAt 
+- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at 
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer

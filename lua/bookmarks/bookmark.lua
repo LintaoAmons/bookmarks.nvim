@@ -6,18 +6,18 @@ local utils = require("bookmarks.utils")
 ---@field col number
 
 ---@class Bookmarks.Bookmark
+---@field id number -- pk, unique
 ---@field name string
 ---@field location Bookmarks.Location
 ---@field content string
 ---@field githash string
----@field createdAt number -- timestamp os.time()
----@field visitedAt number -- timestamp os.time()
+---@field created_at number -- pk, timestamp os.time() 
+---@field visited_at number -- timestamp os.time()
 
 -- TODO: remove id in bookmark_list, name as identifier
 
 ---@class Bookmarks.BookmarkList
----@field id string
----@field name string
+---@field name string -- pk, unique
 ---@field is_active boolean
 ---@field bookmarks Bookmarks.Bookmark[]
 
@@ -69,14 +69,16 @@ end
 local function new_bookmark(name)
 	local cursor = vim.api.nvim_win_get_cursor(0)
 	local filename = vim.fn.expand("%:p")
+  local time = os.time()
 
 	return {
+    id = time,
 		name = name or "",
 		location = { path = filename, line = cursor[1], col = cursor[2] },
 		content = vim.api.nvim_get_current_line(),
 		githash = utils.get_current_version(),
-		createdAt = os.time(),
-		visitedAt = os.time(),
+		created_at = time,
+		visited_at = time,
 	}
 end
 

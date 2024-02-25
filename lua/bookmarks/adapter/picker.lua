@@ -38,7 +38,7 @@ local function pick_bookmark(callback, opts)
 
 	local bookmarks = bookmark_list.bookmarks
 	table.sort(bookmarks, function(a, b)
-		return a.visitedAt > b.visitedAt
+		return a.visited_at > b.visited_at
 	end)
 
 	pickers
@@ -68,7 +68,7 @@ local function pick_bookmark(callback, opts)
 		})
 		:find()
 
-  -- fallback to vim.ui picker
+	-- TODO: fallback to vim.ui picker
 	-- vim.ui.select(bookmarks, {
 	-- 	prompt = prompt,
 	-- 	format_item = function(item)

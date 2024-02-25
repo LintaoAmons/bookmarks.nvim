@@ -75,15 +75,17 @@ end
 local function goto_bookmark(bookmark)
 	vim.api.nvim_exec2("e" .. " " .. bookmark.location.path, {})
 	pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
+	bookmark.visited_at = os.time()
+	repo.save_bookmark(bookmark)
 end
 
 local function goto_last_visited_bookmark()
 	local bookmark_list = repo.find_or_set_active_bookmark_list()
 	table.sort(bookmark_list.bookmarks, function(a, b)
-		if a.visitedAt == nil or b.visitedAt == nil then
+		if a.visited_at == nil or b.visited_at == nil then
 			return false
 		end
-		return a.visitedAt > b.visitedAt
+		return a.visited_at > b.visited_at
 	end)
 
 	local last_bookmark = bookmark_list.bookmarks[1]
