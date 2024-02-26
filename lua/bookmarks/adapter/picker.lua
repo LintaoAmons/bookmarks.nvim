@@ -58,20 +58,23 @@ local function pick_bookmark_list(callback, opts)
 end
 
 ---@param callback fun(bookmark: Bookmarks.Bookmark): nil
----@param opts? {prompt?: string, bookmark_list?: Bookmarks.BookmarkList}
+---@param opts? {prompt?: string, bookmark_list?: Bookmarks.BookmarkList, all?: boolean}
 local function pick_bookmark(callback, opts)
 	opts = opts or {}
-	local bookmark_list = opts.bookmark_list or repo.find_or_set_active_bookmark_list()
-	local prompt = opts.prompt or ("Select bookmark from: " .. bookmark_list.name)
+	local bookmarks
+	if opts.all then
+		bookmarks = repo.find_all_bookmarks()
+	else
+		bookmarks = opts.bookmark_list.bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
+	end
 
-	local bookmarks = bookmark_list.bookmarks
 	table.sort(bookmarks, function(a, b)
 		return a.visited_at > b.visited_at
 	end)
 
 	pickers
 		.new(opts, {
-			prompt_title = prompt,
+			prompt_title = opts.prompt or "Select bookmark",
 			finder = finders.new_table({
 				results = bookmarks,
 				---@param bookmark Bookmarks.Bookmark

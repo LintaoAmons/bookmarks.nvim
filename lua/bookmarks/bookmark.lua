@@ -11,6 +11,7 @@ local utils = require("bookmarks.utils")
 ---@field location Bookmarks.Location
 ---@field content string
 ---@field githash string
+---@field listname? string
 ---@field created_at number -- pk, timestamp os.time() 
 ---@field visited_at number -- timestamp os.time()
 

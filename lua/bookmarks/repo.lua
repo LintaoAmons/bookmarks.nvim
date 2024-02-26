@@ -176,6 +176,19 @@ local function must_find_bookmark_by_id(id)
 	error("Can't find the bookmark with id: " .. id)
 end
 
+---@return Bookmarks.Bookmark[]
+local function find_all_bookmarks()
+	local bookmark_lists = get_domains()
+	local all = {}
+	for _, bookmark_list in pairs(bookmark_lists) do
+		for _, bookmark in ipairs(bookmark_list.bookmarks) do
+      bookmark.listname = bookmark_list.name
+			table.insert(all, bookmark)
+		end
+	end
+	return all
+end
+
 -- pcall read method and display hint about correputed json file
 return {
 	-- write
@@ -190,6 +203,7 @@ return {
 	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
 	get_recent_files_bookmark_list = get_recent_files_bookmark_list,
 	must_find_bookmark_by_id = must_find_bookmark_by_id,
+	find_all_bookmarks = find_all_bookmarks,
 
 	generate_datetime_id = generate_datetime_id,
 }
