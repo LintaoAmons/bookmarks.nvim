@@ -45,7 +45,7 @@ return { "LintaoAmons/bookmarks.nvim",
 
 </details>
 
-## Commands and Apis
+## Commands and Keybindings
 
 There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look into the code to find the structure of those two domain objects
 
@@ -55,10 +55,6 @@ There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look
 | `BookmarksGoto`                   | Go to bookmark at current active BookmarkList                                                               |
 | `BookmarksCommands`               | Find and trigger a bookmark command.                                                                        |
 | `BookmarksGotoRecent`             | Go to latest visited/created Bookmark                                                                       |
-
-APIs:
-
-https://github.com/LintaoAmons/bookmarks.nvim/blob/32053ab797cdfb2bc53388bc4b8a82f7aaf0a3b5/lua/bookmarks/api.lua#L97-L101
 
 This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
 
