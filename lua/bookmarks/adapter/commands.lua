@@ -17,7 +17,13 @@ local commands = {
 		name = "[List] new",
 		callback = function()
 			vim.ui.input({ prompt = "Enter the name of the new list: " }, function(input)
-				local newlist = api.add_list({ name = input or tostring(os.time()) })
+				local name
+				if input and vim.trim(input) ~= "" then
+					name = input
+				else
+					name = tostring(os.time())
+				end
+				local newlist = api.add_list({ name = name })
 				api.mark({ name = "", list_name = newlist.name })
 			end)
 		end,
