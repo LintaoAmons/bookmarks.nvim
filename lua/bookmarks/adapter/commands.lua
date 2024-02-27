@@ -2,6 +2,7 @@ local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local vimui = require("bookmarks.adapter.vim-ui")
 local picker = require("bookmarks.adapter.picker")
+local utils = require("bookmarks.utils")
 
 ---@class Bookmark.Command
 ---@field name string
@@ -15,16 +16,35 @@ local commands = {
 	{
 		name = "[List] new",
 		callback = function()
-			local newlist = api.add_list({ name = tostring(os.time()) })
-			-- TODO: ask user to input name
-			api.mark({ name = "", list_name = newlist.name })
+			vim.ui.input({ prompt = "Enter the name of the new list: " }, function(input)
+				local newlist = api.add_list({ name = input or tostring(os.time()) })
+				api.mark({ name = "", list_name = newlist.name })
+			end)
 		end,
 		description = "create a new BookmarkList and set it to active and mark current line into this BookmarkList",
 	},
 	{
+		name = "[List] rename",
+		callback = function()
+			picker.pick_bookmark_list(function(bookmark_list)
+				vim.ui.input({ prompt = "Enter new name: " }, function(input)
+					if not input then
+						return
+					end
+					api.rename_bookmark_list(input, bookmark_list.name)
+					utils.log(
+						"bookmark_list renamed from: " .. bookmark_list.name .. " to " .. input,
+						vim.log.levels.INFO
+					)
+				end)
+			end)
+		end,
+		description = "rename a BookmarkList",
+	},
+	{
 		name = "[List] delete",
 		callback = function()
-			local bookmark_lists = repo.get_domains()
+			local bookmark_lists = repo.bookmark_list.read.find_all()
 
 			vim.ui.select(bookmark_lists, {
 				prompt = "Select the bookmark list you want to delete",
@@ -41,7 +61,7 @@ local commands = {
 					{ prompt = "Are you sure you want to delete list" .. choice.name .. "? Y/N" },
 					function(input)
 						if input == "Y" then
-							repo.delete_bookmark_list(choice.name)
+							repo.list.write.delete_bookmark_list(choice.name)
 							vim.notify(choice.name .. " list deleted")
 						else
 							vim.notify("deletion abort")
@@ -60,6 +80,17 @@ local commands = {
 			vimui.set_active_list()
 		end,
 		description = "set a BookmarkList as active",
+	},
+	{
+		name = "[List] Browsing all lists",
+		callback = function()
+			picker.pick_bookmark_list(function(bookmark_list)
+				picker.pick_bookmark(function(bookmark)
+					api.goto_bookmark(bookmark, { open_method = "vsplit" })
+				end, { bookmark_list = bookmark_list })
+			end)
+		end,
+		description = "",
 	},
 	{
 		name = "[Mark] mark to list",
@@ -83,17 +114,6 @@ local commands = {
 			end)
 		end,
 		description = "rename selected bookmark",
-	},
-	{
-		name = "[List] Browsing all lists",
-		callback = function()
-			picker.pick_bookmark_list(function(bookmark_list)
-				picker.pick_bookmark(function(bookmark)
-					api.goto_bookmark(bookmark, { open_method = "vsplit" })
-				end, { bookmark_list = bookmark_list })
-			end)
-		end,
-		description = "",
 	},
 	{
 		name = "[Mark] Browsing all marks",

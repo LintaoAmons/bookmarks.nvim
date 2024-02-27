@@ -12,7 +12,7 @@ local action_state = require("telescope.actions.state")
 ---@param callback fun(bookmark_list: Bookmarks.BookmarkList): nil
 ---@param opts? {prompt?: string}
 local function pick_bookmark_list(callback, opts)
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 	opts = opts or {}
 	local prompt = opts.prompt or "Select bookmark list"
 
@@ -62,10 +62,14 @@ end
 local function pick_bookmark(callback, opts)
 	opts = opts or {}
 	local bookmarks
+	local bookmark_list_name
 	if opts.all then
-		bookmarks = repo.find_all_bookmarks()
+		bookmarks = repo.mark.read.find_all()
+		bookmark_list_name = "All"
 	else
-		bookmarks = opts.bookmark_list.bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
+		local bookmark_list = opts.bookmark_list or repo.bookmark_list.write.find_or_set_active()
+		bookmark_list_name = bookmark_list.name
+		bookmarks = bookmark_list.bookmarks
 	end
 
 	table.sort(bookmarks, function(a, b)
@@ -74,7 +78,7 @@ local function pick_bookmark(callback, opts)
 
 	pickers
 		.new(opts, {
-			prompt_title = opts.prompt or "Select bookmark",
+			prompt_title = opts.prompt or ("Select from list: " .. bookmark_list_name),
 			finder = finders.new_table({
 				results = bookmarks,
 				---@param bookmark Bookmarks.Bookmark

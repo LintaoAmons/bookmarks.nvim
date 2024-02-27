@@ -30,7 +30,7 @@ end
 local function _refresh_signs(bookmarks)
 	clean()
 
-	bookmarks = bookmarks or repo.find_or_set_active_bookmark_list().bookmarks
+	bookmarks = bookmarks or repo.bookmark_list.write.find_or_set_active().bookmarks
 	local buf_number = vim.api.nvim_get_current_buf()
 	for _, bookmark in ipairs(bookmarks) do
 		local filepath = vim.fn.expand("%:p")

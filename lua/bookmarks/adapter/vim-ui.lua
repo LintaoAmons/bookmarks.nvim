@@ -14,7 +14,7 @@ local function add_list()
 end
 
 local function mark_to_list()
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(name)
 		vim.ui.select(bookmark_lists, {
 			prompt = "select the bookmark list to put in",
@@ -39,7 +39,7 @@ local function mark_to_list()
 end
 
 local function goto_bookmark()
-	local bookmark_list = repo.find_or_set_active_bookmark_list()
+	local bookmark_list = repo.bookmark_list.write.find_or_set_active()
 
 	table.sort(bookmark_list.bookmarks, function(a, b)
 		return a.created_at > b.created_at
@@ -61,7 +61,7 @@ local function goto_bookmark()
 end
 
 local function set_active_list()
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 
 	vim.ui.select(bookmark_lists, {
 		prompt = "Set active list",
@@ -83,7 +83,7 @@ end
 
 -- TODO: Telescope version
 local function goto_bookmark_in_list()
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 	vim.ui.select(bookmark_lists, {
 		prompt = "select the bookmark list",
 		format_item = function(bookmark_list)

@@ -1,6 +1,7 @@
 local repo = require("bookmarks.repo")
 local sign = require("bookmarks.sign")
 local domain = require("bookmarks.bookmark")
+local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.MarkParam
 ---@field name string
@@ -9,18 +10,18 @@ local domain = require("bookmarks.bookmark")
 ---@param param Bookmarks.MarkParam
 local function mark(param)
 	local bookmark = domain.new_bookmark(param.name)
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 
 	local target_bookmark_list
 	if param.list_name then
-		target_bookmark_list = repo.must_find_bookmark_list_by_name(param.list_name)
+		target_bookmark_list = repo.bookmark_list.read.must_find_by_name(param.list_name)
 	else
-		target_bookmark_list = repo.find_or_set_active_bookmark_list(bookmark_lists)
+		target_bookmark_list = repo.bookmark_list.write.find_or_set_active(bookmark_lists)
 	end
 
 	local updated_bookmark_list = domain.toggle_bookmarks(target_bookmark_list, bookmark)
 
-	repo.save_bookmark_list(updated_bookmark_list, bookmark_lists)
+	repo.bookmark_list.write.save(updated_bookmark_list, bookmark_lists)
 
 	sign.refresh_signs()
 end
@@ -31,7 +32,7 @@ end
 ---@param param Bookmarks.NewListParam
 ---@return Bookmarks.BookmarkList
 local function add_list(param)
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 	local new_lists = vim.tbl_map(function(value)
 		---@cast value Bookmarks.BookmarkList
 		value.is_active = false
@@ -47,7 +48,7 @@ local function add_list(param)
 	}
 
 	table.insert(new_lists, new_list)
-	repo.write_domains(new_lists)
+	repo.bookmark_list.write.save_all(new_lists)
 
 	sign.refresh_signs()
 	return new_list
@@ -55,7 +56,7 @@ end
 
 ---@param name string
 local function set_active_list(name)
-	local bookmark_lists = repo.get_domains()
+	local bookmark_lists = repo.bookmark_list.read.find_all()
 
 	local updated = vim.tbl_map(function(value)
 		---@cast value Bookmarks.BookmarkList
@@ -66,7 +67,7 @@ local function set_active_list(name)
 		end
 		return value
 	end, bookmark_lists)
-	repo.write_domains(updated)
+	repo.bookmark_list.write.save_all(updated)
 
 	sign.refresh_signs()
 end
@@ -74,16 +75,16 @@ end
 ---@param bookmark Bookmarks.Bookmark
 ---@param opts? {open_method?: string}
 local function goto_bookmark(bookmark, opts)
-  opts = opts or {}
-  local open_method = opts.open_method or "e"
+	opts = opts or {}
+	local open_method = opts.open_method or "e"
 	vim.api.nvim_exec2(open_method .. " " .. bookmark.location.path, {})
 	pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
 	bookmark.visited_at = os.time()
-	repo.save_bookmark(bookmark)
+	repo.mark.write.save(bookmark)
 end
 
 local function goto_last_visited_bookmark()
-	local bookmark_list = repo.find_or_set_active_bookmark_list()
+	local bookmark_list = repo.bookmark_list.write.find_or_set_active()
 	table.sort(bookmark_list.bookmarks, function(a, b)
 		if a.visited_at == nil or b.visited_at == nil then
 			return false
@@ -102,7 +103,7 @@ local function add_recent()
 	local bookmark = domain.new_bookmark()
 	local recent_files_bookmark_list = repo.get_recent_files_bookmark_list()
 	table.insert(recent_files_bookmark_list.bookmarks, bookmark)
-	repo.save_bookmark_list(recent_files_bookmark_list)
+	repo.bookmark_list.write.save(recent_files_bookmark_list)
 end
 
 local function goto_next_in_current_buffer()
@@ -124,9 +125,25 @@ end
 ---@param id number
 ---@param new_name string
 local function rename_bookmark(id, new_name)
-	local bookmark = repo.must_find_bookmark_by_id(id)
+	local bookmark = repo.mark.read.must_find_by_id(id)
 	bookmark.name = new_name
-	repo.save_bookmark(bookmark)
+	repo.mark.write.save(bookmark)
+end
+
+---@param new_name string
+---@param bookmark_list_name string
+local function rename_bookmark_list(new_name, bookmark_list_name)
+	local bookmark_lists = repo.bookmark_list.read.find_all()
+	for _, list in ipairs(bookmark_lists) do
+		if list.name == new_name then
+			utils.log("Can't rename list to name " .. new_name .. " Since there's already a list have that name")
+		end
+	end
+	local bookmark_list = repo.bookmark_list.read.must_find_by_name(bookmark_list_name)
+	local old_name = bookmark_list.name
+	bookmark_list.name = new_name
+	repo.bookmark_list.write.save(bookmark_list)
+	repo.bookmark_list.write.delete(old_name)
 end
 
 return {
@@ -135,6 +152,7 @@ return {
 
 	add_list = add_list,
 	set_active_list = set_active_list,
+	rename_bookmark_list = rename_bookmark_list,
 	goto_bookmark = goto_bookmark,
 	goto_last_visited_bookmark = goto_last_visited_bookmark,
 	goto_next_in_current_buffer = goto_next_in_current_buffer,

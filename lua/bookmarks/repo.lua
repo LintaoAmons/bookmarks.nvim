@@ -1,7 +1,7 @@
 local json = require("bookmarks.json")
 
 ---@return Bookmarks.BookmarkList[]
-local get_domains = function()
+local find_all_bookmark_list = function()
 	-- TODO: add cache
 	if vim.g.bookmarks_cache then
 		return vim.g.bookmarks_cache
@@ -21,7 +21,7 @@ local get_domains = function()
 end
 
 ---@param domain Bookmarks.BookmarkList[]
-local write_domains = function(domain)
+local save_all_bookmark_list = function(domain)
 	vim.g.bookmarks_cache = domain
 	json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end
@@ -46,7 +46,7 @@ end
 ---@param bookmark_lists? Bookmarks.BookmarkList[]
 ---@return Bookmarks.BookmarkList
 local function find_or_set_active_bookmark_list(bookmark_lists)
-	bookmark_lists = bookmark_lists or get_domains()
+	bookmark_lists = bookmark_lists or find_all_bookmark_list()
 	local active_bookmark_list = nil
 
 	-- Check if there's an active BookmarkList
@@ -81,7 +81,7 @@ end
 ---@param bookmark_lists? Bookmarks.BookmarkList[]
 ---@return Bookmarks.BookmarkList
 local function must_find_bookmark_list_by_name(bookmark_list_name, bookmark_lists)
-	bookmark_lists = bookmark_lists or get_domains()
+	bookmark_lists = bookmark_lists or find_all_bookmark_list()
 
 	local found = vim.tbl_filter(function(bookmark_list)
 		---@cast bookmark_list Bookmarks.BookmarkList
@@ -105,7 +105,7 @@ end
 ---@return Bookmarks.BookmarkList
 local function get_recent_files_bookmark_list()
 	local name = "RecentFiles"
-	local bookmark_lists = get_domains()
+	local bookmark_lists = find_all_bookmark_list()
 	local found = vim.tbl_filter(function(bookmark_list)
 		---@cast bookmark_list Bookmarks.BookmarkList
 		return bookmark_list.name == name
@@ -133,13 +133,13 @@ end
 ---@param bookmark_list Bookmarks.BookmarkList
 ---@param bookmark_lists? Bookmarks.BookmarkList[]
 local function save_bookmark_list(bookmark_list, bookmark_lists)
-	bookmark_lists = bookmark_lists or get_domains()
+	bookmark_lists = bookmark_lists or find_all_bookmark_list()
 	local new_bookmark_lists = vim.tbl_filter(function(bl)
 		return bl.name ~= bookmark_list.name
 	end, bookmark_lists)
 	table.insert(new_bookmark_lists, bookmark_list)
 
-	write_domains(new_bookmark_lists)
+	save_all_bookmark_list(new_bookmark_lists)
 end
 
 ---@param bookmark Bookmarks.Bookmark
@@ -156,16 +156,16 @@ end
 
 ---@param name string
 local function delete_bookmark_list(name)
-	local bookmark_lists = get_domains()
+	local bookmark_lists = find_all_bookmark_list()
 	local new_bookmark_lists = vim.tbl_filter(function(bl)
 		return bl.name ~= name
 	end, bookmark_lists)
-	write_domains(new_bookmark_lists)
+	save_all_bookmark_list(new_bookmark_lists)
 end
 
 ---@param id number
 local function must_find_bookmark_by_id(id)
-	local bookmark_lists = get_domains()
+	local bookmark_lists = find_all_bookmark_list()
 	for _, list in ipairs(bookmark_lists) do
 		for _, bookmark in ipairs(list.bookmarks) do
 			if bookmark.id == id then
@@ -178,11 +178,11 @@ end
 
 ---@return Bookmarks.Bookmark[]
 local function find_all_bookmarks()
-	local bookmark_lists = get_domains()
+	local bookmark_lists = find_all_bookmark_list()
 	local all = {}
 	for _, bookmark_list in pairs(bookmark_lists) do
 		for _, bookmark in ipairs(bookmark_list.bookmarks) do
-      bookmark.listname = bookmark_list.name
+			bookmark.listname = bookmark_list.name
 			table.insert(all, bookmark)
 		end
 	end
@@ -191,19 +191,30 @@ end
 
 -- pcall read method and display hint about correputed json file
 return {
-	-- write
-	write_domains = write_domains,
-	save_bookmark_list = save_bookmark_list,
-	save_bookmark = save_bookmark,
-	delete_bookmark_list = delete_bookmark_list,
+	bookmark_list = {
+		read = {
+			find_all = find_all_bookmark_list,
+			must_find_by_name = must_find_bookmark_list_by_name,
+		},
+		write = {
+			save = save_bookmark_list,
+			save_all = save_all_bookmark_list,
+			find_or_set_active = find_or_set_active_bookmark_list,
+			delete = delete_bookmark_list,
+		},
+	},
+	mark = {
+		read = {
+			must_find_by_id = must_find_bookmark_by_id,
+			find_all = find_all_bookmarks,
+		},
+		write = {
+			save = save_bookmark,
+		},
+	},
 
 	-- read
-	get_domains = get_domains,
-	find_or_set_active_bookmark_list = find_or_set_active_bookmark_list,
-	must_find_bookmark_list_by_name = must_find_bookmark_list_by_name,
 	get_recent_files_bookmark_list = get_recent_files_bookmark_list,
-	must_find_bookmark_by_id = must_find_bookmark_by_id,
-	find_all_bookmarks = find_all_bookmarks,
 
 	generate_datetime_id = generate_datetime_id,
 }
