@@ -61,7 +61,7 @@ local commands = {
 					{ prompt = "Are you sure you want to delete list" .. choice.name .. "? Y/N" },
 					function(input)
 						if input == "Y" then
-							repo.list.write.delete_bookmark_list(choice.name)
+							repo.bookmark_list.write.delete(choice.name)
 							vim.notify(choice.name .. " list deleted")
 						else
 							vim.notify("deletion abort")
