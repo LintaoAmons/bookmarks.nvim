@@ -82,8 +82,12 @@ local commands = {
 	{
 		name = "[List] set active",
 		callback = function()
-			-- TODO: should I have this dependency in this module?
-			vimui.set_active_list()
+			picker.pick_bookmark_list(function(bookmark_list)
+				api.set_active_list(bookmark_list.name)
+				picker.pick_bookmark(function(bookmark)
+					api.goto_bookmark(bookmark)
+				end)
+			end)
 		end,
 		description = "set a BookmarkList as active",
 	},
