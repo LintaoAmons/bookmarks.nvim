@@ -78,7 +78,7 @@ local function pick_bookmark(callback, opts)
 
 	pickers
 		.new(opts, {
-			prompt_title = opts.prompt or ("Select from list: " .. bookmark_list_name),
+			prompt_title = opts.prompt or ("Bookmarks: [" .. bookmark_list_name .. "]"),
 			finder = finders.new_table({
 				results = bookmarks,
 				---@param bookmark Bookmarks.Bookmark
