@@ -134,6 +134,15 @@ local commands = {
 		end,
 		description = "",
 	},
+	{
+		name = "[Mark] delete bookmark",
+		callback = function()
+			picker.pick_bookmark(function(bookmark)
+				repo.mark.write.delete(bookmark)
+			end)
+		end,
+		description = "delete selected bookmarks",
+	},
 }
 
 return {

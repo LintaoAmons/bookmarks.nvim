@@ -154,6 +154,17 @@ local function save_bookmark(bookmark, bookmark_list)
 	save_bookmark_list(bookmark_list)
 end
 
+---@param bookmark Bookmarks.Bookmark
+---@param bookmark_list? Bookmarks.BookmarkList
+local function delete_bookmark(bookmark, bookmark_list)
+	bookmark_list = bookmark_list or find_or_set_active_bookmark_list()
+	local new_bookmarks = vim.tbl_filter(function(b)
+		return b.created_at ~= bookmark.created_at
+	end, bookmark_list.bookmarks)
+	bookmark_list.bookmarks = new_bookmarks
+	save_bookmark_list(bookmark_list)
+end
+
 ---@param name string
 local function delete_bookmark_list(name)
 	local bookmark_lists = find_all_bookmark_list()
@@ -210,6 +221,7 @@ return {
 		},
 		write = {
 			save = save_bookmark,
+			delete = delete_bookmark,
 		},
 	},
 
