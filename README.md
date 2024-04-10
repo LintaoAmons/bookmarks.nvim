@@ -21,7 +21,7 @@ You only need one shortcut to add bookmarks.
 ```lua
 -- with lazy.nvim
 return {
-  "LintaoAmons/bookmarks.nvim"
+  "LintaoAmons/bookmarks.nvim",
   dependencies = {
     {"stevearc/dressing.nvim"} -- optional: to have the same UI shown in the GIF
   }
