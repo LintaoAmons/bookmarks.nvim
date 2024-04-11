@@ -56,6 +56,23 @@ There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look
 | `BookmarksCommands`               | Find and trigger a bookmark command.                                                                        |
 | `BookmarksGotoRecent`             | Go to latest visited/created Bookmark                                                                       |
 
+<details>
+<summary>Commands we have right now</summary>
+
+| Command                   | Description                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| [List] new                | create a new BookmarkList and set it to active and mark current line into this BookmarkList |
+| [List] rename             | rename a BookmarkList                                                                       |
+| [List] delete             | delete a bookmark list                                                                      |
+| [List] set active         | set a BookmarkList as active                                                                |
+| [List] Browsing all lists |                                                                                             |
+| [Mark] mark to list       | bookmark current line and add it to specific bookmark list                                  |
+| [Mark] rename bookmark    | rename selected bookmark                                                                    |
+| [Mark] Browsing all marks |                                                                                             |
+| [Mark] delete bookmark    | delete selected bookmarks                                                                   |
+
+</details>
+
 This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
 
 ```lua
@@ -103,3 +120,4 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 ### V2
 
 - [ ] filetree-like BookmarkList and Bookmark browsing.
+- [ ] smart location calibration according to bookmark content

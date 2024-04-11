@@ -1,6 +1,5 @@
 local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
-local vimui = require("bookmarks.adapter.vim-ui")
 local picker = require("bookmarks.adapter.picker")
 local utils = require("bookmarks.utils")
 
@@ -144,6 +143,7 @@ local commands = {
 		description = "delete selected bookmarks",
 	},
 }
+
 
 return {
 	commands = commands,

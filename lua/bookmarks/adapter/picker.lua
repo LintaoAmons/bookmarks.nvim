@@ -1,6 +1,5 @@
 local repo = require("bookmarks.repo")
 local common = require("bookmarks.adapter.common")
-local util = require("bookmarks.utils")
 
 -- TODO: check dependencies firstly
 local pickers = require("telescope.pickers")
