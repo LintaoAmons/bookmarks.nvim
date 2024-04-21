@@ -87,10 +87,14 @@ local function pick_bookmark(callback, opts)
 						value = bookmark,
 						display = display,
 						ordinal = display,
+                        filename = bookmark.location.path,
+                        col = bookmark.location.col,
+                        lnum = bookmark.location.line
 					}
 				end,
 			}),
 			sorter = conf.generic_sorter(opts),
+            previewer = conf.grep_previewer(opts),
 			attach_mappings = function(prompt_bufnr, map)
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
