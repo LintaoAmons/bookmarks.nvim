@@ -6,24 +6,27 @@ end
 local function trim(str)
 	return str:gsub("^%s+", ""):gsub("%s+$", "")
 end
--- Function to shorten a file path
+
+---@param file_path string
+---@return string
 local function shorten_file_path(file_path)
 	local parts = {}
 
+	file_path = file_path:gsub(vim.fn.expand("$HOME"), "~")
 	for part in string.gmatch(file_path, "[^/]+") do
 		table.insert(parts, part)
 	end
 
-	if #parts > 1 then
-		local filename = table.remove(parts) -- Remove and get the last part (filename)
-		local shorten = vim.tbl_map(function(part)
-			return string.sub(part, 1, 1)
-		end, parts)
-
-		return table.concat(shorten, "/") .. "/" .. filename
-	else
+	if #parts <= 1 then
 		return file_path -- If there's only one part, return the original path
 	end
+
+	local filename = table.remove(parts) -- Remove and get the last part (filename)
+	local shorten = vim.tbl_map(function(part)
+		return string.sub(part, 1, 1)
+	end, parts)
+
+	return table.concat(shorten, "/") .. "/" .. filename
 end
 
 ---@param original any
