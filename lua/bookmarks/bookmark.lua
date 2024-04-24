@@ -12,7 +12,7 @@ local utils = require("bookmarks.utils")
 ---@field content string
 ---@field githash string
 ---@field listname? string
----@field created_at number -- pk, timestamp os.time() 
+---@field created_at number -- pk, timestamp os.time()
 ---@field visited_at number -- timestamp os.time()
 
 -- TODO: remove id in bookmark_list, name as identifier
@@ -70,10 +70,10 @@ end
 local function new_bookmark(name)
 	local cursor = vim.api.nvim_win_get_cursor(0)
 	local filename = vim.fn.expand("%:p")
-  local time = os.time()
+	local time = os.time()
 
 	return {
-    id = time,
+		id = time,
 		name = name or "",
 		location = { path = filename, line = cursor[1], col = cursor[2] },
 		content = vim.api.nvim_get_current_line(),
