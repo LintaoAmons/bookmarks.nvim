@@ -1,18 +1,13 @@
 local repo = require("bookmarks.repo")
 local ns_name = "BookmarksNvim"
-local sign_name = "BookmarksNvimSign"
-local sign_icon = "󰃁"
 local ns = vim.api.nvim_create_namespace(ns_name)
-
-vim.fn.sign_define(sign_name, { text = sign_icon, texthl = sign_name })
-vim.api.nvim_set_hl(0, sign_name, { foreground = "grey" }) -- control the color of the sign
 
 ---@param line number
 local function place_sign(line, buf_number, desc)
-	vim.fn.sign_place(line, ns_name, sign_name, buf_number, { lnum = line })
+	vim.fn.sign_place(line, ns_name, vim.g.bookmarks_config.sign.highlight, buf_number, { lnum = line })
 	local at_end = -1
 	vim.api.nvim_buf_set_extmark(buf_number, ns, line - 1, at_end, {
-		virt_text = { { "  " .. desc, sign_name } },
+		virt_text = { { "  " .. desc, vim.g.bookmarks_config.sign.highlight } },
 		virt_text_pos = "overlay",
 		hl_mode = "combine",
 	})
