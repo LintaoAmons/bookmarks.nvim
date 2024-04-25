@@ -32,7 +32,6 @@ function generate_markdown_table(commands)
 	return markdown_content
 end
 
-
 return {
 	generate_markdown_table = function()
 		vim.print(generate_markdown_table(require("bookmarks.adapter.commands").commands))
