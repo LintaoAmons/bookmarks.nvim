@@ -1,13 +1,30 @@
 local repo = require("bookmarks.repo")
 local ns_name = "BookmarksNvim"
+local hl_name = "BookmarksNvimSign"
 local ns = vim.api.nvim_create_namespace(ns_name)
+
+---@class Signs
+---@field mark Sign
+-- ---@field annotation Sign -- TODO:
+
+---@class Sign
+---@field icon string
+---@field color ?string
+
+---@param signs Signs
+local function setup(signs)
+	for k, _ in pairs(signs) do
+		vim.fn.sign_define(hl_name, { text = signs[k].icon, texthl = hl_name })
+		vim.api.nvim_set_hl(0, hl_name, { foreground = signs[k].color })
+	end
+end
 
 ---@param line number
 local function place_sign(line, buf_number, desc)
-	vim.fn.sign_place(line, ns_name, vim.g.bookmarks_config.sign.highlight, buf_number, { lnum = line })
+	vim.fn.sign_place(line, ns_name, hl_name, buf_number, { lnum = line })
 	local at_end = -1
 	vim.api.nvim_buf_set_extmark(buf_number, ns, line - 1, at_end, {
-		virt_text = { { "  " .. desc, vim.g.bookmarks_config.sign.highlight } },
+		virt_text = { { "  " .. desc, hl_name } },
 		virt_text_pos = "overlay",
 		hl_mode = "combine",
 	})
@@ -52,6 +69,7 @@ local function bookmark_sign_autocmd()
 end
 
 return {
+	setup = setup,
 	bookmark_sign_autocmd = bookmark_sign_autocmd,
 	refresh_signs = safe_refresh_signs,
 }
