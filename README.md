@@ -38,6 +38,9 @@ return { "LintaoAmons/bookmarks.nvim",
   config = function ()
     require("bookmarks").setup( {
       json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
+      signs = {
+        mark = { icon = "", color = "grey" },
+      },
     })
   end
 }
@@ -49,12 +52,12 @@ return { "LintaoAmons/bookmarks.nvim",
 
 There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look into the code to find the structure of those two domain objects
 
-| Command                           | Description                                                                                                 |
-|-----------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `BookmarksMark`                   | Mark current line into active BookmarkList.                                                                 |
-| `BookmarksGoto`                   | Go to bookmark at current active BookmarkList                                                               |
-| `BookmarksCommands`               | Find and trigger a bookmark command.                                                                        |
-| `BookmarksGotoRecent`             | Go to latest visited/created Bookmark                                                                       |
+| Command               | Description                                   |
+| --------------------- | --------------------------------------------- |
+| `BookmarksMark`       | Mark current line into active BookmarkList.   |
+| `BookmarksGoto`       | Go to bookmark at current active BookmarkList |
+| `BookmarksCommands`   | Find and trigger a bookmark command.          |
+| `BookmarksGotoRecent` | Go to latest visited/created Bookmark         |
 
 <details>
 <summary>Commands we have right now</summary>
@@ -113,7 +116,7 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 - [ ] refactor: extract picker module
 - [ ] Telescope as default picker and will fallback to vim.ui if don't have telescope dependencies
 - [x] telescope enhancement (use specific command instead)
-- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at 
+- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [ ] goto next/prev bookmark in the current buffer
 
