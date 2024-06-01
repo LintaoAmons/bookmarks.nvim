@@ -7,7 +7,7 @@ You only need one shortcut to add bookmarks.
 - Toggle mark: Add and Remove mark with one shortcut
 - Mark with name: so you can record more information
 - Icon and virtual text: display icon and name at the marked lines
-- Group your bookmarks: so keep your away from the noises
+- Group your bookmarks: so keep you away from the noises
 - Persistent your bookmarks into a human reable json file, which you can manipulate munally
 - [More usecases](./usecases.md)
 - [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
