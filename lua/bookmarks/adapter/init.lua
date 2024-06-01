@@ -7,7 +7,9 @@ end
 
 local function mark()
 	vim.ui.input({ prompt = "Enter Bookmark name" }, function(input)
-		require("bookmarks.api").mark({ name = input or "" })
+		if input then
+			require("bookmarks.api").mark({ name = vim.trim(input) })
+		end
 	end)
 end
 

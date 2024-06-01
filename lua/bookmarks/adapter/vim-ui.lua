@@ -5,8 +5,10 @@ local api = require("bookmarks.api")
 
 local function add_list()
 	vim.ui.input({ prompt = "Enter BookmarkList name" }, function(input)
-		input = input or utils.trim(input)
-		if not input or input == "" then
+		if not input then
+			return
+		end
+		if utils.trim(input) == "" then
 			return vim.notify("Require a valid name")
 		end
 		require("bookmarks.api").add_list({ name = input })

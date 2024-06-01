@@ -16,12 +16,10 @@ local commands = {
 		name = "[List] new",
 		callback = function()
 			vim.ui.input({ prompt = "Enter the name of the new list: " }, function(input)
-				local name
-				if input and vim.trim(input) ~= "" then
-					name = input
-				else
-					name = tostring(os.time())
+				if not input then
+					return
 				end
+				local name = vim.trim(input) ~= "" and input or tostring(os.time())
 				local newlist = api.add_list({ name = name })
 				api.mark({ name = "", list_name = newlist.name })
 			end)
@@ -118,7 +116,9 @@ local commands = {
 		callback = function()
 			picker.pick_bookmark(function(bookmark)
 				vim.ui.input({ prompt = "New name of the bookmark" }, function(input)
-					api.rename_bookmark(bookmark.id, input or "")
+					if input then
+						api.rename_bookmark(bookmark.id, input or "")
+					end
 				end)
 			end)
 		end,
