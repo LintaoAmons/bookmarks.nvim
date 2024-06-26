@@ -3,6 +3,17 @@
 local write_json_file = function(tbl, path)
 	local content = vim.fn.json_encode(tbl) -- Encoding table to JSON string
 
+  local formatter = "jq"
+  if not (0 == vim.fn.executable(formatter)) then
+    local fmt_cmd = { formatter, "--sort-keys", "--monochrome-output" }
+    local result = vim.system(fmt_cmd, { stdin = content }):wait()
+    if result.code ~= 0 then
+      error("Failed to format JSON with " .. formatter .. ": " .. result.stderr)
+      return nil
+    end
+    content = result.stdout
+  end
+
 	local file, err = io.open(path, "w")
 	if not file then
 		error("Could not open file: " .. err)
