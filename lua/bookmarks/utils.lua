@@ -50,10 +50,62 @@ local function log(msg, level)
   vim.notify(msg, level or vim.log.levels.ERROR)
 end
 
+---@param path string
+---@return boolean
+local function contains_marker_file(path)
+  local marker_files = { ".git", ".gitignore" } -- list of marker files
+  for _, file in ipairs(marker_files) do
+    local full_path = path .. "/" .. file
+    if vim.fn.filereadable(full_path) == 1 or vim.fn.isdirectory(full_path) == 1 then
+      return true
+    end
+  end
+  return false
+end
+
+---@param path string
+---@return boolean
+local function is_homedir(path)
+  local home_dir = vim.loop.os_homedir()
+  return path == home_dir
+end
+
+---@return string|nil
+local function find_project_path()
+  for i = 1, 30, 1 do
+    local dir = vim.fn.expand("%:p" .. string.rep(":h", i))
+    if contains_marker_file(dir) then
+      return dir
+    end
+    if is_homedir(dir) then
+      return nil
+    end
+  end
+  return nil
+end
+
+---@return string
+local function find_project_name()
+  local project_path = find_project_path()
+  if project_path then
+    return vim.fn.fnamemodify(project_path, ":t")
+  end
+  return ""
+end
+
+local function get_buf_relative_path()
+  local buf_path = vim.fn.expand("%:p")
+  local project_path = find_project_path() or ""
+  return string.sub(buf_path, string.len(project_path) + 2, string.len(buf_path))
+end
+
 return {
   trim = trim,
   shorten_file_path = shorten_file_path,
   get_current_version = get_current_version,
   deep_copy = deep_copy,
+  find_project_path = find_project_path,
+  find_project_name = find_project_name,
+  get_buf_relative_path = get_buf_relative_path,
   log = log,
 }

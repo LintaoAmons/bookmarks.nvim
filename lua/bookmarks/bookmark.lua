@@ -1,7 +1,9 @@
 local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.Location
----@field path string
+---@field path string -- as fallback if project_name can't find it's related project_path in bookmark_list
+---@field project_name string? -- try to make it portable
+---@field relative_path string? -- relative_path to the project
 ---@field line number
 ---@field col number
 
@@ -20,6 +22,7 @@ local utils = require("bookmarks.utils")
 ---@class Bookmarks.BookmarkList
 ---@field name string -- pk, unique
 ---@field is_active boolean
+---@field project_path_name_map {string: string}
 ---@field bookmarks Bookmarks.Bookmark[]
 
 ---@param b1 Bookmarks.Bookmark
@@ -67,6 +70,7 @@ end
 ---@param location Bookmarks.Location
 ---@return Bookmarks.Bookmark?
 local function find_bookmark_by_location(self, location)
+  -- TODO: self location path
   for _, b in ipairs(self.bookmarks) do
     if b.location.path == location.path and b.location.line == location.line then
       return b
@@ -96,23 +100,6 @@ local function toggle_bookmarks(self, bookmark)
   return updated_bookmark_list
 end
 
----@param name? string
----@return Bookmarks.Bookmark
-local function new_bookmark(name)
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local filename = vim.fn.expand("%:p")
-  local time = os.time()
-
-  return {
-    id = time,
-    name = name or "",
-    location = { path = filename, line = cursor[1], col = cursor[2] },
-    content = vim.api.nvim_get_current_line(),
-    githash = utils.get_current_version(),
-    created_at = time,
-    visited_at = time,
-  }
-end
 
 ---@param bookmark_lists Bookmarks.BookmarkList[]
 ---@return string[]
@@ -124,13 +111,32 @@ local function all_list_names(bookmark_lists)
   return result
 end
 
+---@return Bookmarks.Location
 local function get_current_location()
-  local location = {}
   local cursor = vim.api.nvim_win_get_cursor(0)
-  location.path = vim.fn.expand("%:p")
-  location.line = cursor[1]
-  location.col = cursor[2]
-  return location
+  return {
+    path = vim.fn.expand("%:p"),
+    project_name = utils.find_project_name(),
+    relative_path = utils.get_buf_relative_path(),
+    line = cursor[1],
+    col = cursor[2],
+  }
+end
+
+---@param name? string
+---@return Bookmarks.Bookmark
+local function new_bookmark(name)
+  local time = os.time()
+
+  return {
+    id = time,
+    name = name or "",
+    location = get_current_location(),
+    content = vim.api.nvim_get_current_line(),
+    githash = utils.get_current_version(),
+    created_at = time,
+    visited_at = time,
+  }
 end
 
 -- TODO: turn those functions into instance methods
