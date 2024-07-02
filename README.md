@@ -1,10 +1,8 @@
-> v0.2.0 breaking change: add visited_at to Bookmark structure
-
 # Bookmarks.nvim
 
 You only need one shortcut to add bookmarks.
 
-- Toggle mark: Add and Remove mark with one shortcut
+- Toggle mark: Add, Rename and Remove mark with only one shortcut
 - Mark with name: so you can record more information
 - Icon and virtual text: display icon and name at the marked lines
 - Group your bookmarks: so keep you away from the noises
@@ -52,17 +50,23 @@ return { "LintaoAmons/bookmarks.nvim",
 
 ## Commands and Keybindings
 
-There's two concepts in this plugin: `BookmarkList` and `Bookmark`. You can look into the code to find the structure of those two domain objects
+There's two concepts in this plugin: `BookmarkList` and `Bookmark`.
 
-| Command               | Description                                   |
-| --------------------- | --------------------------------------------- |
-| `BookmarksMark`       | Mark current line into active BookmarkList.   |
-| `BookmarksGoto`       | Go to bookmark at current active BookmarkList |
-| `BookmarksCommands`   | Find and trigger a bookmark command.          |
-| `BookmarksGotoRecent` | Go to latest visited/created Bookmark         |
+You can look into the code to find the structure of those two domain objects
+
+| Command                 | Description                                                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `BookmarksMark`         | Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string |
+| `BookmarksGoto`         | Go to bookmark at current active BookmarkList                                                                                       |
+| `BookmarksCommands`     | Find and trigger a bookmark command.                                                                                                |
+| `BookmarksGotoRecent`   | Go to latest visited/created Bookmark                                                                                               |
+| `BookmarksReload`       | Clean the cache and resync the bookmarks jsonfile                                                                                   |
+| `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing                         |
 
 <details>
-<summary>Commands we have right now</summary>
+<summary>BookmarksCommands(subcommands) we have right now</summary>
+
+> just because I don't know how to write Telescope extension, so I somehow do it this way.
 
 | Command                   | Description                                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------------------- |
@@ -113,16 +117,26 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
 - [x] remove parse commands, prefer BookmarkCommands instead
 - [x] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
-- [ ] user defined commands
 - [x] more useful information when deal with corrupted json db (no issues report yet)
 - [ ] refactor: extract picker module
-- [ ] Telescope as default picker and will fallback to vim.ui if don't have telescope dependencies
 - [x] telescope enhancement (use specific command instead)
-- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
-- [ ] goto next/prev bookmark in the current buffer
+- [ ] Project
+    - [ ] Add a project field
+    - [ ] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
+    - [ ] bookmarks of current project
+    - [ ] Hooks: Gotobookmark can trigger function like switch project automatically
+- [ ] Grep content in bookmarks' files
 
 ### V2
 
+- [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
 - [ ] filetree-like BookmarkList and Bookmark browsing.
+    - use `nui` or a `custom buffer`
+    - custom buffer (can render more things, and can nav/copy/paste with ease)
+        - local Keybindings
+        - popup window
+        - readonly and read current line to trigger action
+- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at
+- [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
