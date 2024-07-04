@@ -1,4 +1,6 @@
-> v0.2.0 breaking change: add visited_at to Bookmark structure
+> WIP: dev branch has most up-to-date features but not very stable
+> - bookmark relative path to the project
+> - auto detect bookmark's project and project name
 
 # Bookmarks.nvim
 
