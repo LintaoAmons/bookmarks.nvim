@@ -9,8 +9,15 @@ local utils = require("bookmarks.utils")
 
 ---@param param Bookmarks.MarkParam
 local function mark(param)
-  local bookmark = domain.new_bookmark(param.name)
+  local bookmark = domain.bookmark.new_bookmark(param.name)
   local bookmark_lists = repo.bookmark_list.read.find_all()
+
+  local projects = repo.project.findall()
+  local new_project = domain.project.register_new(projects, bookmark.location.project_name)
+  if new_project then
+    repo.project.save(new_project)
+    projects = repo.project.findall()
+  end
 
   local target_bookmark_list
   if param.list_name then
@@ -19,7 +26,7 @@ local function mark(param)
     target_bookmark_list = repo.bookmark_list.write.find_or_set_active(bookmark_lists)
   end
 
-  local updated_bookmark_list = domain.toggle_bookmarks(target_bookmark_list, bookmark)
+  local updated_bookmark_list = domain.bookmark_list.toggle_bookmarks(target_bookmark_list, bookmark, projects)
 
   repo.bookmark_list.write.save(updated_bookmark_list, bookmark_lists)
 
@@ -40,12 +47,7 @@ local function add_list(param)
   end, bookmark_lists)
 
   ---@type Bookmarks.BookmarkList
-  local new_list = {
-    name = param.name,
-    id = repo.generate_datetime_id(),
-    bookmarks = {},
-    is_active = true,
-  }
+  local new_list = domain.bookmark_list.new(param.name, repo.generate_datetime_id())
 
   table.insert(new_lists, new_list)
   repo.bookmark_list.write.save_all(new_lists)
@@ -77,7 +79,8 @@ end
 local function goto_bookmark(bookmark, opts)
   opts = opts or {}
   local open_method = opts.open_method or "e"
-  vim.api.nvim_exec2(open_method .. " " .. bookmark.location.path, {})
+  local projects = repo.project.findall()
+  vim.api.nvim_exec2(open_method .. " " .. domain.bookmark.fullpath(bookmark, projects), {})
   pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
   bookmark.visited_at = os.time()
   repo.mark.write.save(bookmark)
@@ -100,7 +103,7 @@ end
 
 -- TODO: trigger by `BufferEnter` Event
 local function add_recent()
-  local bookmark = domain.new_bookmark()
+  local bookmark = domain.bookmark.new_bookmark()
   local recent_files_bookmark_list = repo.get_recent_files_bookmark_list()
   table.insert(recent_files_bookmark_list.bookmarks, bookmark)
   repo.bookmark_list.write.save(recent_files_bookmark_list)

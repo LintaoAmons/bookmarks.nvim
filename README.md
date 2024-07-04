@@ -121,9 +121,9 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 - [ ] refactor: extract picker module
 - [x] telescope enhancement (use specific command instead)
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
-- [ ] Project
-    - [ ] Add a project field
-    - [ ] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
+- [x] Project
+    - [x] Add a project field
+    - [x] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
     - [ ] bookmarks of current project
     - [ ] Hooks: Gotobookmark can trigger function like switch project automatically
 - [ ] Grep content in bookmarks' files

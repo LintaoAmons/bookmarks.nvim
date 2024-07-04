@@ -1,4 +1,5 @@
 ---@class Bookmarks.Config
+---@field json_db_path string
 ---@field signs Signs
 local default_config = {
   json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
@@ -14,8 +15,10 @@ vim.g.bookmarks_config = default_config
 local setup = function(user_config)
   local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config or default_config, user_config or {})
     or default_config
-  require("bookmarks.sign").setup(cfg.signs)
   vim.g.bookmarks_config = cfg
+
+  require("bookmarks.sign").setup(cfg.signs)
+  require("bookmarks.repo").db.get()
 end
 
 return {

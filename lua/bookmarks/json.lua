@@ -25,12 +25,13 @@ local write_json_file = function(tbl, path)
 end
 
 ---@param path string
+---@param init_content table
 ---@return table
-local read_or_init_json_file = function(path)
+local read_or_init_json_file = function(path, init_content)
   local file, _ = io.open(path, "r")
   if not file then
-    write_json_file({}, path)
-    return {}
+    write_json_file(init_content, path)
+    return init_content
   end
 
   local content = file:read("*a") -- Read the entire content

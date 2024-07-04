@@ -44,9 +44,3 @@ vim.api.nvim_create_user_command(
     desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
   }
 )
-
--- TODO: deprecated, remove those predefined commands, add readme to help user define their own commands if needed.
-vim.api.nvim_create_user_command("BookmarksAddList", adapter.add_list, {})
-vim.api.nvim_create_user_command("BookmarksMarkToList", adapter.mark_to_list, {})
-vim.api.nvim_create_user_command("BookmarksMarkGotoBookmarkInList", adapter.goto_bookmark_in_list, {})
-vim.api.nvim_create_user_command("BookmarksSetActiveList", adapter.set_active_list, {})
