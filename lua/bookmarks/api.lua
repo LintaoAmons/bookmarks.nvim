@@ -2,6 +2,8 @@ local repo = require("bookmarks.repo")
 local sign = require("bookmarks.sign")
 local domain = require("bookmarks.bookmark")
 local utils = require("bookmarks.utils")
+local get_hooks = require("bookmarks.hook").get_hooks
+local TRIGGER_POINT = require("bookmarks.hook").TRIGGER_POINT
 
 ---@class Bookmarks.MarkParam
 ---@field name string
@@ -84,6 +86,11 @@ local function goto_bookmark(bookmark, opts)
   pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
   bookmark.visited_at = os.time()
   repo.mark.write.save(bookmark)
+
+  local hooks = get_hooks(vim.g.bookmarks_config.hooks, TRIGGER_POINT.AFTER_GOTO_BOOKMARK)
+  for _, hook in ipairs(hooks) do
+    hook(bookmark, projects)
+  end
 end
 
 local function goto_last_visited_bookmark()
