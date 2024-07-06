@@ -41,6 +41,24 @@ return { "LintaoAmons/bookmarks.nvim",
       signs = {
         mark = { icon = "", color = "grey" },
       },
+      hooks = {
+        {
+          ---a sample hook that change the working directory when goto bookmark
+          ---@param bookmark Bookmarks.Bookmark
+          ---@param projects Bookmarks.Project[]
+          callback = function(bookmark, projects)
+            local project_path
+            for _, p in ipairs(projects) do
+              if p.name == bookmark.location.project_name then
+                project_path = p.path
+              end
+            end
+            if project_path then
+              vim.cmd("cd " .. project_path)
+            end
+          end,
+        },
+      },
     })
   end
 }

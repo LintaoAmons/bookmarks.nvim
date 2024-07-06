@@ -9,25 +9,7 @@ local default_config = {
     -- annotation = { icon = "󰆉", color = "grey" }, -- TODO:
   },
   -- do whatever you like by hooks
-  hooks = {
-    {
-      callback = function(bookmark, projects)
-        vim.print(bookmark)
-        vim.print(projects)
-        local project_path
-
-        for _, p in ipairs(projects) do
-          if p.name == bookmark.location.project_name then
-            project_path = p.path
-          end
-        end
-        vim.print(project_path)
-        if project_path then
-          vim.cmd("cd " .. project_path)
-        end
-      end,
-    },
-  },
+  hooks = {},
 }
 
 vim.g.bookmarks_config = default_config
