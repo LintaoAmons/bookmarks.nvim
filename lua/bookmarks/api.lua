@@ -169,6 +169,11 @@ local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)
 end
 
+local function buffer_display()
+  local lists = repo.bookmark_list.read.find_all()
+  require("bookmarks.render.main").render(lists)
+end
+
 return {
   mark = mark,
   rename_bookmark = rename_bookmark,
@@ -186,4 +191,6 @@ return {
     reload_bookmarks = reload_bookmarks,
     open_bookmarks_jsonfile = open_bookmarks_jsonfile,
   },
+
+  buffer_display = buffer_display,
 }

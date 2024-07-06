@@ -38,6 +38,9 @@ end)()
 local bookmark_scope = (function()
   local BOOKMARK_SCOPE = {}
 
+  ---@param bookmarks Bookmarks.Bookmark[]
+  function BOOKMARK_SCOPE.render_bookmarks(bookmarks) end
+
   ---@param name? string
   ---@return Bookmarks.Bookmark
   function BOOKMARK_SCOPE.new_bookmark(name)

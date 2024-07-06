@@ -149,6 +149,7 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 ### V2
 
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
+- [ ] buffer renderer
 - [ ] filetree-like BookmarkList and Bookmark browsing.
     - use `nui` or a `custom buffer`
     - custom buffer (can render more things, and can nav/copy/paste with ease)
