@@ -84,6 +84,7 @@ local function goto_bookmark(bookmark, opts)
   local projects = repo.project.findall()
   vim.api.nvim_exec2(open_method .. " " .. domain.bookmark.fullpath(bookmark, projects), {})
   pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
+  vim.cmd("norm! zz")
   bookmark.visited_at = os.time()
   repo.mark.write.save(bookmark)
 
