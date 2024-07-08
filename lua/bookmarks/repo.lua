@@ -1,4 +1,5 @@
 local json = require("bookmarks.json")
+local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.DB
 ---@field bookmark_lists Bookmarks.BookmarkList[]
@@ -13,15 +14,14 @@ local get_db = function()
   local ok, result =
     pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path, { projects = {}, bookmark_lists = {} })
   if not ok or not result.projects or not result.bookmark_lists then
-    vim.notify(
+    utils.log(
       "Incorrect config, please check your config file at: "
         .. vim.g.bookmarks_config.json_db_path
-        .. "\nor just remove it (all your bookmarks will disappear)",
-      vim.log.levels.ERROR
+        .. "\nor just remove it (all your bookmarks will disappear)"
     )
+    vim.g.bookmarks_cache = result
+    return result
   end
-  vim.g.bookmarks_cache = result
-  return result
 end
 
 ---@param domain Bookmarks.DB

@@ -1,3 +1,5 @@
+local utils = require("bookmarks.utils")
+
 ---@param tbl table
 ---@param path string
 local write_json_file = function(tbl, path)
@@ -8,7 +10,7 @@ local write_json_file = function(tbl, path)
     local fmt_cmd = { formatter, "--sort-keys", "--monochrome-output" }
     local result = vim.system(fmt_cmd, { stdin = content }):wait()
     if result.code ~= 0 then
-      error("Failed to format JSON with " .. formatter .. ": " .. result.stderr)
+      utils.log("Failed to format JSON with " .. formatter .. ": " .. result.stderr)
       return nil
     end
     content = result.stdout
@@ -16,7 +18,7 @@ local write_json_file = function(tbl, path)
 
   local file, err = io.open(path, "w")
   if not file then
-    error("Could not open file: " .. err)
+    utils.log("Could not open file: " .. err)
     return nil
   end
 

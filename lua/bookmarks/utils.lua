@@ -47,7 +47,7 @@ end
 ---@param msg string
 ---@param level? integer
 local function log(msg, level)
-  vim.notify(msg, level or vim.log.levels.ERROR)
+  vim.notify(msg, level or vim.log.levels.ERROR, { title = "easy-commands.nvim" })
 end
 
 ---@param path string
