@@ -17,7 +17,8 @@ local setup = function(user_config)
 > [!WARNING] Bookmarks.nvim
 > Breaking change!
 > Dev branch will be merged into main branch next Saturday!
-> The json file db format will be changed. be sure you have your current bookmark db file
+> The json file db format will be changed.
+> To avoid data lose!! Be sure you have backed your current bookmark db file up
 > Pin the version to v0.5.4 to avoid this error message
   ]],
 		vim.log.levels.ERROR
