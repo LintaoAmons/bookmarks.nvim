@@ -1,6 +1,8 @@
-> WIP: dev branch has most up-to-date features but not very stable
-> - bookmark relative path to the project
-> - auto detect bookmark's project and project name
+> [!WARNING]
+> Breaking change!
+> Dev branch will be merged into main branch next Saturday!
+> The json file db format will be changed. be sure you have your current bookmark db file
+> Pin the version to v0.5.4 to avoid this error message
 
 # Bookmarks.nvim
 
@@ -24,7 +26,7 @@ You only need one shortcut to add bookmarks.
 -- with lazy.nvim
 return {
   "LintaoAmons/bookmarks.nvim",
-  tag = "v0.5.3", -- optional, pin the plugin at specific version for stability
+  tag = "v0.5.4", -- optional, pin the plugin at specific version for stability
   dependencies = {
     {"nvim-telescope/telescope.nvim"},
     {"stevearc/dressing.nvim"} -- optional: to have the same UI shown in the GIF
