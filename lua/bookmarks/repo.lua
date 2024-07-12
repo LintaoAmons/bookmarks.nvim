@@ -241,6 +241,17 @@ local project_repo = (function()
   return PROJECT_REPO
 end)()
 
+local function find_by_project(project_name)
+  local bookmarks = find_or_set_active_bookmark_list().bookmarks
+  local result = {}
+  for _, b in ipairs(bookmarks) do
+    if b.location.project_name == project_name then
+      table.insert(result, b)
+    end
+  end
+  return result
+end
+
 -- pcall read method and display hint about correputed json file
 return {
   db = {
@@ -262,6 +273,7 @@ return {
     read = {
       must_find_by_id = must_find_bookmark_by_id,
       find_all = find_all_bookmarks,
+      find_by_project = find_by_project,
     },
     write = {
       save = save_bookmark,

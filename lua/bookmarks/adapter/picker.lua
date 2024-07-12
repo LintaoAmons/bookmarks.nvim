@@ -105,20 +105,6 @@ local function pick_bookmark(callback, opts)
       end,
     })
     :find()
-
-  -- TODO: fallback to vim.ui picker
-  -- vim.ui.select(bookmarks, {
-  -- 	prompt = prompt,
-  -- 	format_item = function(item)
-  -- 		return common.format(item, bookmarks)
-  -- 	end,
-  -- }, function(choice)
-  -- 	---@cast choice Bookmarks.BookmarkList
-  -- 	if not choice then
-  -- 		return
-  -- 	end
-  -- 	callback(choice)
-  -- end)
 end
 
 ---@param cmds {name: string, callback: function}
@@ -155,7 +141,44 @@ local function pick_commands(cmds, opts)
     :find()
 end
 
+local function pick_bookmark_of_current_project(callback, opts)
+  local project_name = require("bookmarks.utils").find_project_name()
+  local bookmarks = repo.mark.read.find_by_project(project_name)
+
+  pickers
+    .new(opts, {
+      prompt_title = "Bookmark in current project",
+      finder = finders.new_table({
+        results = bookmarks,
+        ---@param bookmark Bookmarks.Bookmark
+        entry_maker = function(bookmark)
+          local display = common.format(bookmark, bookmarks)
+          return {
+            value = bookmark,
+            display = display,
+            ordinal = display,
+            filename = bookmark.location.path,
+            col = bookmark.location.col,
+            lnum = bookmark.location.line,
+          }
+        end,
+      }),
+      sorter = conf.generic_sorter(opts),
+      previewer = conf.grep_previewer(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          actions.close(prompt_bufnr)
+          local selected = action_state.get_selected_entry().value
+          callback(selected)
+        end)
+        return true
+      end,
+    })
+    :find()
+end
+
 return {
+  pick_bookmark_of_current_project = pick_bookmark_of_current_project,
   pick_bookmark_list = pick_bookmark_list,
   pick_bookmark = pick_bookmark,
   pick_commands = pick_commands,

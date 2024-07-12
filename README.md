@@ -98,6 +98,27 @@ You can look into the code to find the structure of those two domain objects
 | [Mark] Browsing all marks |                                                                                             |
 | [Mark] delete bookmark    | delete selected bookmarks                                                                   |
 
+
+Also if you want to bind a shortcut to those commands, you can do it by write some code....
+
+```lua
+local function call_bookmark_command()
+	local commands = require("bookmarks.adapter.commands").commands
+	local command
+	for _, c in ipairs(commands) do
+		if c.name == "[Mark] Bookmarks of current project" then -- change it to one of the command above
+			command = c
+		end
+	end
+
+	if command then
+		command.callback()
+	end
+end
+
+vim.keymap.set("n", "<leader>ll", call_bookmark_command)
+```
+
 </details>
 
 This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
@@ -119,13 +140,12 @@ Don't hesitate to ask me anything about the codebase if you want to contribute.
 
 You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY9580ZWFl)
 
-## FIND MORE USER FRIENDLY PLUGINS MADE BY ME
+## Some Other Neovim Stuff
 
+- [my neovim config](https://github.com/LintaoAmons/CoolStuffes/tree/main/nvim/.config/nvim)
 - [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
-- [easy-commands.nvim](https://github.com/LintaoAmons/easy-commands.nvim)
 - [cd-project.nvim](https://github.com/LintaoAmons/cd-project.nvim)
 - [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
-- [plugin-template.nvim](https://github.com/LintaoAmons/plugin-template.nvim)
 
 ## TODO
 
@@ -136,18 +156,18 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 - [x] remove parse commands, prefer BookmarkCommands instead
 - [x] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
 - [x] more useful information when deal with corrupted json db (no issues report yet)
-- [ ] refactor: extract picker module
 - [x] telescope enhancement (use specific command instead)
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [x] Project
     - [x] Add a project field
     - [x] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
-    - [ ] bookmarks of current project
-    - [ ] Hooks: Gotobookmark can trigger function like switch project automatically
-- [ ] Grep content in bookmarks' files
+    - [x] bookmarks of current project
+    - [x] Hooks: Gotobookmark can trigger function like switch project automatically
+- [x] Grep content in files that contains bookmarks
 
 ### V2
 
+- [ ] refactor: extract picker module and remove unused modules
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
 - [ ] buffer renderer
 - [ ] filetree-like BookmarkList and Bookmark browsing.

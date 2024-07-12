@@ -2,6 +2,7 @@ local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local picker = require("bookmarks.adapter.picker")
 local utils = require("bookmarks.utils")
+local domain = require("bookmarks.bookmark")
 
 ---@class Bookmark.Command
 ---@field name string
@@ -12,6 +13,7 @@ local utils = require("bookmarks.utils")
 
 ---@type Bookmark.Command[]
 local commands = {
+
   {
     name = "[List] new",
     callback = function()
@@ -126,6 +128,53 @@ local commands = {
       end, { all = true })
     end,
     description = "",
+  },
+  {
+    name = "[Mark] Bookmarks of current project",
+    callback = function()
+      picker.pick_bookmark_of_current_project(function(bookmark)
+        api.goto_bookmark(bookmark, { open_method = "vsplit" })
+      end, { all = true })
+    end,
+    description = "",
+  },
+  {
+    name = "[Mark] grep the marked files",
+    callback = function()
+      local ok, fzf_lua = pcall(require, "fzf-lua")
+      if not ok then
+        return utils.log("this command requires fzf-lua plugin", vim.log.levels.ERROR)
+      end
+
+      local opts = {}
+      opts.prompt = "rg> "
+      opts.git_icons = true
+      opts.file_icons = true
+      opts.color_icons = true
+      -- setup default actions for edit, quickfix, etc
+      opts.actions = fzf_lua.defaults.actions.files
+      opts.fzf_opts = { ["--layout"] = "reverse-list" }
+      -- see preview overview for more info on previewers
+      opts.previewer = "builtin"
+      opts.winopts = {
+        split = "belowright new",
+      }
+      opts.fn_transform = function(x)
+        return fzf_lua.make_entry.file(x, opts)
+      end
+
+      local list = repo.bookmark_list.write.find_or_set_active()
+      local bookmarks = list.bookmarks
+      local projects = repo.project.findall()
+      local filepathes = ""
+      for _, b in ipairs(bookmarks) do
+        local fullpath = domain.bookmark.fullpath(b, projects)
+        filepathes = filepathes .. " " .. fullpath
+      end
+
+      fzf_lua.fzf_live("rg --column --color=always <query> " .. filepathes .. " 2>/dev/null", opts)
+    end,
+    description = "grep in all the files that contain bookmarks",
   },
   {
     name = "[Mark] delete bookmark",
