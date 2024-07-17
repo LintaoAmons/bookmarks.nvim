@@ -16,7 +16,7 @@ local function format(bookmark, bookmarks)
       max_len_name = #b.name
     end
 
-    local shorten_path = utils.shorten_file_path(b.location.path)
+    local shorten_path = b.location.project_name .. "/" .. utils.shorten_file_path(b.location.relative_path)
     if #shorten_path > max_len_path then
       max_len_path = #shorten_path
     end
@@ -26,7 +26,7 @@ local function format(bookmark, bookmarks)
     "%-" .. max_len_listname .. "s %-" .. max_len_name .. "s %-" .. max_len_path .. "s [%-4d, %-4d]: %s",
     bookmark.listname or "",
     bookmark.name,
-    utils.shorten_file_path(bookmark.location.path),
+    bookmark.location.project_name .. "/" .. utils.shorten_file_path(bookmark.location.relative_path),
     bookmark.location.line,
     bookmark.location.col,
     vim.trim(bookmark.content)
