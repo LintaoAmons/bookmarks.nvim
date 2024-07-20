@@ -1,3 +1,13 @@
+
+> [!WARNING]
+> Breaking change!
+> 
+> The json file db format changed.
+>
+> To avoid data lose!! Be sure you have backed your current bookmark db file up
+>
+> Pin the version to v0.x.x to revert to previous version
+
 # Bookmarks.nvim
 
 You only need one shortcut to add bookmarks.
@@ -20,7 +30,7 @@ You only need one shortcut to add bookmarks.
 -- with lazy.nvim
 return {
   "LintaoAmons/bookmarks.nvim",
-  tag = "v0.5.3", -- optional, pin the plugin at specific version for stability
+  -- tag = "v0.5.4", -- optional, pin the plugin at specific version for stability
   dependencies = {
     {"nvim-telescope/telescope.nvim"},
     {"stevearc/dressing.nvim"} -- optional: to have the same UI shown in the GIF
@@ -130,10 +140,6 @@ vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find 
 vim.keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to latest visited/created Bookmark" })
 ```
 
-## Thanks
-
-- [Lspsaga: for the sign related code](https://github.com/nvimdev/lspsaga.nvim)
-
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
@@ -145,7 +151,6 @@ You can contact with me by drop me an email or [telegram](https://t.me/+ssgpiHyY
 - [my neovim config](https://github.com/LintaoAmons/CoolStuffes/tree/main/nvim/.config/nvim)
 - [scratch.nvim](https://github.com/LintaoAmons/scratch.nvim)
 - [cd-project.nvim](https://github.com/LintaoAmons/cd-project.nvim)
-- [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
 
 ## TODO
 
