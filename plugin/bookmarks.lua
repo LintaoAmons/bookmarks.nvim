@@ -1,11 +1,11 @@
 if vim.fn.has("nvim-0.7.0") == 0 then
-	vim.api.nvim_err_writeln("bookmarks.nvim requires at least nvim-0.7")
-	return
+  vim.api.nvim_err_writeln("bookmarks.nvim requires at least nvim-0.7")
+  return
 end
 
 -- make sure this file is loaded only once
 if vim.g.loaded_bookmarks == 1 then
-	return
+  return
 end
 vim.g.loaded_bookmarks = 1
 
@@ -14,13 +14,30 @@ require("bookmarks.sign").bookmark_sign_autocmd()
 local adapter = require("bookmarks.adapter")
 local api = require("bookmarks.api")
 
-vim.api.nvim_create_user_command("BookmarksMark", adapter.mark, {})
-vim.api.nvim_create_user_command("BookmarksGoto", adapter.goto_bookmark, {})
-vim.api.nvim_create_user_command("BookmarksCommands", adapter.mark_commands, {})
-vim.api.nvim_create_user_command("BookmarksGotoRecent", api.goto_last_visited_bookmark, {})
-
--- TODO: deprecated, remove those predefined commands, add readme to help user define their own commands if needed.
-vim.api.nvim_create_user_command("BookmarksAddList", adapter.add_list, {})
-vim.api.nvim_create_user_command("BookmarksMarkToList", adapter.mark_to_list, {})
-vim.api.nvim_create_user_command("BookmarksMarkGotoBookmarkInList", adapter.goto_bookmark_in_list, {})
-vim.api.nvim_create_user_command("BookmarksSetActiveList", adapter.set_active_list, {})
+vim.api.nvim_create_user_command("BookmarksMark", adapter.mark, {
+  desc = "Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string",
+})
+vim.api.nvim_create_user_command(
+  "BookmarksGoto",
+  adapter.goto_bookmark,
+  { desc = "Go to bookmark at current active BookmarkList" }
+)
+vim.api.nvim_create_user_command(
+  "BookmarksCommands",
+  adapter.mark_commands,
+  { desc = "Find and trigger a bookmark command." }
+)
+vim.api.nvim_create_user_command(
+  "BookmarksGotoRecent",
+  api.goto_last_visited_bookmark,
+  { desc = "Go to latest visited/created Bookmark" }
+)
+vim.api.nvim_create_user_command(
+  "BookmarksReload",
+  api.helper.reload_bookmarks,
+  { desc = "Clean the cache and resync the bookmarks jsonfile" }
+)
+vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookmarks_jsonfile, {
+  desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
+})
+vim.api.nvim_create_user_command("BookmarksDisplay", api.buffer_display, {})
