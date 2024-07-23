@@ -23,13 +23,10 @@ local function format(bookmark, bookmarks)
   end
 
   return string.format(
-    "%-" .. max_len_listname .. "s %-" .. max_len_name .. "s %-" .. max_len_path .. "s [%-4d, %-4d]: %s",
+    "%-" .. max_len_listname .. "s %-" .. max_len_name .. "s %-" .. max_len_path .. "s",
     bookmark.listname or "",
     bookmark.name,
-    bookmark.location.project_name .. "/" .. utils.shorten_file_path(bookmark.location.relative_path),
-    bookmark.location.line,
-    bookmark.location.col,
-    vim.trim(bookmark.content)
+    bookmark.location.project_name .. "/" .. utils.shorten_file_path(bookmark.location.relative_path)
   )
 end
 
