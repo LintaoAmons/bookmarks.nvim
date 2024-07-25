@@ -3,7 +3,7 @@ local M = {}
 ---@param bookmark Bookmarks.Bookmark
 ---@return string
 function M.render_bookmark(bookmark)
-  return "    ["
+  return "["
     .. bookmark.location.project_name
     .. "] "
     .. bookmark.name

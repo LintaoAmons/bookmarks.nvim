@@ -1,7 +1,14 @@
+local tree_operate = require("bookmarks.tree.operate")
+
 local M = {}
 
+---@class Bookmarks.PopupWindowCtx
+---@field buf integer
+---@field win integer
+---@field close_cb fun()?
+
 ---@param popup_content string[]
----@return {buf: integer, win: integer}
+---@return Bookmarks.PopupWindowCtx
 local function menu_popup_window(popup_content)
   local popup_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(popup_buf, 0, -1, false, popup_content)
@@ -19,6 +26,7 @@ local function menu_popup_window(popup_content)
     title = "ContextMenu.",
   }
 
+  vim.api.nvim_buf_set_option(popup_buf, 'modifiable', false)
   local win = vim.api.nvim_open_win(popup_buf, true, opts)
   return {
     buf = popup_buf,
@@ -26,20 +34,32 @@ local function menu_popup_window(popup_content)
   }
 end
 
----@param bookmark_list Bookmarks.BookmarkList[]
-function M.render(bookmark_lists)
-  local content = require("bookmarks.render.bookmarklist").render_lists(bookmark_lists)
-  local created = menu_popup_window(content)
 
-  -- create local buffer shortcuts
-  vim.keymap.set({ "v", "n" }, "q", function()
-    vim.api.nvim_win_close(created.win, true)
-  end, {
+
+
+---@param bookmark_lists Bookmarks.BookmarkList[]
+---@return Bookmarks.PopupWindowCtx
+function M.render(bookmark_lists)
+  local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
+  local created = menu_popup_window(lines)
+
+  vim.b[created.buf].context = context
+
+  local options = {
     noremap = true,
     silent = true,
     nowait = true,
     buffer = created.buf,
-  })
+  }
+  -- create local buffer shortcuts
+  vim.keymap.set({ "v", "n" }, "q", function()
+    vim.api.nvim_win_close(created.win, true)
+    if created.close_cb ~= nil then
+      created.close_cb()
+    end
+  end, options)
+
+  vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
 
   --
   -- vim.keymap.set({ "v", "n" }, "<CR>", function()
@@ -62,6 +82,8 @@ function M.render(bookmark_lists)
   --   nowait = true,
   --   buffer = created.buf,
   -- })
+  --
+  return created
 end
 
 return M

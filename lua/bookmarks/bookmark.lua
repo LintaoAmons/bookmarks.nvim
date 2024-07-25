@@ -1,4 +1,5 @@
 local utils = require("bookmarks.utils")
+local tree_node = require("bookmarks.tree.node")
 
 ---@class Bookmarks.Location
 ---@field path string -- as fallback if project_name can't find it's related project_path in bookmark_list
@@ -101,6 +102,7 @@ end)()
 ---@field is_active boolean
 ---@field project_path_name_map {string: string}
 ---@field bookmarks Bookmarks.Bookmark[]
+---@field tree Bookmarks.TreeNode
 
 local bookmark_list_scope = (function()
   local BOOKMARK_LIST = {}
@@ -136,6 +138,7 @@ local bookmark_list_scope = (function()
   ---@param bookmark Bookmarks.Bookmark
   function BOOKMARK_LIST.add_bookmark(self, bookmark)
     table.insert(self.bookmarks, bookmark)
+    BOOKMARK_LIST.add_tree_node(self, bookmark)
   end
 
   ---@param self Bookmarks.BookmarkList
@@ -148,6 +151,8 @@ local bookmark_list_scope = (function()
       end
     end
     self.bookmarks = new_bookmarks
+
+    BOOKMARK_LIST.remove_tree_node(self, bookmark)
   end
 
   ---@param self Bookmarks.BookmarkList
@@ -183,6 +188,69 @@ local bookmark_list_scope = (function()
     end
 
     return updated_bookmark_list
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@return Bookmarks.TreeNode
+  function BOOKMARK_LIST.get_tree(self)
+    if self.tree == nil then
+      self.tree = tree_node.to_new_node(self.name, tree_node.NODE_TYPE.BOOKMARK_LIST)
+      for _, bookmark in ipairs(self.bookmarks) do
+        local new_node = tree_node.to_new_node(bookmark.id, tree_node.NODE_TYPE.BOOKMARK)
+        tree_node.add_child(self.tree, new_node)
+      end
+    end
+
+    return self.tree
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param bookmark Bookmarks.Bookmark
+  function BOOKMARK_LIST.add_tree_node(self, bookmark)
+    local tree = BOOKMARK_LIST.get_tree(self)
+    local new_node = tree_node.to_new_node(bookmark.id, tree_node.NODE_TYPE.BOOKMARK)
+    tree_node.add_child(tree, new_node)
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param bookmark Bookmarks.Bookmark
+  function BOOKMARK_LIST.remove_tree_node(self, bookmark)
+    local tree = BOOKMARK_LIST.get_tree(self)
+    tree_node.remove_descendant_by_id(tree, bookmark.id)
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  ---@param name string
+  ---@return boolean
+  function BOOKMARK_LIST.create_tree_folder(self, id, name)
+    local function recursive_create(node)
+      if node.id == id then
+        local new_id = os.time()
+        local new_node = tree_node.to_new_node(new_id, tree_node.NODE_TYPE.FOLDER, name)
+        tree_node.add_child(node, new_node)
+        return true
+      end
+
+      for _, child in ipairs(node.children) do
+        if child.type == tree_node.NODE_TYPE.BOOKMARK then
+          if child.id == id then
+            local new_node = tree_node.to_new_node(os.time(), tree_node.NODE_TYPE.FOLDER, name)
+            tree_node.add_brother(node, child, new_node)
+            return true
+          end
+        else
+          if recursive_create(child) then
+            return true
+          end
+        end
+      end
+
+      return false
+    end
+
+    local tree = BOOKMARK_LIST.get_tree(self)
+    return recursive_create(tree)
   end
 
   return BOOKMARK_LIST
@@ -231,6 +299,7 @@ local project_scope = (function()
 
   return PROJECT_SCOPE
 end)()
+
 
 -- TODO: turn those functions into instance methods
 return {
