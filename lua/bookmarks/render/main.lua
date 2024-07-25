@@ -43,7 +43,7 @@ function M.render(bookmark_lists)
   local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
   local created = menu_popup_window(lines)
 
-  vim.b[created.buf].context = context
+  vim.b[created.buf]._bm_context = context
 
   local options = {
     noremap = true,
@@ -60,6 +60,8 @@ function M.render(bookmark_lists)
   end, options)
 
   vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
+  vim.keymap.set({ "v", "n" }, "x", tree_operate.tree_cut, options)
+  vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)
 
   --
   -- vim.keymap.set({ "v", "n" }, "<CR>", function()

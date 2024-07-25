@@ -224,33 +224,75 @@ local bookmark_list_scope = (function()
   ---@param name string
   ---@return boolean
   function BOOKMARK_LIST.create_tree_folder(self, id, name)
-    local function recursive_create(node)
-      if node.id == id then
-        local new_id = os.time()
-        local new_node = tree_node.to_new_node(new_id, tree_node.NODE_TYPE.FOLDER, name)
-        tree_node.add_child(node, new_node)
-        return true
-      end
-
-      for _, child in ipairs(node.children) do
-        if child.type == tree_node.NODE_TYPE.BOOKMARK then
-          if child.id == id then
-            local new_node = tree_node.to_new_node(os.time(), tree_node.NODE_TYPE.FOLDER, name)
-            tree_node.add_brother(node, child, new_node)
-            return true
-          end
-        else
-          if recursive_create(child) then
-            return true
-          end
-        end
-      end
-
+    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
+    if cur_node == nil then
       return false
     end
 
+    local new_node = tree_node.to_new_node(os.time(), tree_node.NODE_TYPE.FOLDER, name)
+    if cur_node.type == tree_node.NODE_TYPE.BOOKMARK_LIST or
+        cur_node.type == tree_node.NODE_TYPE.FOLDER then
+      tree_node.add_child(cur_node, new_node)
+      return true
+    end
+
+
+    local cur_father = BOOKMARK_LIST.get_node_father(self, id)
+    tree_node.add_brother(cur_father, cur_node, new_node)
+
+    return true
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  ---@return Bookmarks.TreeNode?
+  function BOOKMARK_LIST.get_tree_node(self, id)
     local tree = BOOKMARK_LIST.get_tree(self)
-    return recursive_create(tree)
+    return tree_node.get_tree_node(tree, id)
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  ---@return Bookmarks.TreeNode?
+  function BOOKMARK_LIST.get_node_father(self, id)
+    local tree = BOOKMARK_LIST.get_tree(self)
+    return tree_node.get_node_father(tree, id)
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param cut_id string | number
+  ---@param paste_id string | number
+  function BOOKMARK_LIST.tree_paste(self, cut_id, paste_id)
+    local cut_node = BOOKMARK_LIST.get_tree_node(self, cut_id)
+    if cut_node == nil then
+      return false
+    end
+
+    local paste_node = BOOKMARK_LIST.get_tree_node(self, paste_id)
+    if paste_node == nil then
+      return false
+    end
+
+    local cut_father = BOOKMARK_LIST.get_node_father(self, cut_id)
+    if cut_father == nil then
+      return false
+    end
+
+    if tree_node.get_tree_node(cut_node, paste_id) ~= nil then
+      utils.log("tree_paste: paste_id is descendant of cut_id")
+      return true
+    end
+
+    tree_node.remove_child(cut_father, cut_id)
+
+    if paste_node.type == tree_node.NODE_TYPE.BOOKMARK then
+      local paste_father = BOOKMARK_LIST.get_node_father(self, paste_id)
+      tree_node.add_brother(paste_father, paste_node, cut_node)
+    else
+      tree_node.add_child(paste_node, cut_node)
+    end
+
+    return true
   end
 
   return BOOKMARK_LIST

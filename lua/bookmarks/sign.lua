@@ -81,7 +81,7 @@ local function refresh_tree()
   vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(ctx.buf, 'modifiable', false)
 
-  vim.b[ctx.buf].context = context
+  vim.b[ctx.buf]._bm_context = context
 end
 
 return {
