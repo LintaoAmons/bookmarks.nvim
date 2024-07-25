@@ -157,6 +157,19 @@ local function get_recent_files_bookmark_list()
   end
 end
 
+---@param trees Bookmarks.TreeNode[]
+local function save_trees(trees)
+  local db = get_db()
+  for _, bookmark_list in ipairs(db.bookmark_lists) do
+    for _, node in ipairs(trees) do
+      if node.id == bookmark_list.id then
+        bookmark_list.tree = node
+      end
+    end
+  end
+  save_db(db)
+end
+
 ---@param bookmark_list Bookmarks.BookmarkList
 ---@param bookmark_lists? Bookmarks.BookmarkList[]
 local function save_bookmark_list(bookmark_list, bookmark_lists)
@@ -273,6 +286,7 @@ return {
     write = {
       save = save_bookmark_list,
       save_all = save_all,
+      save_trees = save_trees,
       find_or_set_active = find_or_set_active_bookmark_list,
       delete = delete_bookmark_list,
     },

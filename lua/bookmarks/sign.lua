@@ -92,8 +92,25 @@ local function bookmark_sign_autocmd()
   })
 end
 
+local function refresh_tree()
+  if vim.g.bookmark_list_win_ctx == nil then
+    return
+  end
+
+  local ctx = vim.g.bookmark_list_win_ctx
+  local bookmark_lists = repo.bookmark_list.read.find_all()
+  local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
+
+  vim.api.nvim_buf_set_option(ctx.buf, 'modifiable', true)
+  vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_option(ctx.buf, 'modifiable', false)
+
+  vim.b[ctx.buf].context = context
+end
+
 return {
   setup = setup,
   bookmark_sign_autocmd = bookmark_sign_autocmd,
   refresh_signs = safe_refresh_signs,
+  refresh_tree = refresh_tree,
 }

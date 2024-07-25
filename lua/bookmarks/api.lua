@@ -172,8 +172,21 @@ local function open_bookmarks_jsonfile()
 end
 
 local function buffer_display()
+  if vim.g.bookmark_list_win_ctx ~= nil then
+    vim.api.nvim_set_current_win(vim.g.bookmark_list_win_ctx.win)
+    return
+  end
+
   local lists = repo.bookmark_list.read.find_all()
-  require("bookmarks.render.main").render(lists)
+  local bookmark_list_win_ctx = require("bookmarks.render.main").render(lists)
+
+  if vim.g.bookmark_list_win_ctx == nil then
+    vim.g.bookmark_list_win_ctx = bookmark_list_win_ctx
+  end
+
+  bookmark_list_win_ctx.close_cb = function()
+    vim.g.bookmark_list_win_ctx = nil
+  end
 end
 
 return {
@@ -195,4 +208,5 @@ return {
   },
 
   buffer_display = buffer_display,
+  tree = require("bookmarks.tree.api"),
 }
