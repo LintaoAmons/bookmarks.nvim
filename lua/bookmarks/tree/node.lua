@@ -3,6 +3,7 @@
 ---@field type number
 ---@field children Bookmarks.TreeNode[]
 ---@field name string
+---@field collapse boolean
 
 
 local M = {}
@@ -24,6 +25,7 @@ function M.to_new_node(id, type, name)
     type = type,
     children = {},
     name = name or "",
+    collapse = true,
   }
 end
 
