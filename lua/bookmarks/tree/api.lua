@@ -53,17 +53,28 @@ function M.paste(line_no)
 end
 
 ---@param line_no number
+---@return Bookmarks.Bookmark?
 function M.collapse(line_no)
   local ctx = vim.b._bm_context.line_contexts[line_no]
   local bookmark_lists = repo.bookmark_list.read.find_all()
+  local ret = nil
   for _, bookmark_list in ipairs(bookmark_lists) do
-    if domain.bookmark_list.tree_collapse(bookmark_list, ctx.id) then
-      repo.bookmark_list.write.save(bookmark_list)
-      break
+    local find, bookmark = domain.bookmark_list.tree_collapse(bookmark_list, ctx.id)
+    if not find then
+      goto continue
     end
+
+    if bookmark then
+      ret = bookmark
+    else
+      repo.bookmark_list.write.save(bookmark_list)
+      sign.refresh_tree()
+    end
+
+    ::continue::
   end
 
-  sign.refresh_tree()
+  return ret
 end
 
 ---@param line_no number
