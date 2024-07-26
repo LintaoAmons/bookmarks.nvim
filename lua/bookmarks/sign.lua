@@ -92,12 +92,19 @@ local function bookmark_sign_autocmd()
   })
 end
 
+local function clean_tree_cache(buf)
+  vim.b[buf]._bm_context = nil
+  vim.b[buf]._bm_tree_cut = nil
+end
+
 local function refresh_tree()
-  if vim.g.bookmark_list_win_ctx == nil then
+  local ctx = vim.g.bookmark_list_win_ctx
+  if ctx == nil then
     return
   end
 
-  local ctx = vim.g.bookmark_list_win_ctx
+  clean_tree_cache(ctx.buf)
+
   local bookmark_lists = repo.bookmark_list.read.find_all()
   local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
 
@@ -113,4 +120,8 @@ return {
   bookmark_sign_autocmd = bookmark_sign_autocmd,
   refresh_signs = safe_refresh_signs,
   refresh_tree = refresh_tree,
+  namespace = {
+    ns = ns,
+    hl_name = hl_name,
+  }
 }

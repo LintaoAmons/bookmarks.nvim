@@ -1,6 +1,8 @@
 local repo = require("bookmarks.repo")
 local sign = require("bookmarks.sign")
 local domain = require("bookmarks.bookmark")
+local tree_node = require("bookmarks.tree.node")
+local utils = require("bookmarks.utils")
 
 
 local M = {}
@@ -25,8 +27,28 @@ end
 ---@param line_no number
 function M.cut(line_no)
   local ctx = vim.b._bm_context.line_contexts[line_no]
+  local node = nil
+
+  for _, bookmark_list in ipairs(repo.bookmark_list.read.find_all()) do
+    node = domain.bookmark_list.get_tree_node(bookmark_list, ctx.id)
+    if node then
+      break
+    end
+  end
+
+  if not node then
+    utils.log("Can't find node")
+    return
+  end
+
+  if node.type == tree_node.NODE_TYPE.BOOKMARK_LIST then
+    utils.log("Can't cut root")
+    return
+  end
+
   vim.b._bm_tree_cut = ctx.id
-  vim.print("Cut: " .. ctx.id)
+  local _namespace = require("bookmarks.sign").namespace
+  vim.api.nvim_buf_add_highlight(0, _namespace.ns, _namespace.hl_name, line_no - 1, 0, -1)
 end
 
 
@@ -35,11 +57,12 @@ function M.paste(line_no)
   local ctx = vim.b._bm_context.line_contexts[line_no]
   local _cut_id = vim.b._bm_tree_cut
   if not _cut_id then
+    vim.print("No cut")
     return
   end
 
   vim.b._bm_tree_cut = nil
-  vim.print("Paste: " .. ctx.id .. " from " .. _cut_id)
+  -- vim.print("Paste: " .. ctx.id .. " from " .. _cut_id)
 
   local bookmark_lists = repo.bookmark_list.read.find_all()
   for _, bookmark_list in ipairs(bookmark_lists) do

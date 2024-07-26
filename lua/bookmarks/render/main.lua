@@ -5,7 +5,6 @@ local M = {}
 ---@class Bookmarks.PopupWindowCtx
 ---@field buf integer
 ---@field win integer
----@field close_cb fun()?
 
 ---@param popup_content string[]
 ---@return Bookmarks.PopupWindowCtx
@@ -36,7 +35,6 @@ end
 
 
 ---@param bookmark_lists Bookmarks.BookmarkList[]
----@return Bookmarks.PopupWindowCtx
 function M.render(bookmark_lists)
   local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
   local created = menu_popup_window(lines)
@@ -50,19 +48,14 @@ function M.render(bookmark_lists)
     buffer = created.buf,
   }
   -- create local buffer shortcuts
-  vim.keymap.set({ "v", "n" }, "q", function()
-    vim.api.nvim_win_close(created.win, true)
-    if created.close_cb ~= nil then
-      created.close_cb()
-    end
-  end, options)
-
+  vim.keymap.set({ "v", "n" }, "q", tree_operate.quit, options)
   vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
   vim.keymap.set({ "v", "n" }, "x", tree_operate.tree_cut, options)
   vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)
   vim.keymap.set({ "v", "n" }, "o", tree_operate.collapse, options)
   vim.keymap.set({ "v", "n" }, "d", tree_operate.delete, options)
 
+  vim.g.bookmark_list_win_ctx = created
   --
   -- vim.keymap.set({ "v", "n" }, "<CR>", function()
   --   quit_after_action(function()
@@ -85,7 +78,6 @@ function M.render(bookmark_lists)
   --   buffer = created.buf,
   -- })
   --
-  return created
 end
 
 return M
