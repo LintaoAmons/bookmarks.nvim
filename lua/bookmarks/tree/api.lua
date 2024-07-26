@@ -33,16 +33,45 @@ end
 ---@param line_no number
 function M.paste(line_no)
   local ctx = vim.b._bm_context.line_contexts[line_no]
-  if not vim.b._bm_tree_cut then
+  local _cut_id = vim.b._bm_tree_cut
+  if not _cut_id then
     return
   end
-  local _cut_id = vim.b._bm_tree_cut
+
   vim.b._bm_tree_cut = nil
   vim.print("Paste: " .. ctx.id .. " from " .. _cut_id)
 
   local bookmark_lists = repo.bookmark_list.read.find_all()
   for _, bookmark_list in ipairs(bookmark_lists) do
     if domain.bookmark_list.tree_paste(bookmark_list, _cut_id, ctx.id) then
+      repo.bookmark_list.write.save(bookmark_list)
+      break
+    end
+  end
+
+  sign.refresh_tree()
+end
+
+---@param line_no number
+function M.collapse(line_no)
+  local ctx = vim.b._bm_context.line_contexts[line_no]
+  local bookmark_lists = repo.bookmark_list.read.find_all()
+  for _, bookmark_list in ipairs(bookmark_lists) do
+    if domain.bookmark_list.tree_collapse(bookmark_list, ctx.id) then
+      repo.bookmark_list.write.save(bookmark_list)
+      break
+    end
+  end
+
+  sign.refresh_tree()
+end
+
+---@param line_no number
+function M.delete(line_no)
+  local ctx = vim.b._bm_context.line_contexts[line_no]
+  local bookmark_lists = repo.bookmark_list.read.find_all()
+  for _, bookmark_list in ipairs(bookmark_lists) do
+    if domain.bookmark_list.tree_delete(bookmark_list, ctx.id) then
       repo.bookmark_list.write.save(bookmark_list)
       break
     end

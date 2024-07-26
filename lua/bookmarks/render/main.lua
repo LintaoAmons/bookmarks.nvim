@@ -35,8 +35,6 @@ local function menu_popup_window(popup_content)
 end
 
 
-
-
 ---@param bookmark_lists Bookmarks.BookmarkList[]
 ---@return Bookmarks.PopupWindowCtx
 function M.render(bookmark_lists)
@@ -62,6 +60,8 @@ function M.render(bookmark_lists)
   vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
   vim.keymap.set({ "v", "n" }, "x", tree_operate.tree_cut, options)
   vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)
+  vim.keymap.set({ "v", "n" }, "o", tree_operate.collapse, options)
+  vim.keymap.set({ "v", "n" }, "d", tree_operate.delete, options)
 
   --
   -- vim.keymap.set({ "v", "n" }, "<CR>", function()

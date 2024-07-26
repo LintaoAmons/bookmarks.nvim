@@ -31,4 +31,16 @@ function M.tree_paste()
   api.tree.paste(line_no)
 end
 
+
+function M.collapse()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  api.tree.collapse(line_no)
+end
+
+
+function M.delete()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  api.tree.delete(line_no)
+end
+
 return M

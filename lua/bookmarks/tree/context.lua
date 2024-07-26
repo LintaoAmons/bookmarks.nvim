@@ -32,15 +32,17 @@ end
 ---@param deep number
 ---@return string
 function M.render_context(bookmark_lists, node, deep)
+  local icon = node.collapse and "▾" or "▸"
+  local book_icon = "𝔹"
   if node.type == tree_node.NODE_TYPE.ROOT then
     return "<root>"
   elseif node.type == tree_node.NODE_TYPE.BOOKMARK_LIST then
-    return string.rep(INTENT, deep) .. node.id
+    return string.rep(INTENT, deep) .. icon .. node.id
   elseif node.type == tree_node.NODE_TYPE.BOOKMARK then
     local bookmark = M.get_bookmark(bookmark_lists, node.id)
-    return string.rep(INTENT, deep) .. render_bookmark.render_bookmark(bookmark)
+    return string.rep(INTENT, deep) .. book_icon .. render_bookmark.render_bookmark(bookmark)
   elseif node.type == tree_node.NODE_TYPE.FOLDER then
-    return string.rep(INTENT, deep) .. node.name
+    return string.rep(INTENT, deep) .. icon .. node.name
   end
 
   return ""
@@ -56,6 +58,10 @@ function M.render_tree_recursive(node, lines, line_contexts, deep, bls)
   local line = M.render_context(bls, node, deep)
   table.insert(lines, line)
   table.insert(line_contexts, ctx)
+
+  if not node.collapse then
+    return
+  end
 
   for _, child in ipairs(node.children) do
     M.render_tree_recursive(child, lines, line_contexts, deep + 1, bls)

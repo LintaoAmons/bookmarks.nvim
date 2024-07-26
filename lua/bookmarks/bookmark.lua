@@ -295,6 +295,50 @@ local bookmark_list_scope = (function()
     return true
   end
 
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  function BOOKMARK_LIST.tree_collapse(self, id)
+    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
+    if cur_node == nil then
+      return false
+    end
+
+    if cur_node.type == tree_node.NODE_TYPE.BOOKMARK then
+      return true
+    end
+
+    cur_node.collapse = not cur_node.collapse
+
+    return true
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  function BOOKMARK_LIST.tree_delete(self, id)
+    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
+    if cur_node == nil then
+      return false
+    end
+
+    if cur_node.type ~= tree_node.NODE_TYPE.FOLDER then
+      return true
+    end
+
+    if #cur_node.children ~= 0 then
+      utils.log("tree_delete: folder is not empty")
+      return true
+    end
+
+    local cur_father = BOOKMARK_LIST.get_node_father(self, id)
+    if cur_father == nil then
+      return false
+    end
+
+    tree_node.remove_child(cur_father, id)
+
+    return true
+  end
+
   return BOOKMARK_LIST
 end)()
 
