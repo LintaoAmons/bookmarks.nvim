@@ -270,6 +270,7 @@ local bookmark_list_scope = (function()
 
     local paste_node = BOOKMARK_LIST.get_tree_node(self, paste_id)
     if paste_node == nil then
+      utils.log("could paste between different bookmark lists")
       return false
     end
 
@@ -323,6 +324,7 @@ local bookmark_list_scope = (function()
     end
 
     if cur_node.type ~= tree_node.NODE_TYPE.FOLDER then
+      utils.log("tree_delete: can only delete folder")
       return true
     end
 

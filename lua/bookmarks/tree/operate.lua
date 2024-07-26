@@ -41,11 +41,7 @@ function M.collapse()
   end
 
   if bookmark then
-    vim.api.nvim_win_close(ctx.win, true)
-    if ctx.close_cb ~= nil then
-      ctx.close_cb()
-    end
-
+    M.quit()
     require("bookmarks.api").goto_bookmark(bookmark)
   end
 end
@@ -54,6 +50,12 @@ end
 function M.delete()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
   api.tree.delete(line_no)
+end
+
+function M.quit()
+  local ctx = vim.g.bookmark_list_win_ctx
+  vim.api.nvim_win_close(ctx.win, true)
+  vim.g.bookmark_list_win_ctx = nil
 end
 
 -- function M.open()
