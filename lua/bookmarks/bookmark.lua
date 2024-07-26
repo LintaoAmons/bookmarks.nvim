@@ -297,19 +297,21 @@ local bookmark_list_scope = (function()
 
   ---@param self Bookmarks.BookmarkList
   ---@param id string | number
+  ---@return boolean, Bookmarks.Bookmark?
   function BOOKMARK_LIST.tree_collapse(self, id)
     local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
     if cur_node == nil then
-      return false
+      return false, nil
     end
 
     if cur_node.type == tree_node.NODE_TYPE.BOOKMARK then
-      return true
+      local bookmark = BOOKMARK_LIST.find_bookmark_by_id(self, id)
+      return true, bookmark
     end
 
     cur_node.collapse = not cur_node.collapse
 
-    return true
+    return true, nil
   end
 
   ---@param self Bookmarks.BookmarkList
@@ -337,6 +339,18 @@ local bookmark_list_scope = (function()
     tree_node.remove_child(cur_father, id)
 
     return true
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  ---@return Bookmarks.Bookmark?
+  function BOOKMARK_LIST.find_bookmark_by_id(self, id)
+    for _, b in ipairs(self.bookmarks) do
+      if b.id == id then
+        return b
+      end
+    end
+    return nil
   end
 
   return BOOKMARK_LIST
