@@ -49,6 +49,7 @@ function M.render(bookmark_lists)
   }
   -- create local buffer shortcuts
   vim.keymap.set({ "v", "n" }, "q", tree_operate.quit, options)
+  vim.keymap.set({ "v", "n" }, "<Esc>", tree_operate.quit, options)
   vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
   vim.keymap.set({ "v", "n" }, "x", tree_operate.tree_cut, options)
   vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)

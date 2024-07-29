@@ -185,6 +185,7 @@ local bookmark_list_scope = (function()
       end
     else
       table.insert(updated_bookmark_list.bookmarks, bookmark)
+      BOOKMARK_LIST.add_tree_node(updated_bookmark_list, bookmark)
     end
 
     return updated_bookmark_list
