@@ -2,7 +2,7 @@ local repo = require("bookmarks.repo")
 local api = require("bookmarks.api")
 local picker = require("bookmarks.adapter.picker")
 local utils = require("bookmarks.utils")
-local domain = require("bookmarks.bookmark")
+local domain = require("bookmarks.domain")
 
 ---@class Bookmark.Command
 ---@field name string

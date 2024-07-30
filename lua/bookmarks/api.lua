@@ -1,6 +1,6 @@
 local repo = require("bookmarks.repo")
 local sign = require("bookmarks.sign")
-local domain = require("bookmarks.bookmark")
+local domain = require("bookmarks.domain")
 local utils = require("bookmarks.utils")
 local get_hooks = require("bookmarks.hook").get_hooks
 local TRIGGER_POINT = require("bookmarks.hook").TRIGGER_POINT
