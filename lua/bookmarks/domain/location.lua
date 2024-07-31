@@ -1,4 +1,3 @@
-
 local utils = require("bookmarks.utils")
 
 ---@class Bookmarks.Location
