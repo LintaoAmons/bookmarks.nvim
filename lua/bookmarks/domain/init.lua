@@ -1,4 +1,3 @@
-
 local location = require("bookmarks.domain.location")
 local bookmark = require("bookmarks.domain.bookmark")
 local bookmark_list = require("bookmarks.domain.bookmark_list")
@@ -9,7 +8,7 @@ local BookmarkModule = {
   all_list_names = function(bookmark_lists)
     local result = {}
     for _, bl in ipairs(bookmark_lists) do
-        table.insert(result, bl.name)
+      table.insert(result, bl.name)
     end
     return result
   end,
