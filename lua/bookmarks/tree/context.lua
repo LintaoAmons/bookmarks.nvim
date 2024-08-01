@@ -4,8 +4,6 @@ local render_bookmark = require("bookmarks.render.bookmark")
 local INTENT = "    "
 local M = {}
 
-local context_impl = {}
-
 ---@class Bookmarks.LineContext
 ---@field deep number
 ---@field id number

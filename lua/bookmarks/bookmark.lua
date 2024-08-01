@@ -1,5 +1,4 @@
 local utils = require("bookmarks.utils")
-local repo = require("bookmarks.repo")
 
 
 ---@class Bookmarks.Location
@@ -272,7 +271,7 @@ local bookmark_list_scope = (function()
       return
     end
 
-    local folder_id = repo.generate_datetime_id()
+    local folder_id = utils.generate_datetime_id()
     local folder = BOOKMARK_LIST.new(name, folder_id)
     local cur_type = bookmark_scope.get_value_type(cur_node)
     if cur_type == _type.BOOKMARK_LIST then

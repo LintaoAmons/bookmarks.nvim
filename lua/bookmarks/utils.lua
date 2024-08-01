@@ -99,6 +99,24 @@ local function get_buf_relative_path()
   return string.sub(buf_path, string.len(project_path) + 2, string.len(buf_path))
 end
 
+-- Function to generate an ID in the datetime format
+---@return string
+local function generate_datetime_id()
+  -- Get the current date and time in the desired format
+  local datetime = os.date("%Y%m%d%H%M%S")
+
+  -- Generate a random number (e.g., using math.random) and append it to the datetime
+  local random_suffix = ""
+  for _ = 1, 8 do
+    random_suffix = random_suffix .. tostring(math.random(0, 9))
+  end
+
+  -- Concatenate the datetime and random suffix to create the ID
+  local id = datetime .. random_suffix
+
+  return id
+end
+
 return {
   trim = trim,
   shorten_file_path = shorten_file_path,
@@ -108,4 +126,5 @@ return {
   find_project_name = find_project_name,
   get_buf_relative_path = get_buf_relative_path,
   log = log,
+  generate_datetime_id = generate_datetime_id,
 }

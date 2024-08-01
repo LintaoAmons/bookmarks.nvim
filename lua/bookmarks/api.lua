@@ -49,7 +49,7 @@ local function add_list(param)
   end, bookmark_lists)
 
   ---@type Bookmarks.BookmarkList
-  local new_list = domain.bookmark_list.new(param.name, repo.generate_datetime_id())
+  local new_list = domain.bookmark_list.new(param.name, utils.generate_datetime_id())
 
   table.insert(new_lists, new_list)
   repo.bookmark_list.write.save_all(new_lists)
