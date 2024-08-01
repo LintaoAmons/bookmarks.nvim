@@ -1,5 +1,6 @@
 local utils = require("bookmarks.utils")
-local tree_node = require("bookmarks.tree.node")
+local repo = require("bookmarks.repo")
+
 
 ---@class Bookmarks.Location
 ---@field path string -- as fallback if project_name can't find it's related project_path in bookmark_list
@@ -7,6 +8,11 @@ local tree_node = require("bookmarks.tree.node")
 ---@field relative_path string? -- relative_path to the project
 ---@field line number
 ---@field col number
+
+local _type = {
+  BOOKMARK = 1,
+  BOOKMARK_LIST = 2,
+}
 
 local location_scope = (function()
   local LOCATION_SCOPE = {}
@@ -92,17 +98,27 @@ local bookmark_scope = (function()
     return false
   end
 
+  ---@param val Bookmarks.Bookmark | Bookmarks.BookmarkList
+  function BOOKMARK_SCOPE.get_value_type(val)
+    if val.bookmarks ~= nil then
+      return _type.BOOKMARK_LIST
+    else
+      return _type.BOOKMARK
+    end
+  end
+
   return BOOKMARK_SCOPE
 end)()
 
 -- TODO: remove id in bookmark_list, name as identifier
 
 ---@class Bookmarks.BookmarkList
+---@field id string
 ---@field name string -- pk, unique
 ---@field is_active boolean
 ---@field project_path_name_map {string: string}
----@field bookmarks Bookmarks.Bookmark[]
----@field tree Bookmarks.TreeNode
+---@field bookmarks (Bookmarks.Bookmark | Bookmarks.BookmarkList)[]
+---@field collapse boolean
 
 local bookmark_list_scope = (function()
   local BOOKMARK_LIST = {}
@@ -130,6 +146,7 @@ local bookmark_list_scope = (function()
       name = name,
       bookmarks = {},
       is_active = true,
+      collapse = false,
     }
   end
 
@@ -138,7 +155,6 @@ local bookmark_list_scope = (function()
   ---@param bookmark Bookmarks.Bookmark
   function BOOKMARK_LIST.add_bookmark(self, bookmark)
     table.insert(self.bookmarks, bookmark)
-    BOOKMARK_LIST.add_tree_node(self, bookmark)
   end
 
   ---@param self Bookmarks.BookmarkList
@@ -151,8 +167,6 @@ local bookmark_list_scope = (function()
       end
     end
     self.bookmarks = new_bookmarks
-
-    BOOKMARK_LIST.remove_tree_node(self, bookmark)
   end
 
   ---@param self Bookmarks.BookmarkList
@@ -185,164 +199,160 @@ local bookmark_list_scope = (function()
       end
     else
       table.insert(updated_bookmark_list.bookmarks, bookmark)
-      BOOKMARK_LIST.add_tree_node(updated_bookmark_list, bookmark)
     end
 
     return updated_bookmark_list
   end
 
   ---@param self Bookmarks.BookmarkList
-  ---@return Bookmarks.TreeNode
-  function BOOKMARK_LIST.get_tree(self)
-    if self.tree == nil then
-      self.tree = tree_node.to_new_node(self.name, tree_node.NODE_TYPE.BOOKMARK_LIST)
-      for _, bookmark in ipairs(self.bookmarks) do
-        local new_node = tree_node.to_new_node(bookmark.id, tree_node.NODE_TYPE.BOOKMARK)
-        tree_node.add_child(self.tree, new_node)
+  ---@param id string | number
+  ---@return Bookmarks.BookmarkList?
+  function BOOKMARK_LIST.get_father(self, id)
+    for _, child in ipairs(self.bookmarks) do
+      if child.id == id then
+        return self
+      end
+
+      local cur_type = bookmark_scope.get_value_type(child)
+      if cur_type == _type.BOOKMARK then
+        goto continue
+      end
+
+      local ret = BOOKMARK_LIST.get_father(child, id)
+      if ret ~= nil then
+        return ret
+      end
+
+      ::continue::
+    end
+  end
+
+  ---@param father Bookmarks.BookmarkList
+  ---@param brother Bookmarks.Bookmark | Bookmarks.BookmarkList
+  ---@param new_node Bookmarks.Bookmark | Bookmarks.BookmarkList
+  function BOOKMARK_LIST.add_brother(father, brother, new_node)
+    for i, child in ipairs(father.bookmarks) do
+      if child.id == brother.id then
+        table.insert(father.bookmarks, i + 1, new_node)
+        return
       end
     end
-
-    return self.tree
   end
 
   ---@param self Bookmarks.BookmarkList
-  ---@param bookmark Bookmarks.Bookmark
-  function BOOKMARK_LIST.add_tree_node(self, bookmark)
-    local tree = BOOKMARK_LIST.get_tree(self)
-    local new_node = tree_node.to_new_node(bookmark.id, tree_node.NODE_TYPE.BOOKMARK)
-    tree_node.add_child(tree, new_node)
-  end
+  ---@param id string | number
+  ---@return (Bookmarks.BookmarkList | Bookmarks.Bookmark)?
+  function BOOKMARK_LIST.remove_node(self, id)
+    for i, child in ipairs(self.bookmarks) do
+      if child.id == id then
+        return table.remove(self.bookmarks, i)
+      end
 
-  ---@param self Bookmarks.BookmarkList
-  ---@param bookmark Bookmarks.Bookmark
-  function BOOKMARK_LIST.remove_tree_node(self, bookmark)
-    local tree = BOOKMARK_LIST.get_tree(self)
-    tree_node.remove_descendant_by_id(tree, bookmark.id)
+      local cur_type = bookmark_scope.get_value_type(child)
+      if cur_type == _type.BOOKMARK then
+        goto continue
+      end
+
+      local ret = BOOKMARK_LIST.remove_node(child, id)
+      if ret ~= nil then
+        return ret
+      end
+
+      ::continue::
+    end
   end
 
   ---@param self Bookmarks.BookmarkList
   ---@param id string | number
   ---@param name string
-  ---@return boolean
-  function BOOKMARK_LIST.create_tree_folder(self, id, name)
-    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
+  function BOOKMARK_LIST.create_folder(self, id, name)
+    local cur_node = BOOKMARK_LIST.get_node(self, id)
+    vim.print('cur_node', cur_node == nil)
     if cur_node == nil then
-      return false
+      return
     end
 
-    local new_node = tree_node.to_new_node(os.time(), tree_node.NODE_TYPE.FOLDER, name)
-    if cur_node.type == tree_node.NODE_TYPE.BOOKMARK_LIST or
-        cur_node.type == tree_node.NODE_TYPE.FOLDER then
-      tree_node.add_child(cur_node, new_node)
-      return true
+    local folder_id = repo.generate_datetime_id()
+    local folder = BOOKMARK_LIST.new(name, folder_id)
+    local cur_type = bookmark_scope.get_value_type(cur_node)
+    if cur_type == _type.BOOKMARK_LIST then
+      table.insert(cur_node.bookmarks, folder)
+      return
     end
 
+    local father = BOOKMARK_LIST.get_father(self, id)
+    if father == nil then
+      return
+    end
 
-    local cur_father = BOOKMARK_LIST.get_node_father(self, id)
-    tree_node.add_brother(cur_father, cur_node, new_node)
-
-    return true
+    BOOKMARK_LIST.add_brother(father, cur_node, folder)
   end
 
   ---@param self Bookmarks.BookmarkList
-  ---@param id string | number
-  ---@return Bookmarks.TreeNode?
-  function BOOKMARK_LIST.get_tree_node(self, id)
-    local tree = BOOKMARK_LIST.get_tree(self)
-    return tree_node.get_tree_node(tree, id)
-  end
-
-  ---@param self Bookmarks.BookmarkList
-  ---@param id string | number
-  ---@return Bookmarks.TreeNode?
-  function BOOKMARK_LIST.get_node_father(self, id)
-    local tree = BOOKMARK_LIST.get_tree(self)
-    return tree_node.get_node_father(tree, id)
-  end
-
-  ---@param self Bookmarks.BookmarkList
-  ---@param cut_id string | number
   ---@param paste_id string | number
-  function BOOKMARK_LIST.tree_paste(self, cut_id, paste_id)
-    local cut_node = BOOKMARK_LIST.get_tree_node(self, cut_id)
-    if cut_node == nil then
-      return false
-    end
-
-    local paste_node = BOOKMARK_LIST.get_tree_node(self, paste_id)
-    if paste_node == nil then
-      utils.log("could paste between different bookmark lists")
-      return false
-    end
-
-    local cut_father = BOOKMARK_LIST.get_node_father(self, cut_id)
-    if cut_father == nil then
-      return false
-    end
-
-    if tree_node.get_tree_node(cut_node, paste_id) ~= nil then
-      utils.log("tree_paste: paste_id is descendant of cut_id")
-      return true
-    end
-
-    tree_node.remove_child(cut_father, cut_id)
-
-    if paste_node.type == tree_node.NODE_TYPE.BOOKMARK then
-      local paste_father = BOOKMARK_LIST.get_node_father(self, paste_id)
-      tree_node.add_brother(paste_father, paste_node, cut_node)
-    else
-      tree_node.add_child(paste_node, cut_node)
-    end
-
-    return true
-  end
-
-  ---@param self Bookmarks.BookmarkList
-  ---@param id string | number
-  ---@return boolean, Bookmarks.Bookmark?
-  function BOOKMARK_LIST.tree_collapse(self, id)
-    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
+  ---@param node Bookmarks.Bookmark | Bookmarks.BookmarkList
+  function BOOKMARK_LIST.paste(self, paste_id, node)
+    local cur_node = BOOKMARK_LIST.get_node(self, paste_id)
     if cur_node == nil then
-      return false, nil
+      return
     end
 
-    if cur_node.type == tree_node.NODE_TYPE.BOOKMARK then
-      local bookmark = BOOKMARK_LIST.find_bookmark_by_id(self, id)
-      return true, bookmark
+    local cur_type = bookmark_scope.get_value_type(cur_node)
+    if cur_type == _type.BOOKMARK_LIST then
+      table.insert(cur_node.bookmarks, node)
+      return
     end
 
-    cur_node.collapse = not cur_node.collapse
-
-    return true, nil
-  end
-
-  ---@param self Bookmarks.BookmarkList
-  ---@param id string | number
-  function BOOKMARK_LIST.tree_delete(self, id)
-    local cur_node = BOOKMARK_LIST.get_tree_node(self, id)
-    if cur_node == nil then
-      return false
-    end
-
-    if cur_node.type ~= tree_node.NODE_TYPE.FOLDER then
-      utils.log("tree_delete: can only delete folder")
-      return true
-    end
-
-    if #cur_node.children ~= 0 then
-      utils.log("tree_delete: folder is not empty")
-      return true
-    end
-
-    local cur_father = BOOKMARK_LIST.get_node_father(self, id)
+    local cur_father = BOOKMARK_LIST.get_father(self, paste_id)
     if cur_father == nil then
-      return false
+      return
     end
 
-    tree_node.remove_child(cur_father, id)
-
-    return true
+    BOOKMARK_LIST.add_brother(cur_father, cur_node, node)
   end
+
+  ---@param self Bookmarks.BookmarkList | Bookmarks.Bookmark
+  ---@param id string | number
+  ---@return (Bookmarks.Bookmark | Bookmarks.BookmarkList) ?
+  function BOOKMARK_LIST.get_node(self, id) 
+    if self.id == id then
+      return self
+    end
+
+    if self.bookmarks == nil then
+      return nil
+    end
+
+    for _, b in ipairs(self.bookmarks) do
+      local ret = BOOKMARK_LIST.get_node(b, id)
+      if ret ~= nil then
+        return ret
+      end
+    end
+
+    return nil
+  end
+
+  ---@param self Bookmarks.BookmarkList
+  ---@param id string | number
+  ---@return Bookmarks.Bookmark?
+  function BOOKMARK_LIST.collapse_node(self, id)
+    local cur_node = BOOKMARK_LIST.get_node(self, id)
+    if cur_node == nil then
+      return nil
+    end
+
+    local cur_type = bookmark_scope.get_value_type(cur_node)
+    if cur_type == _type.BOOKMARK then
+      return cur_node
+    end
+    if cur_node.collapse then
+      cur_node.collapse = false
+    else
+      cur_node.collapse = true
+    end
+  end
+
 
   ---@param self Bookmarks.BookmarkList
   ---@param id string | number
@@ -411,4 +421,5 @@ return {
   bookmark = bookmark_scope,
   bookmark_list = bookmark_list_scope,
   project = project_scope,
+  type = _type,
 }
