@@ -21,7 +21,7 @@ local context_impl = {}
 function M.render_context(node, deep)
   local node_type = domain.bookmark.get_value_type(node)
   local icon = node.collapse and "▸" or "▾"
-  local book_icon = "𝔹"
+  local book_icon = ""
 
   if node_type == domain.type.BOOKMARK then
     return string.rep(INTENT, deep) .. book_icon .. render_bookmark.render_bookmark(node)

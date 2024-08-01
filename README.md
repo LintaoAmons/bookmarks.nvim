@@ -90,6 +90,7 @@ You can look into the code to find the structure of those two domain objects
 | `BookmarksGotoRecent`   | Go to latest visited/created Bookmark                                                                                               |
 | `BookmarksReload`       | Clean the cache and resync the bookmarks jsonfile                                                                                   |
 | `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing                         |
+| `BookmarksDisplay`      | Display all bookmarks with tree-view, and use "cut", "paste", "create folder" to edit the tree.                                     |
 
 <details>
 <summary>BookmarksCommands(subcommands) we have right now</summary>
@@ -129,6 +130,16 @@ end
 vim.keymap.set("n", "<leader>ll", call_bookmark_command)
 ```
 
+</details>
+
+<details>
+<summary>BookmarksDisplay operations</summary>
+a: add new folder
+x: cut folder or bookmark
+p: paste folder or bookmark
+d: delete folder or bookmark
+o: collapse or expand folder
+q: quit
 </details>
 
 This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
