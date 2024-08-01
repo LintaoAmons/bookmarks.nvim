@@ -27,6 +27,7 @@ end
 function M.cut(line_no)
   vim.b._bm_tree_cut = line_no
   local _namespace = require("bookmarks.sign").namespace
+  vim.api.nvim_buf_clear_namespace(0, _namespace.ns, 0, -1)
   vim.api.nvim_buf_add_highlight(0, _namespace.ns, _namespace.hl_name, line_no - 1, 0, -1)
 end
 
