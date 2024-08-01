@@ -1,5 +1,6 @@
 # Bookmarks.nvim
 > v1.1.0: line-highlight-and-db-backup
+>
 > Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
 
 You only need one shortcut to add bookmarks.
