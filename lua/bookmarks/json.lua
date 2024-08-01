@@ -42,7 +42,14 @@ local read_or_init_json_file = function(path, init_content)
   return vim.fn.json_decode(content) or {}
 end
 
+local function backup(path)
+  local bookmarks = read_or_init_json_file(path, { projects = {}, bookmark_lists = {} })
+  -- write_json_file(bookmarks, path .. os.date("%Y-%m-%d-%H-%M-%S", os.time()) .. ".backup")
+  write_json_file(bookmarks, path .. ".backup")
+end
+
 return {
   write_json_file = write_json_file,
   read_or_init_json_file = read_or_init_json_file,
+  backup = backup,
 }

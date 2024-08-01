@@ -23,11 +23,19 @@ local get_db = function()
   end
 
   vim.g.bookmarks_cache = result
+
   return result
 end
 
 ---@param domain Bookmarks.DB
 local save_db = function(domain)
+  local current_config = vim.deepcopy(vim.g.bookmarks_config)
+  if current_config.enable_backup and not current_config.backup_run_already then
+    json.backup(current_config.json_db_path)
+    current_config.backup_run_already = true
+    vim.g.bookmarks_config = current_config
+  end
+
   vim.g.bookmarks_cache = domain
   json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end

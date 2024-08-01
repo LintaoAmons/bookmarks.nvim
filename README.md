@@ -1,14 +1,6 @@
-
-> [!WARNING]
-> Breaking change!
-> 
-> The json file db format changed.
->
-> To avoid data lose!! Be sure you have backed your current bookmark db file up
->
-> Pin the version to v0.x.x to revert to previous version
-
 # Bookmarks.nvim
+> v1.1.0: line-highlight-and-db-backup
+> Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
 
 You only need one shortcut to add bookmarks.
 
@@ -17,7 +9,6 @@ You only need one shortcut to add bookmarks.
 - Icon and virtual text: display icon and name at the marked lines
 - Group your bookmarks: so keep you away from the noises
 - Persistent your bookmarks into a human reable json file, which you can manipulate munally
-- [More usecases](./usecases.md)
 - [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
 
 ![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/82ff1c66-d8ee-4e0b-a1de-b6473ec4aa33)
@@ -49,8 +40,11 @@ return { "LintaoAmons/bookmarks.nvim",
     require("bookmarks").setup( {
       json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
       signs = {
-        mark = { icon = "", color = "grey" },
+        mark = { icon = "󰃁", color = "red", line_bg= "#572626" },
       },
+      -- optional, backup the json db file when a new neovim session started and you try to mark a place
+      -- you can find the file under the same folder
+      enable_backup = true,
       hooks = {
         {
           ---a sample hook that change the working directory when goto bookmark
@@ -107,7 +101,6 @@ You can look into the code to find the structure of those two domain objects
 | [Mark] rename bookmark    | rename selected bookmark                                                                    |
 | [Mark] Browsing all marks |                                                                                             |
 | [Mark] delete bookmark    | delete selected bookmarks                                                                   |
-
 
 Also if you want to bind a shortcut to those commands, you can do it by write some code....
 
@@ -166,10 +159,10 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 - [x] telescope enhancement (use specific command instead)
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [x] Project
-    - [x] Add a project field
-    - [x] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
-    - [x] bookmarks of current project
-    - [x] Hooks: Gotobookmark can trigger function like switch project automatically
+  - [x] Add a project field
+  - [x] relative path. (project_path/relative_path can make the bookmarks portable, share your bookmarks to another people or your second laptop)
+  - [x] bookmarks of current project
+  - [x] Hooks: Gotobookmark can trigger function like switch project automatically
 - [x] Grep content in files that contains bookmarks
 
 ### V2
@@ -178,11 +171,11 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
 - [ ] buffer renderer
 - [ ] filetree-like BookmarkList and Bookmark browsing.
-    - use `nui` or a `custom buffer`
-    - custom buffer (can render more things, and can nav/copy/paste with ease)
-        - local Keybindings
-        - popup window
-        - readonly and read current line to trigger action
+  - use `nui` or a `custom buffer`
+  - custom buffer (can render more things, and can nav/copy/paste with ease)
+    - local Keybindings
+    - popup window
+    - readonly and read current line to trigger action
 - [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content

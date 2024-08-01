@@ -5,9 +5,10 @@
 local default_config = {
   json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
   signs = {
-    mark = { icon = "󰃁", color = "grey" },
+    mark = { icon = "󰃁", color = "grey", line_bg= "#572626"},
     -- annotation = { icon = "󰆉", color = "grey" }, -- TODO:
   },
+  enable_backup = true,
   -- do whatever you like by hooks
   hooks = {},
 }
