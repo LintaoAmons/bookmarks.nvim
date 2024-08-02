@@ -1,11 +1,12 @@
-local bookmark_scope = require("bookmarks.domain.bookmark")
+local M = require("bookmarks.domain.bookmark")
 local utils = require("bookmarks.utils")
+local _type = require("bookmarks.domain.type")
 
 ---@class Bookmarks.BookmarkList
 ---@field name string
 ---@field is_active boolean
 ---@field project_path_name_map {string: string}
----@field bookmarks Bookmarks.Bookmark[]
+---@field bookmarks (Bookmarks.Bookmark | Bookmarks.BookmarkList)[]
 
 local M = {}
 
@@ -66,7 +67,7 @@ end
 function M.remove_bookmark(self, bookmark, projects)
   local new_bookmarks = {}
   for _, b in ipairs(self.bookmarks) do
-    if not bookmark_scope.is_same_location(b, bookmark, projects) then
+    if not M.is_same_location(b, bookmark, projects) then
       table.insert(new_bookmarks, b)
     end
   end
@@ -80,12 +81,187 @@ end
 function M.contains_bookmark(self, bookmark, projects)
   for _, b in ipairs(self.bookmarks) do
     ---@cast b Bookmarks.Bookmark
-    if bookmark_scope.is_same_location(b, bookmark, projects) then
+    if M.is_same_location(b, bookmark, projects) then
       return true
     end
   end
 
   return false
 end
+
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@return Bookmarks.BookmarkList?
+function M.get_father(self, id)
+  for _, child in ipairs(self.bookmarks) do
+    if child.id == id then
+      return self
+    end
+
+    local cur_type = M.get_value_type(child)
+    if cur_type == _type.BOOKMARK then
+      goto continue
+    end
+
+    local ret = M.get_father(child, id)
+    if ret ~= nil then
+      return ret
+    end
+
+    ::continue::
+  end
+end
+
+---@param father Bookmarks.BookmarkList
+---@param brother Bookmarks.Bookmark | Bookmarks.BookmarkList
+---@param new_node Bookmarks.Bookmark | Bookmarks.BookmarkList
+function M.add_brother(father, brother, new_node)
+  for i, child in ipairs(father.bookmarks) do
+    if child.id == brother.id then
+      table.insert(father.bookmarks, i + 1, new_node)
+      return
+    end
+  end
+end
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@return (Bookmarks.BookmarkList | Bookmarks.Bookmark)?
+function M.remove_node(self, id)
+  for i, child in ipairs(self.bookmarks) do
+    if child.id == id then
+      return table.remove(self.bookmarks, i)
+    end
+
+    local cur_type = M.get_value_type(child)
+    if cur_type == _type.BOOKMARK then
+      goto continue
+    end
+
+    local ret = M.remove_node(child, id)
+    if ret ~= nil then
+      return ret
+    end
+
+    ::continue::
+  end
+end
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@param name string
+function M.create_folder(self, id, name)
+  local cur_node = M.get_node(self, id)
+  if cur_node == nil then
+    utils.log("can't find current node")
+    return
+  end
+
+  local folder_id = utils.generate_datetime_id()
+  local folder = M.new(name, folder_id)
+  local cur_type = M.get_value_type(cur_node)
+  if cur_type == _type.BOOKMARK_LIST then
+    table.insert(cur_node.bookmarks, folder)
+    return
+  end
+
+  local father = M.get_father(self, id)
+  if father == nil then
+    return
+  end
+
+  M.add_brother(father, cur_node, folder)
+end
+
+---@param self Bookmarks.BookmarkList
+---@param paste_id string | number
+---@param node Bookmarks.Bookmark | Bookmarks.BookmarkList
+function M.paste(self, paste_id, node)
+  local cur_node = M.get_node(self, paste_id)
+  if cur_node == nil then
+    return
+  end
+
+  local cur_type = M.get_value_type(cur_node)
+  if cur_type == _type.BOOKMARK_LIST then
+    table.insert(cur_node.bookmarks, node)
+    return
+  end
+
+  local cur_father = M.get_father(self, paste_id)
+  if cur_father == nil then
+    return
+  end
+
+  M.add_brother(cur_father, cur_node, node)
+end
+
+---@param self Bookmarks.BookmarkList | Bookmarks.Bookmark
+---@param id string | number
+---@return (Bookmarks.Bookmark | Bookmarks.BookmarkList) ?
+function M.get_node(self, id) 
+  if self.id == id then
+    return self
+  end
+
+  if self.bookmarks == nil then
+    return nil
+  end
+
+  for _, b in ipairs(self.bookmarks) do
+    local ret = M.get_node(b, id)
+    if ret ~= nil then
+      return ret
+    end
+  end
+
+  return nil
+end
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@return Bookmarks.Bookmark?
+function M.collapse_node(self, id)
+  local cur_node = M.get_node(self, id)
+  if cur_node == nil then
+    return nil
+  end
+
+  local cur_type = M.get_value_type(cur_node)
+  if cur_type == _type.BOOKMARK then
+    return cur_node
+  end
+  if cur_node.collapse then
+    cur_node.collapse = false
+  else
+    cur_node.collapse = true
+  end
+end
+
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@return Bookmarks.Bookmark?
+function M.find_bookmark_by_id(self, id)
+  for _, b in ipairs(self.bookmarks) do
+    if b.id == id then
+      return b
+    end
+  end
+  return nil
+end
+
+---@param val Bookmarks.BookmarkList | Bookmarks.Bookmark
+---@return number
+function M.get_value_type(val)
+  if val.bookmarks ~= nil then
+    return _type.BOOKMARK_LIST
+  else
+    return _type.BOOKMARK
+  end
+end
+
+
 
 return M

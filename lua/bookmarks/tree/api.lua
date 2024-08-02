@@ -1,6 +1,6 @@
 local repo = require("bookmarks.repo")
 local sign = require("bookmarks.sign")
-local domain = require("bookmarks.bookmark")
+local domain = require("bookmarks.domain")
 local utils = require("bookmarks.utils")
 
 
@@ -13,6 +13,7 @@ function M.create_folder(name, line_no)
 
   local bookmark_list = repo.bookmark_list.read.must_find_by_name(ctx.root_name)
   if not bookmark_list then
+    utils.log("No bookmark list find")
     return
   end
 
