@@ -140,7 +140,6 @@ local function get_recent_files_bookmark_list()
   end
 end
 
-
 ---@param bookmark_list Bookmarks.BookmarkList
 ---@param bookmark_lists? Bookmarks.BookmarkList[]
 local function save_bookmark_list(bookmark_list, bookmark_lists)

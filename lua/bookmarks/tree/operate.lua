@@ -12,14 +12,11 @@ end
 function M.create_folder()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
 
-  vim.ui.input(
-    { prompt = "add folder:", default = "" },
-    function(input)
-      if input then
-        M.create_folder_with_info(input, line_no)
-      end
+  vim.ui.input({ prompt = "add folder:", default = "" }, function(input)
+    if input then
+      M.create_folder_with_info(input, line_no)
     end
-  )
+  end)
 end
 
 function M.tree_cut()
@@ -37,11 +34,10 @@ function M.tree_paste()
   api.tree.paste(line_no)
 end
 
-
 function M.collapse()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
   local bookmark = api.tree.collapse(line_no)
-  local ctx =  vim.g.bookmark_list_win_ctx
+  local ctx = vim.g.bookmark_list_win_ctx
   if not ctx then
     return
   end
@@ -51,7 +47,6 @@ function M.collapse()
     require("bookmarks.api").goto_bookmark(bookmark)
   end
 end
-
 
 function M.delete()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]

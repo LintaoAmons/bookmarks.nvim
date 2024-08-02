@@ -13,7 +13,6 @@ local M = {}
 ---@class Bookmarks.TreeContext
 ---@field line_contexts Bookmarks.LineContext[]
 
-
 ---@param node Bookmarks.BookmarkList | Bookmarks.Bookmark
 ---@param deep number
 ---@return string
