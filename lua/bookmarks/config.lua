@@ -20,6 +20,7 @@ local default_config = {
       collapse = "o",
       delete = "d",
       active = "s",
+      copy = "c",
     },
   },
   -- do whatever you like by hooks

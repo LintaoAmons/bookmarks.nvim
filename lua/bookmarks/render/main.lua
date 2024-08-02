@@ -45,10 +45,10 @@ local function register_local_shortcuts(buf)
 
   for action, keys in pairs(keymap) do
     if type(keys) == "string" then
-      vim.keymap.set({ "v", "n" }, keys, tree_operate[action], options)
+      pcall(vim.keymap.set, { "v", "n" }, keys, tree_operate[action], options)
     elseif type(keys) == "table" then
       for _, k in ipairs(keys) do
-        vim.keymap.set({ "v", "n" }, k, tree_operate[action], options)
+        pcall(vim.keymap.set, k, tree_operate[action], options)
       end
     end
   end
