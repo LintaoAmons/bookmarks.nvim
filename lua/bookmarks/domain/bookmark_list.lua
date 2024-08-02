@@ -172,6 +172,7 @@ function M.create_folder(self, id, name)
 
   local folder_id = utils.generate_datetime_id()
   local folder = M.new(name, folder_id)
+  folder.is_active = false
   local cur_type = M.get_value_type(cur_node)
   if cur_type == _type.BOOKMARK_LIST then
     table.insert(cur_node.bookmarks, folder)
