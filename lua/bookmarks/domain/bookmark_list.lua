@@ -1,4 +1,4 @@
-local M = require("bookmarks.domain.bookmark")
+local bookmark_scope = require("bookmarks.domain.bookmark")
 local utils = require("bookmarks.utils")
 local _type = require("bookmarks.domain.type")
 
@@ -67,7 +67,7 @@ end
 function M.remove_bookmark(self, bookmark, projects)
   local new_bookmarks = {}
   for _, b in ipairs(self.bookmarks) do
-    if not M.is_same_location(b, bookmark, projects) then
+    if not bookmark_scope.is_same_location(b, bookmark, projects) then
       table.insert(new_bookmarks, b)
     end
   end
@@ -81,7 +81,7 @@ end
 function M.contains_bookmark(self, bookmark, projects)
   for _, b in ipairs(self.bookmarks) do
     ---@cast b Bookmarks.Bookmark
-    if M.is_same_location(b, bookmark, projects) then
+    if bookmark_scope.is_same_location(b, bookmark, projects) then
       return true
     end
   end
