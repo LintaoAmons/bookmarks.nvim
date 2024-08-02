@@ -25,7 +25,8 @@ function M.render_context(node, deep)
   if node_type == node_cls_type.BOOKMARK then
     return string.rep(INTENT, deep) .. book_icon .. render_bookmark.render_bookmark(node)
   else
-    return string.rep(INTENT, deep) .. icon .. node.name
+    local suffix = node.is_active and " *" or ""
+    return string.rep(INTENT, deep) .. icon .. node.name .. suffix
   end
 
   return ""

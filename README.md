@@ -133,6 +133,7 @@ x: cut folder or bookmark
 p: paste folder or bookmark
 d: delete folder or bookmark
 o: collapse or expand folder
+s: active the current bookmark_list
 q: quit
 </details>
 

@@ -1,4 +1,5 @@
 local api = require("bookmarks.api")
+local sign = require("bookmarks.sign")
 
 local M = {}
 
@@ -56,6 +57,13 @@ function M.quit()
   local ctx = vim.g.bookmark_list_win_ctx
   vim.api.nvim_win_close(ctx.win, true)
   vim.g.bookmark_list_win_ctx = nil
+end
+
+function M.active()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = vim.b._bm_context.line_contexts[line_no]
+  api.set_active_list(ctx.root_name)
+  sign.refresh_tree()
 end
 
 -- function M.open()

@@ -55,6 +55,7 @@ function M.render(bookmark_lists)
   vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)
   vim.keymap.set({ "v", "n" }, "o", tree_operate.collapse, options)
   vim.keymap.set({ "v", "n" }, "d", tree_operate.delete, options)
+  vim.keymap.set({ "v", "n" }, "s", tree_operate.active, options)
 
   vim.g.bookmark_list_win_ctx = created
   --
