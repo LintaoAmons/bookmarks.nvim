@@ -33,9 +33,16 @@ end
 function M.find_bookmark_by_location(self, location)
   -- TODO: self location path
   for _, b in ipairs(self.bookmarks) do
+    local b_type = M.get_value_type(b)
+    if b_type == _type.BOOKMARK_LIST then
+      goto continue
+    end
+
     if b.location.path == location.path and b.location.line == location.line then
       return b
     end
+
+    ::continue::
   end
   return nil
 end
