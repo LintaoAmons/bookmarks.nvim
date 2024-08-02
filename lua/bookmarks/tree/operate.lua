@@ -27,6 +27,11 @@ function M.tree_cut()
   api.tree.cut(line_no)
 end
 
+function M.copy()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  api.tree.copy(line_no)
+end
+
 function M.tree_paste()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
   api.tree.paste(line_no)

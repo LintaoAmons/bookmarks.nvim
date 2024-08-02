@@ -3,6 +3,9 @@ local sign = require("bookmarks.sign")
 local domain = require("bookmarks.domain")
 local utils = require("bookmarks.utils")
 
+---@class Bookmarks.CopyContext
+---@field line_no number
+---@field opr string
 
 local M = {}
 
@@ -26,7 +29,23 @@ end
 
 ---@param line_no number
 function M.cut(line_no)
-  vim.b._bm_tree_cut = line_no
+  vim.b._bm_tree_cut = {
+    line_no = line_no,
+    opr = "cut",
+  }
+
+  local _namespace = require("bookmarks.sign").namespace
+  vim.api.nvim_buf_clear_namespace(0, _namespace.ns, 0, -1)
+  vim.api.nvim_buf_add_highlight(0, _namespace.ns, _namespace.hl_name, line_no - 1, 0, -1)
+end
+
+---@param line_no number
+function M.copy(line_no)
+  vim.b._bm_tree_cut = {
+    line_no = line_no,
+    opr = "copy",
+  }
+
   local _namespace = require("bookmarks.sign").namespace
   vim.api.nvim_buf_clear_namespace(0, _namespace.ns, 0, -1)
   vim.api.nvim_buf_add_highlight(0, _namespace.ns, _namespace.hl_name, line_no - 1, 0, -1)
@@ -35,28 +54,44 @@ end
 
 ---@param line_no number
 function M.paste(line_no)
-  local _cut_line_no = vim.b._bm_tree_cut
-  if not _cut_line_no then
-    utils.log("No cut")
+  ---@type Bookmarks.CopyContext
+  local opr_ctx = vim.b._bm_tree_cut
+  if not opr_ctx then
+    utils.log("No operation")
     return
   end
 
-  local cut_ctx = vim.b._bm_context.line_contexts[_cut_line_no]
+  ---@type Bookmarks.LineContext
+  local cut_ctx = vim.b._bm_context.line_contexts[opr_ctx.line_no]
   local bookmark_list = repo.bookmark_list.read.must_find_by_name(cut_ctx.root_name)
   if not bookmark_list then
+    utils.log("No bookmark list find")
     return
   end
 
-  local cut_node = domain.bookmark_list.remove_node(bookmark_list, cut_ctx.id)
+  local ctx = vim.b._bm_context.line_contexts[line_no]
+  if domain.bookmark_list.is_descendant_by_id(bookmark_list, cut_ctx.id, ctx.id) then
+    utils.log("Can't paste to descendant")
+    return
+  end
+
+  local cut_node = nil
+  if opr_ctx.opr == "copy" then
+    cut_node = domain.bookmark_list.copy_node(bookmark_list, cut_ctx.id)
+  else
+    cut_node = domain.bookmark_list.remove_node(bookmark_list, cut_ctx.id)
+  end
+
   if not cut_node then
+    utils.log("No cut node")
     return
   end
 
   repo.bookmark_list.write.save(bookmark_list)
 
-  local ctx = vim.b._bm_context.line_contexts[line_no]
   local paste_bookmark_list = repo.bookmark_list.read.must_find_by_name(ctx.root_name)
   if not paste_bookmark_list then
+    utils.log("No paste bookmark list")
     return
   end
 

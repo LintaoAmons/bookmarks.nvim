@@ -130,6 +130,7 @@ vim.keymap.set("n", "<leader>ll", call_bookmark_command)
 <summary>BookmarksDisplay operations</summary>
 a: add new folder
 x: cut folder or bookmark
+c: copy folder or bookmark
 p: paste folder or bookmark
 d: delete folder or bookmark
 o: collapse or expand folder

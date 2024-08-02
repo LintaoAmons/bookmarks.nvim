@@ -150,6 +150,18 @@ end
 
 ---@param self Bookmarks.BookmarkList
 ---@param id string | number
+---@return (Bookmarks.BookmarkList | Bookmarks.Bookmark)?
+function M.copy_node(self, id)
+  local node = M.get_node(self, id)
+  if node == nil then
+    return nil
+  end
+
+  return utils.deep_copy(node)
+end
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
 ---@param name string
 function M.create_folder(self, id, name)
   local cur_node = M.get_node(self, id)
@@ -263,5 +275,47 @@ function M.get_value_type(val)
 end
 
 
+---@param father Bookmarks.BookmarkList
+---@param son string | number
+---@return boolean
+function M.is_descendant(father, son)
+  for _, child in ipairs(father.bookmarks) do
+    if child.id == son then
+      return true
+    end
+
+    local cur_type = M.get_value_type(child)
+    if cur_type == _type.BOOKMARK then
+      goto continue
+    end
+
+    local ret = M.is_descendant(child, son)
+    if ret then
+      return true
+    end
+
+    ::continue::
+  end
+
+  return false
+end
+
+---@param self Bookmarks.BookmarkList
+---@param father string | number
+---@param son string | number
+---@return boolean
+function M.is_descendant_by_id(self, father, son)
+  local father_node = M.get_node(self, father)
+  if father_node == nil then
+    return false
+  end
+
+  local father_type = M.get_value_type(father_node)
+  if father_type == _type.BOOKMARK then
+    return false
+  end
+
+  return M.is_descendant(father_node, son)
+end
 
 return M
