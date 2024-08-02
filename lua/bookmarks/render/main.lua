@@ -6,24 +6,19 @@ local M = {}
 ---@class Bookmarks.PopupWindowCtx
 ---@field buf integer
 ---@field win integer
+---@field previous_window integer
 
 ---@param popup_content string[]
 ---@return Bookmarks.PopupWindowCtx
 local function menu_popup_window(popup_content)
+  local previous_window = vim.api.nvim_get_current_win()
   local popup_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(popup_buf, 0, -1, false, popup_content)
-  local width = vim.fn.strdisplaywidth(table.concat(popup_content, "\n"))
-  local height = #popup_content
 
   local opts = {
-    relative = "cursor",
-    row = 0,
-    col = 0,
-    width = width + 1,
-    height = height,
+    width = 30,
+    split = "right",
     style = "minimal",
-    border = "single",
-    title = "ContextMenu.",
   }
 
   vim.api.nvim_buf_set_option(popup_buf, "modifiable", false)
@@ -31,6 +26,7 @@ local function menu_popup_window(popup_content)
   return {
     buf = popup_buf,
     win = win,
+    previous_window = previous_window,
   }
 end
 

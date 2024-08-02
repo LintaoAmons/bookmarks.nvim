@@ -47,7 +47,7 @@ function M.collapse()
   end
 
   if bookmark then
-    M.quit()
+    vim.api.nvim_set_current_win(ctx.previous_window)
     require("bookmarks.api").goto_bookmark(bookmark)
   end
 end
