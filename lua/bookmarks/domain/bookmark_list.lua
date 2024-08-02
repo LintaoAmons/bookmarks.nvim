@@ -95,20 +95,19 @@ end
 function M.get_father(self, id)
   for _, child in ipairs(self.bookmarks) do
     if child.id == id then
-      return self
+      return self  -- Return self if child id matches
     end
 
+    -- Check the type of the current child
     local cur_type = M.get_value_type(child)
-    if cur_type == _type.BOOKMARK then
-      goto continue
+    -- Only recurse if the current type is not a bookmark
+    if cur_type ~= _type.BOOKMARK then
+      local ret = M.get_father(child, id)
+      if ret ~= nil then
+        return ret  -- Return ret if found in recursion
+      end
     end
-
-    local ret = M.get_father(child, id)
-    if ret ~= nil then
-      return ret
-    end
-
-    ::continue::
+    -- If the current type is a bookmark, simply do nothing and proceed to the next iteration
   end
 end
 
