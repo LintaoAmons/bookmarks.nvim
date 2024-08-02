@@ -89,7 +89,6 @@ function M.contains_bookmark(self, bookmark, projects)
   return false
 end
 
-
 ---@param self Bookmarks.BookmarkList
 ---@param id string | number
 ---@return Bookmarks.BookmarkList?
@@ -213,7 +212,7 @@ end
 ---@param self Bookmarks.BookmarkList | Bookmarks.Bookmark
 ---@param id string | number
 ---@return (Bookmarks.Bookmark | Bookmarks.BookmarkList) ?
-function M.get_node(self, id) 
+function M.get_node(self, id)
   if self.id == id then
     return self
   end
@@ -252,7 +251,6 @@ function M.collapse_node(self, id)
   end
 end
 
-
 ---@param self Bookmarks.BookmarkList
 ---@param id string | number
 ---@return Bookmarks.Bookmark?
@@ -274,7 +272,6 @@ function M.get_value_type(val)
     return _type.BOOKMARK
   end
 end
-
 
 ---@param father Bookmarks.BookmarkList
 ---@param son string | number

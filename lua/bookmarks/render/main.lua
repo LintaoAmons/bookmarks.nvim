@@ -1,4 +1,5 @@
 local tree_operate = require("bookmarks.tree.operate")
+local config = require("bookmarks.config")
 
 local M = {}
 
@@ -25,7 +26,7 @@ local function menu_popup_window(popup_content)
     title = "ContextMenu.",
   }
 
-  vim.api.nvim_buf_set_option(popup_buf, 'modifiable', false)
+  vim.api.nvim_buf_set_option(popup_buf, "modifiable", false)
   local win = vim.api.nvim_open_win(popup_buf, true, opts)
   return {
     buf = popup_buf,
@@ -33,6 +34,29 @@ local function menu_popup_window(popup_content)
   }
 end
 
+local function register_local_shortcuts(buf)
+  local keymap = config.default_config.treeview.keymap
+  if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.keymap then
+    keymap = vim.g.bookmarks_config.treeview.keymap
+  end
+
+  local options = {
+    noremap = true,
+    silent = true,
+    nowait = true,
+    buffer = buf,
+  }
+
+  for action, keys in pairs(keymap) do
+    if type(keys) == "string" then
+      vim.keymap.set({ "v", "n" }, keys, tree_operate[action], options)
+    elseif type(keys) == "table" then
+      for _, k in ipairs(keys) do
+        vim.keymap.set({ "v", "n" }, k, tree_operate[action], options)
+      end
+    end
+  end
+end
 
 ---@param bookmark_lists Bookmarks.BookmarkList[]
 function M.render(bookmark_lists)
@@ -41,22 +65,7 @@ function M.render(bookmark_lists)
 
   vim.b[created.buf]._bm_context = context
 
-  local options = {
-    noremap = true,
-    silent = true,
-    nowait = true,
-    buffer = created.buf,
-  }
-  -- create local buffer shortcuts
-  vim.keymap.set({ "v", "n" }, "q", tree_operate.quit, options)
-  vim.keymap.set({ "v", "n" }, "<Esc>", tree_operate.quit, options)
-  vim.keymap.set({ "v", "n" }, "a", tree_operate.create_folder, options)
-  vim.keymap.set({ "v", "n" }, "x", tree_operate.tree_cut, options)
-  vim.keymap.set({ "v", "n" }, "c", tree_operate.copy, options)
-  vim.keymap.set({ "v", "n" }, "p", tree_operate.tree_paste, options)
-  vim.keymap.set({ "v", "n" }, "o", tree_operate.collapse, options)
-  vim.keymap.set({ "v", "n" }, "d", tree_operate.delete, options)
-  vim.keymap.set({ "v", "n" }, "s", tree_operate.active, options)
+  register_local_shortcuts(created.buf)
 
   vim.g.bookmark_list_win_ctx = created
   --

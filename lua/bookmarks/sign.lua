@@ -84,7 +84,7 @@ end
 local function bookmark_sign_autocmd()
   -- TODO: check the autocmd
   vim.api.nvim_create_augroup(ns_name, { clear = true })
-  vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
+  vim.api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
     group = ns_name,
     callback = function(_)
       safe_refresh_signs()
@@ -108,9 +108,9 @@ local function refresh_tree()
   local bookmark_lists = repo.bookmark_list.read.find_all()
   local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
 
-  vim.api.nvim_buf_set_option(ctx.buf, 'modifiable', true)
+  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", true)
   vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_option(ctx.buf, 'modifiable', false)
+  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", false)
 
   vim.b[ctx.buf]._bm_context = context
 end
@@ -123,5 +123,5 @@ return {
   namespace = {
     ns = ns,
     hl_name = hl_name,
-  }
+  },
 }

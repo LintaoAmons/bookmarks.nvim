@@ -93,6 +93,8 @@ local function goto_bookmark(bookmark, opts)
   for _, hook in ipairs(hooks) do
     hook(bookmark, projects)
   end
+
+  sign.refresh_signs()
 end
 
 local function goto_last_visited_bookmark()
@@ -108,6 +110,8 @@ local function goto_last_visited_bookmark()
   if last_bookmark then
     goto_bookmark(last_bookmark)
   end
+
+  sign.refresh_signs()
 end
 
 -- TODO: trigger by `BufferEnter` Event

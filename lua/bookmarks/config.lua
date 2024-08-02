@@ -6,9 +6,22 @@ local default_config = {
   json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
   signs = {
     mark = { icon = "󰃁", color = "grey", line_bg = "#572626" },
-    -- annotation = { icon = "󰆉", color = "grey" }, -- TODO:
   },
   enable_backup = true,
+  treeview = {
+    bookmark_formt = function(bookmark)
+      return "[" .. bookmark.location.project_name .. "] " .. bookmark.name .. ": " .. bookmark.location.relative_path
+    end,
+    keymap = {
+      quit = { "q", "<ESC>" },
+      create_folder = "a",
+      tree_cut = "x",
+      tree_paste = "p",
+      collapse = "o",
+      delete = "d",
+      active = "s",
+    },
+  },
   -- do whatever you like by hooks
   hooks = {},
 }
@@ -26,4 +39,5 @@ end
 
 return {
   setup = setup,
+  default_config = default_config,
 }
