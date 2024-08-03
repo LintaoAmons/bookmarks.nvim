@@ -2,7 +2,7 @@ local domain = require("bookmarks.domain")
 local render_bookmark = require("bookmarks.tree.render.bookmark")
 local node_cls_type = require("bookmarks.domain.type")
 
-local INTENT = "    "
+local INTENT = "  "
 local M = {}
 
 ---@class Bookmarks.LineContext
@@ -22,7 +22,8 @@ function M.render_context(node, deep)
   local book_icon = ""
 
   if node_type == node_cls_type.BOOKMARK then
-    return string.rep(INTENT, deep) .. book_icon .. render_bookmark.render_bookmark(node)
+    ---@cast node Bookmarks.Bookmark
+    return string.rep(INTENT, deep) .. book_icon .. " " .. render_bookmark.render_bookmark(node)
   else
     local suffix = node.is_active and " *" or ""
     return string.rep(INTENT, deep) .. icon .. node.name .. suffix

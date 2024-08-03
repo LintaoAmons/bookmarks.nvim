@@ -4,7 +4,7 @@ local M = {}
 ---@return string
 function M.render_bookmark(bookmark)
   if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.bookmark_formt then
-    return vim.g.bookmarks_config.treeview.bookmark_formt(bookmark)
+    return vim.g.bookmarks_config.treeview.bookmark_format(bookmark)
   end
   return bookmark.name
     .. " ["

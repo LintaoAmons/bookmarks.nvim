@@ -106,7 +106,7 @@ local function refresh_tree()
   clean_tree_cache(ctx.buf)
 
   local bookmark_lists = repo.bookmark_list.read.find_all()
-  local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
+  local context, lines = require("bookmarks.tree.render.context").from_bookmark_lists(bookmark_lists)
 
   vim.api.nvim_buf_set_option(ctx.buf, "modifiable", true)
   vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)

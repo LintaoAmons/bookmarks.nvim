@@ -21,23 +21,6 @@ local function create_vsplit_with_width(opts)
   return new_win
 end
 
----@param popup_content string[]
----@return Bookmarks.PopupWindowCtx
-local function menu_popup_window(popup_content)
-  local previous_window = vim.api.nvim_get_current_win()
-  local popup_buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(popup_buf, 0, -1, false, popup_content)
-  vim.api.nvim_buf_set_option(popup_buf, "modifiable", false)
-
-  local win = create_vsplit_with_width({ buf = popup_buf, width = 30 })
-
-  return {
-    buf = popup_buf,
-    win = win,
-    previous_window = previous_window,
-  }
-end
-
 local function register_local_shortcuts(buf)
   local keymap = config.default_config.treeview.keymap
   if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.keymap then
