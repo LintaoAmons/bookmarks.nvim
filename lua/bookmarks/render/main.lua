@@ -8,21 +8,29 @@ local M = {}
 ---@field win integer
 ---@field previous_window integer
 
+---@param opts {buf: integer,width: integer}
+---@return integer
+local function create_vsplit_with_width(opts)
+  vim.cmd("vsplit")
+
+  local new_win = vim.api.nvim_get_current_win()
+
+  vim.api.nvim_win_set_width(new_win, opts.width)
+  vim.api.nvim_win_set_buf(new_win, opts.buf)
+
+  return new_win
+end
+
 ---@param popup_content string[]
 ---@return Bookmarks.PopupWindowCtx
 local function menu_popup_window(popup_content)
   local previous_window = vim.api.nvim_get_current_win()
   local popup_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(popup_buf, 0, -1, false, popup_content)
-
-  local opts = {
-    width = 30,
-    split = "right",
-    style = "minimal",
-  }
-
   vim.api.nvim_buf_set_option(popup_buf, "modifiable", false)
-  local win = vim.api.nvim_open_win(popup_buf, true, opts)
+
+  local win = create_vsplit_with_width({ buf = popup_buf, width = 30 })
+
   return {
     buf = popup_buf,
     win = win,
