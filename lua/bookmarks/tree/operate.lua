@@ -69,13 +69,15 @@ end
 
 function M.open_treeview()
   local ctx = vim.g.bookmark_list_win_ctx
-  if ctx ~= nil and vim.api.nvim_win_is_valid(ctx.win) then
-    vim.api.nvim_set_current_win(ctx.win)
-    return
-  end
+
+  local win = (ctx ~= nil) and vim.api.nvim_win_is_valid(ctx.win) and ctx.win or nil
 
   local lists = repo.bookmark_list.read.find_all()
-  require("bookmarks.tree.render.main").render(lists)
+  require("bookmarks.tree.render.main").render(lists, { win = win })
+end
+
+function M.refresh()
+  M.open_treeview()
 end
 
 -- function M.open()

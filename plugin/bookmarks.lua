@@ -9,6 +9,11 @@ if vim.g.loaded_bookmarks == 1 then
 end
 vim.g.loaded_bookmarks = 1
 
+-- all global variable should firstly declare at this place
+vim.g.bookmarks_config = require("bookmarks.config").default_config
+---@type Bookmarks.PopupWindowCtx
+vim.g.bookmark_list_win_ctx = nil
+
 require("bookmarks").setup()
 require("bookmarks.sign").bookmark_sign_autocmd()
 local adapter = require("bookmarks.adapter")

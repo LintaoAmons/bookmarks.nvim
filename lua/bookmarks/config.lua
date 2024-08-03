@@ -14,6 +14,7 @@ local default_config = {
     end,
     keymap = {
       quit = { "q", "<ESC>" },
+      refresh = "R",
       create_folder = "a",
       tree_cut = "x",
       tree_paste = "p",
@@ -27,7 +28,6 @@ local default_config = {
   hooks = {},
 }
 
-vim.g.bookmarks_config = default_config
 
 ---@param user_config? Bookmarks.Config
 local setup = function(user_config)
