@@ -4,7 +4,7 @@ local _type = require("bookmarks.domain.type")
 
 ---@class Bookmarks.BookmarkList
 ---@field id string
----@field name string 
+---@field name string
 ---@field is_active boolean
 ---@field project_path_name_map {string: string}  -- bookmark specific path_name map, used to allow overwrite the project path to share with others
 ---@field bookmarks (Bookmarks.Bookmark | Bookmarks.BookmarkList)[]
@@ -36,15 +36,12 @@ function M.find_bookmark_by_location(self, location)
   -- TODO: self location path
   for _, b in ipairs(self.bookmarks) do
     local b_type = M.get_value_type(b)
-    if b_type == _type.BOOKMARK_LIST then
-      goto continue
+    if b_type == _type.BOOKMARK then
+      ---@cast b Bookmarks.Bookmark
+      if b.location.path == location.path and b.location.line == location.line then
+        return b
+      end
     end
-
-    if b.location.path == location.path and b.location.line == location.line then
-      return b
-    end
-
-    ::continue::
   end
   return nil
 end
@@ -104,7 +101,7 @@ end
 function M.get_father(self, id)
   for _, child in ipairs(self.bookmarks) do
     if child.id == id then
-      return self  -- Return self if child id matches
+      return self -- Return self if child id matches
     end
 
     -- Check the type of the current child
@@ -113,7 +110,7 @@ function M.get_father(self, id)
     if cur_type ~= _type.BOOKMARK then
       local ret = M.get_father(child, id)
       if ret ~= nil then
-        return ret  -- Return ret if found in recursion
+        return ret -- Return ret if found in recursion
       end
     end
     -- If the current type is a bookmark, simply do nothing and proceed to the next iteration
@@ -142,17 +139,13 @@ function M.remove_node(self, id)
     end
 
     local cur_type = M.get_value_type(child)
-    if cur_type == _type.BOOKMARK then
-      goto continue
+    if cur_type == _type.BOOKMARK_LIST then
+      ---@cast child Bookmarks.BookmarkList
+      local ret = M.remove_node(child, id)
+      if ret ~= nil then
+        return ret
+      end
     end
-
-    ---@cast child Bookmarks.BookmarkList
-    local ret = M.remove_node(child, id)
-    if ret ~= nil then
-      return ret
-    end
-
-    ::continue::
   end
 end
 
@@ -295,16 +288,13 @@ function M.is_descendant(father, son)
     end
 
     local cur_type = M.get_value_type(child)
-    if cur_type == _type.BOOKMARK then
-      goto continue
+    if cur_type == _type.BOOKMARK_LIST then
+      ---@cast child Bookmarks.BookmarkList
+      local ret = M.is_descendant(child, son)
+      if ret then
+        return true
+      end
     end
-
-    local ret = M.is_descendant(child, son)
-    if ret then
-      return true
-    end
-
-    ::continue::
   end
 
   return false
