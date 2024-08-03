@@ -1,5 +1,5 @@
 local domain = require("bookmarks.domain")
-local render_bookmark = require("bookmarks.render.bookmark")
+local render_bookmark = require("bookmarks.tree.render.bookmark")
 local node_cls_type = require("bookmarks.domain.type")
 
 local INTENT = "    "
@@ -27,8 +27,6 @@ function M.render_context(node, deep)
     local suffix = node.is_active and " *" or ""
     return string.rep(INTENT, deep) .. icon .. node.name .. suffix
   end
-
-  return ""
 end
 
 ---@param node Bookmarks.Bookmark | Bookmarks.BookmarkList

@@ -1,5 +1,6 @@
 local api = require("bookmarks.api")
 local sign = require("bookmarks.sign")
+local repo = require("bookmarks.repo")
 
 local M = {}
 
@@ -64,6 +65,17 @@ function M.active()
   local ctx = vim.b._bm_context.line_contexts[line_no]
   api.set_active_list(ctx.root_name)
   sign.refresh_tree()
+end
+
+function M.open_treeview()
+  local ctx = vim.g.bookmark_list_win_ctx
+  if ctx ~= nil and vim.api.nvim_win_is_valid(ctx.win) then
+    vim.api.nvim_set_current_win(ctx.win)
+    return
+  end
+
+  local lists = repo.bookmark_list.read.find_all()
+  require("bookmarks.tree.render.main").render(lists)
 end
 
 -- function M.open()

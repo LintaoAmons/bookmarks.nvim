@@ -1,3 +1,4 @@
+local render_context = require("bookmarks.tree.render.context")
 local tree_operate = require("bookmarks.tree.operate")
 local config = require("bookmarks.config")
 
@@ -64,7 +65,7 @@ end
 
 ---@param bookmark_lists Bookmarks.BookmarkList[]
 function M.render(bookmark_lists)
-  local context, lines = require("bookmarks.tree.context").from_bookmark_lists(bookmark_lists)
+  local context, lines = render_context.from_bookmark_lists(bookmark_lists)
   local created = menu_popup_window(lines)
 
   vim.b[created.buf]._bm_context = context
@@ -72,28 +73,6 @@ function M.render(bookmark_lists)
   register_local_shortcuts(created.buf)
 
   vim.g.bookmark_list_win_ctx = created
-  --
-  -- vim.keymap.set({ "v", "n" }, "<CR>", function()
-  --   quit_after_action(function()
-  --     local line = vim.api.nvim_get_current_line()
-  --     vim.print(line)
-  --   end, created.win)
-  -- end, {
-  --   noremap = true,
-  --   silent = true,
-  --   nowait = true,
-  --   buffer = created.buf,
-  -- })
-  --
-  -- vim.keymap.set({ "v", "n" }, "g?", function()
-  --   vim.print("<q> quit; <CR> trigger action under cursor")
-  -- end, {
-  --   noremap = true,
-  --   silent = true,
-  --   nowait = true,
-  --   buffer = created.buf,
-  -- })
-  --
 end
 
 return M

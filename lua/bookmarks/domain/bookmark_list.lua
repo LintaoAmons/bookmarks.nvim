@@ -3,10 +3,12 @@ local utils = require("bookmarks.utils")
 local _type = require("bookmarks.domain.type")
 
 ---@class Bookmarks.BookmarkList
----@field name string
+---@field id string
+---@field name string 
 ---@field is_active boolean
----@field project_path_name_map {string: string}
+---@field project_path_name_map {string: string}  -- bookmark specific path_name map, used to allow overwrite the project path to share with others
 ---@field bookmarks (Bookmarks.Bookmark | Bookmarks.BookmarkList)[]
+---@field collapse boolean treeview runtime status, may need refactor this field later
 
 local M = {}
 
@@ -144,6 +146,7 @@ function M.remove_node(self, id)
       goto continue
     end
 
+    ---@cast child Bookmarks.BookmarkList
     local ret = M.remove_node(child, id)
     if ret ~= nil then
       return ret
@@ -248,8 +251,11 @@ function M.collapse_node(self, id)
 
   local cur_type = M.get_value_type(cur_node)
   if cur_type == _type.BOOKMARK then
+    ---@type Bookmarks.Bookmark
     return cur_node
   end
+
+  ---@cast cur_node Bookmarks.BookmarkList
   if cur_node.collapse then
     cur_node.collapse = false
   else

@@ -129,4 +129,8 @@ function M.delete(line_no)
   sign.refresh_tree()
 end
 
+function M.open_treeview()
+  require("bookmarks.tree.operate").open_treeview()
+end
+
 return M
