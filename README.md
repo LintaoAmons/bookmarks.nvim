@@ -176,6 +176,11 @@ Don't hesitate to ask me anything about the codebase if you want to contribute.
 
 By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://lintao-index.pages.dev/assets/images/wechat-437d6c12efa9f89bab63c7fe07ce1927.png)
 
+- How to get start:
+    1. `plugin/bookmarks.lua` the entry point of the plugin
+    2. `lua/bookmarks/domain` where the main objects/concepts live
+    3. code layers: user --> `lua/bookmarks/adapter` --> `lua/bookmarks/api` --> `lua/bookmarks/repo` --> json db
+
 ## Some Other Neovim Stuff
 
 - [my neovim config](https://github.com/LintaoAmons/CoolStuffes/tree/main/nvim/.config/nvim)
@@ -212,10 +217,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [ ] floating preview window
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
-  - custom buffer (can render more things, and can nav/copy/paste with ease)
-    - local Keybindings
-    - popup window
-    - readonly and read current line to trigger action
-- [ ] Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at
+- [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
+    - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
