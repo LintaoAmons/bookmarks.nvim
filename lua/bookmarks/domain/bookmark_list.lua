@@ -114,4 +114,26 @@ function M.find_bookmark_by_id(self, id)
   return nil
 end
 
+---get all bookmarks in one dimension array
+---@param self Bookmarks.BookmarkList
+---@return Bookmarks.Bookmark[]
+function M.get_all_marks(self)
+  local r = {}
+
+  local function __get_all_marks(list, result)
+    for _, b in ipairs(list.bookmarks) do
+      if _get_value_type(b) == _type.BOOKMARK then
+        ---@cast b Bookmarks.Bookmark
+        table.insert(result, b)
+      else
+        __get_all_marks(b, result)
+      end
+    end
+  end
+
+  __get_all_marks(self, r)
+
+  return r
+end
+
 return M
