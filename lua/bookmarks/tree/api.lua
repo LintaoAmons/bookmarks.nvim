@@ -20,7 +20,7 @@ function M.create_folder(name, line_no)
     return
   end
 
-  domain.bookmark_list.create_folder(bookmark_list, ctx.id, name)
+  domain.node.create_folder(bookmark_list, ctx.id, name)
 
   repo.bookmark_list.write.save(bookmark_list)
   sign.refresh_tree()
@@ -68,16 +68,16 @@ function M.paste(line_no)
   end
 
   local ctx = vim.b._bm_context.line_contexts[line_no]
-  if domain.bookmark_list.is_descendant_by_id(bookmark_list, cut_ctx.id, ctx.id) then
+  if domain.node.is_descendant_by_id(bookmark_list, cut_ctx.id, ctx.id) then
     utils.log("Can't paste to descendant")
     return
   end
 
   local cut_node = nil
   if opr_ctx.opr == "copy" then
-    cut_node = domain.bookmark_list.copy_node(bookmark_list, cut_ctx.id)
+    cut_node = domain.node.copy_node(bookmark_list, cut_ctx.id)
   else
-    cut_node = domain.bookmark_list.remove_node(bookmark_list, cut_ctx.id)
+    cut_node = domain.node.remove_node(bookmark_list, cut_ctx.id)
   end
 
   if not cut_node then
@@ -93,7 +93,7 @@ function M.paste(line_no)
     return
   end
 
-  domain.bookmark_list.paste(paste_bookmark_list, ctx.id, cut_node)
+  domain.node.paste(paste_bookmark_list, ctx.id, cut_node)
   repo.bookmark_list.write.save(paste_bookmark_list)
 
   sign.refresh_tree()
@@ -109,7 +109,7 @@ function M.collapse(line_no)
     return
   end
 
-  local ret = domain.bookmark_list.collapse_node(bookmark_list, ctx.id)
+  local ret = domain.node.collapse_node(bookmark_list, ctx.id)
   if ret then
     return ret
   end
@@ -123,7 +123,7 @@ function M.delete(line_no)
   local ctx = vim.b._bm_context.line_contexts[line_no]
   local bookmark_list = repo.bookmark_list.read.must_find_by_name(ctx.root_name)
 
-  domain.bookmark_list.remove_node(bookmark_list, ctx.id)
+  domain.node.remove_node(bookmark_list, ctx.id)
   repo.bookmark_list.write.save(bookmark_list)
 
   sign.refresh_tree()

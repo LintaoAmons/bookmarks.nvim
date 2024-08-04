@@ -7,7 +7,7 @@ local location_scope = require("bookmarks.domain.location")
 ---@field location Bookmarks.Location
 ---@field content string
 ---@field githash string
----@field listname? string
+---@field listname? string -- TODO: remove this field, only used in repo when trying to find all marks, which is not reasonable
 ---@field created_at number
 ---@field visited_at number
 

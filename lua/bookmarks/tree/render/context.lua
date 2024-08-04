@@ -1,6 +1,6 @@
-local domain = require("bookmarks.domain")
 local render_bookmark = require("bookmarks.tree.render.bookmark")
-local node_cls_type = require("bookmarks.domain.type")
+local _type = require("bookmarks.domain.type").type
+local _get_value_type = require("bookmarks.domain.type").get_value_type
 
 local INTENT = "  "
 local M = {}
@@ -17,11 +17,11 @@ local M = {}
 ---@param deep number
 ---@return string
 function M.render_context(node, deep)
-  local node_type = domain.bookmark_list.get_value_type(node)
+  local node_type = _get_value_type(node)
   local icon = node.collapse and "▸" or "▾"
   local book_icon = ""
 
-  if node_type == node_cls_type.BOOKMARK then
+  if node_type == _type.BOOKMARK then
     ---@cast node Bookmarks.Bookmark
     return string.rep(INTENT, deep) .. book_icon .. " " .. render_bookmark.render_bookmark(node)
   else
@@ -30,7 +30,7 @@ function M.render_context(node, deep)
   end
 end
 
----@param node Bookmarks.Bookmark | Bookmarks.BookmarkList
+---@param node Bookmarks.Node
 ---@param lines string[]
 ---@param line_contexts Bookmarks.LineContext[]
 ---@param deep number
@@ -44,7 +44,7 @@ function M.render_tree_recursive(node, lines, line_contexts, deep, root_id)
     return
   end
 
-  if domain.bookmark_list.get_value_type(node) == domain.type.BOOKMARK then
+  if _get_value_type(node) == _type.BOOKMARK then
     return
   end
 
