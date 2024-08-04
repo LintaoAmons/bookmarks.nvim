@@ -1,6 +1,6 @@
 # Bookmarks.nvim
 
-> v1.1.0: line-highlight-and-db-backup
+> v1.2.0: tree-view
 >
 > Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
 
