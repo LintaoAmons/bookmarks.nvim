@@ -6,13 +6,13 @@
 
 You only need one shortcut to add bookmarks.
 
-- Toggle mark: Add, Rename and Remove mark with only one shortcut
-- Mark with name: so you can record more information
-- Icon and virtual text: display icon and name at the marked lines
-- Group your bookmarks: so keep you away from the noises
-- Persistent your bookmarks into a human reable json file, which you can manipulate munally
-- Share you bookmarks with others by simple changing the project path to their locations 
-- [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
+- ToggleMark: Add, Rename and Remove mark with only one shortcut
+- Accessible: Find your bookmark by telescope or Treeview with ease
+- Informative: mark with a description, so you can record more information
+- Visibility: display icon and name at the marked lines, and highlight marked lines
+- Groups: arrange your bookmarks in groups, so keep you away from noises
+- Persistent: save your bookmarks into a human reable json file, which you can manipulate munally
+- Portable: Share you bookmarks with others/or your another device by simple changing the project path in the json file
 
 ![showcase](https://github.com/user-attachments/assets/e47327bb-7dce-43a5-9c74-aaeb58091648)
 
