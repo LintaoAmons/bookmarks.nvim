@@ -4,8 +4,6 @@
 >
 > Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
 
-You only need one shortcut to add bookmarks.
-
 - Simple: Add, Rename and Remove mark with only one command, less shortcuts more productivity
 - Persistent: save your bookmarks into a human reable json file, which you can manipulate munally
 - Accessible: Find your bookmark by telescope or Treeview with ease
