@@ -13,7 +13,7 @@ You only need one shortcut to add bookmarks.
 - Persistent your bookmarks into a human reable json file, which you can manipulate munally
 - [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
 
-![show](https://github.com/LintaoAmons/bookmarks.nvim/assets/95092244/82ff1c66-d8ee-4e0b-a1de-b6473ec4aa33)
+![showcase](https://github.com/user-attachments/assets/e47327bb-7dce-43a5-9c74-aaeb58091648)
 
 ## Install and Config
 
