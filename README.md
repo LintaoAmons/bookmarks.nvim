@@ -11,6 +11,7 @@ You only need one shortcut to add bookmarks.
 - Icon and virtual text: display icon and name at the marked lines
 - Group your bookmarks: so keep you away from the noises
 - Persistent your bookmarks into a human reable json file, which you can manipulate munally
+- Share you bookmarks with others by simple changing the project path to their locations 
 - [Video Explaination](https://www.youtube.com/watch?v=M6fncKXYw_Y)
 
 ![showcase](https://github.com/user-attachments/assets/e47327bb-7dce-43a5-9c74-aaeb58091648)
@@ -154,19 +155,9 @@ vim.keymap.set("n", "<leader>ll", call_bookmark_command)
 
 </details>
 
-### Bookmark Treeview
+### BookmarksTree
 
-<details>
-<summary>BookmarksDisplay operations</summary>
-a: add new folder
-x: cut folder or bookmark
-c: copy folder or bookmark
-p: paste folder or bookmark
-d: delete folder or bookmark
-o: collapse or expand folder
-s: active the current bookmark_list
-q: quit
-</details>
+check the tree section in the config to find out all the actions you can use
 
 ### Keymap
 
@@ -178,6 +169,8 @@ vim.keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to boo
 vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
 vim.keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to latest visited/created Bookmark" })
 ```
+
+
 
 ## CONTRIBUTING
 
