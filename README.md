@@ -33,8 +33,6 @@ return {
 
 <details>
 <summary>Detailed config</summary>
-  
-Right now we have only one config options
 
 ```lua
 return {
