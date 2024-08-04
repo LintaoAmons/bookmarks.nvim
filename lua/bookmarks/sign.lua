@@ -1,5 +1,5 @@
 local repo = require("bookmarks.repo")
-local domain = require('bookmarks.domain')
+local domain = require("bookmarks.domain")
 local ns_name = "BookmarksNvim"
 local hl_name = "BookmarksNvimSign"
 local hl_name_line = "BookmarksNvimLine"
@@ -67,7 +67,7 @@ end
 local function _refresh_signs(bookmarks)
   clean()
 
-  local active_list =  repo.bookmark_list.write.find_or_set_active()
+  local active_list = repo.bookmark_list.write.find_or_set_active()
 
   bookmarks = bookmarks or domain.bookmark_list.get_all_marks(active_list)
   local buf_number = vim.api.nvim_get_current_buf()

@@ -15,7 +15,13 @@ local default_config = {
   -- treeview options
   treeview = {
     bookmark_format = function(bookmark)
-      return bookmark.name .. " [" .. bookmark.location.project_name .. "] " .. bookmark.location.relative_path .. " : " .. bookmark.content
+      return bookmark.name
+        .. " ["
+        .. bookmark.location.project_name
+        .. "] "
+        .. bookmark.location.relative_path
+        .. " : "
+        .. bookmark.content
     end,
     keymap = {
       quit = { "q", "<ESC>" },
