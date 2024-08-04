@@ -45,4 +45,4 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookmarks_jsonfile, {
   desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
 })
-vim.api.nvim_create_user_command("BookmarksDisplay", api.tree.open_treeview, {})
+vim.api.nvim_create_user_command("BookmarksTree", api.tree.open_treeview, {})
