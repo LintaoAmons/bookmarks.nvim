@@ -9,6 +9,11 @@ if vim.g.loaded_bookmarks == 1 then
 end
 vim.g.loaded_bookmarks = 1
 
+-- all global variable should firstly declare at this place
+vim.g.bookmarks_config = require("bookmarks.config").default_config
+---@type Bookmarks.PopupWindowCtx
+vim.g.bookmark_list_win_ctx = nil
+
 require("bookmarks").setup()
 require("bookmarks.sign").bookmark_sign_autocmd()
 local adapter = require("bookmarks.adapter")
@@ -40,4 +45,4 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookmarks_jsonfile, {
   desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
 })
-vim.api.nvim_create_user_command("BookmarksDisplay", api.buffer_display, {})
+vim.api.nvim_create_user_command("BookmarksTree", api.tree.open_treeview, {})

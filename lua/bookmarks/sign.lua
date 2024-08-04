@@ -1,4 +1,5 @@
 local repo = require("bookmarks.repo")
+local domain = require("bookmarks.domain")
 local ns_name = "BookmarksNvim"
 local hl_name = "BookmarksNvimSign"
 local hl_name_line = "BookmarksNvimLine"
@@ -66,7 +67,9 @@ end
 local function _refresh_signs(bookmarks)
   clean()
 
-  bookmarks = bookmarks or repo.bookmark_list.write.find_or_set_active().bookmarks
+  local active_list = repo.bookmark_list.write.find_or_set_active()
+
+  bookmarks = bookmarks or domain.bookmark_list.get_all_marks(active_list)
   local buf_number = vim.api.nvim_get_current_buf()
   for _, bookmark in ipairs(bookmarks) do
     local filepath = vim.fn.expand("%:p")
@@ -84,7 +87,7 @@ end
 local function bookmark_sign_autocmd()
   -- TODO: check the autocmd
   vim.api.nvim_create_augroup(ns_name, { clear = true })
-  vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
+  vim.api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
     group = ns_name,
     callback = function(_)
       safe_refresh_signs()
@@ -92,8 +95,36 @@ local function bookmark_sign_autocmd()
   })
 end
 
+local function clean_tree_cache(buf)
+  vim.b[buf]._bm_context = nil
+  vim.b[buf]._bm_tree_cut = nil
+end
+
+local function refresh_tree()
+  local ctx = vim.g.bookmark_list_win_ctx
+  if ctx == nil then
+    return
+  end
+
+  clean_tree_cache(ctx.buf)
+
+  local bookmark_lists = repo.bookmark_list.read.find_all()
+  local context, lines = require("bookmarks.tree.render.context").from_bookmark_lists(bookmark_lists)
+
+  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", true)
+  vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
+  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", false)
+
+  vim.b[ctx.buf]._bm_context = context
+end
+
 return {
   setup = setup,
   bookmark_sign_autocmd = bookmark_sign_autocmd,
   refresh_signs = safe_refresh_signs,
+  refresh_tree = refresh_tree,
+  namespace = {
+    ns = ns,
+    hl_name = hl_name,
+  },
 }

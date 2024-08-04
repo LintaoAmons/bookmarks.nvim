@@ -1,3 +1,4 @@
+-- TODO: refactor to repo module
 local json = require("bookmarks.json")
 local utils = require("bookmarks.utils")
 
@@ -47,23 +48,6 @@ local save_all = function(bookmark_lists)
   save_db(db)
 end
 
--- Function to generate an ID in the datetime format
-local function generate_datetime_id()
-  -- Get the current date and time in the desired format
-  local datetime = os.date("%Y%m%d%H%M%S")
-
-  -- Generate a random number (e.g., using math.random) and append it to the datetime
-  local random_suffix = ""
-  for _ = 1, 8 do
-    random_suffix = random_suffix .. tostring(math.random(0, 9))
-  end
-
-  -- Concatenate the datetime and random suffix to create the ID
-  local id = datetime .. random_suffix
-
-  return id
-end
-
 ---@return Bookmarks.BookmarkList[]
 local function find_all()
   return get_db().bookmark_lists or {}
@@ -93,7 +77,7 @@ local function find_or_set_active_bookmark_list(bookmark_lists)
   if not active_bookmark_list then
     -- TODO: use domain logic to create new one
     active_bookmark_list = {
-      id = generate_datetime_id(),
+      id = utils.generate_datetime_id(),
       name = "Default",
       is_active = true,
       bookmarks = {},
@@ -142,7 +126,7 @@ local function get_recent_files_bookmark_list()
     return found[1]
   elseif #found == 0 then
     return {
-      id = generate_datetime_id(),
+      id = utils.generate_datetime_id(),
       name = name,
       is_active = false,
       bookmarks = {},
@@ -292,6 +276,4 @@ return {
 
   -- read
   get_recent_files_bookmark_list = get_recent_files_bookmark_list,
-
-  generate_datetime_id = generate_datetime_id,
 }

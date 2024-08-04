@@ -1,4 +1,5 @@
 # Bookmarks.nvim
+
 > v1.1.0: line-highlight-and-db-backup
 >
 > Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
@@ -36,16 +37,42 @@ return {
 Right now we have only one config options
 
 ```lua
-return { "LintaoAmons/bookmarks.nvim",
-  config = function ()
-    require("bookmarks").setup( {
+return {
+  "LintaoAmons/bookmarks.nvim",
+  -- tag = "v0.5.4", -- optional, pin the plugin at specific version for stability
+  dependencies = {
+    { "nvim-telescope/telescope.nvim" },
+    { "stevearc/dressing.nvim" }, -- optional: to have the same UI shown in the GIF
+  },
+  config = function()
+    local opts = {
+      -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well, dont forget run `BookmarksReload` command to clean the cache)
       json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
+      -- This is how the sign looks.
       signs = {
-        mark = { icon = "󰃁", color = "red", line_bg= "#572626" },
+        mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
       },
       -- optional, backup the json db file when a new neovim session started and you try to mark a place
       -- you can find the file under the same folder
       enable_backup = true,
+      -- treeview options
+      treeview = {
+        bookmark_format = function(bookmark)
+          return bookmark.name .. " [" .. bookmark.location.project_name .. "] " .. bookmark.location.relative_path .. " : " .. bookmark.content
+        end,
+        keymap = {
+          quit = { "q", "<ESC>" },
+          refresh = "R",
+          create_folder = "a",
+          tree_cut = "x",
+          tree_paste = "p",
+          collapse = "o",
+          delete = "d",
+          active = "s",
+          copy = "c",
+        },
+      },
+      -- do whatever you like by hooks
       hooks = {
         {
           ---a sample hook that change the working directory when goto bookmark
@@ -64,18 +91,21 @@ return { "LintaoAmons/bookmarks.nvim",
           end,
         },
       },
-    })
-  end
+    }
+    require("bookmarks").setup(opts)
+  end,
 }
 ```
 
 </details>
 
-## Commands and Keybindings
+## Usage
 
-There's two concepts in this plugin: `BookmarkList` and `Bookmark`.
+There's two key concepts in this plugin: `BookmarkList` and `Bookmark`.
 
 You can look into the code to find the structure of those two domain objects
+
+### Commands
 
 | Command                 | Description                                                                                                                         |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -85,6 +115,7 @@ You can look into the code to find the structure of those two domain objects
 | `BookmarksGotoRecent`   | Go to latest visited/created Bookmark                                                                                               |
 | `BookmarksReload`       | Clean the cache and resync the bookmarks jsonfile                                                                                   |
 | `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing                         |
+| `BookmarksTree`         | Display all bookmarks with tree-view, and use "cut", "paste", "create folder" to edit the tree.                                     |
 
 <details>
 <summary>BookmarksCommands(subcommands) we have right now</summary>
@@ -124,6 +155,22 @@ vim.keymap.set("n", "<leader>ll", call_bookmark_command)
 ```
 
 </details>
+
+### Bookmark Treeview
+
+<details>
+<summary>BookmarksDisplay operations</summary>
+a: add new folder
+x: cut folder or bookmark
+c: copy folder or bookmark
+p: paste folder or bookmark
+d: delete folder or bookmark
+o: collapse or expand folder
+s: active the current bookmark_list
+q: quit
+</details>
+
+### Keymap
 
 This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
 
@@ -172,7 +219,10 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
 - [ ] buffer renderer
 - [ ] filetree-like BookmarkList and Bookmark browsing.
-  - use `nui` or a `custom buffer`
+  - [x] MVP
+  - [ ] floating preview window
+  - [ ] better default bookmark render format(string format, then better UI)
+  - [ ] `u` undo. Expecially for unexpected `d` delete
   - custom buffer (can render more things, and can nav/copy/paste with ease)
     - local Keybindings
     - popup window

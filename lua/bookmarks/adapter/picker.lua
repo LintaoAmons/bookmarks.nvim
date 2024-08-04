@@ -1,4 +1,6 @@
 local repo = require("bookmarks.repo")
+local _mark_repo = require("bookmarks.repo.bookmark")
+local _bookmark_list = require("bookmarks.domain").bookmark_list
 local common = require("bookmarks.adapter.common")
 
 -- TODO: check dependencies firstly
@@ -63,12 +65,12 @@ local function pick_bookmark(callback, opts)
   local bookmarks
   local bookmark_list_name
   if opts.all then
-    bookmarks = repo.mark.read.find_all()
+    bookmarks = _mark_repo.read.find_all()
     bookmark_list_name = "All"
   else
     local bookmark_list = opts.bookmark_list or repo.bookmark_list.write.find_or_set_active()
     bookmark_list_name = bookmark_list.name
-    bookmarks = bookmark_list.bookmarks
+    bookmarks = _bookmark_list.get_all_marks(bookmark_list)
   end
 
   table.sort(bookmarks, function(a, b)

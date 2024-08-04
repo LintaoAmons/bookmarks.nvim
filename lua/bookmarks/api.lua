@@ -49,7 +49,7 @@ local function add_list(param)
   end, bookmark_lists)
 
   ---@type Bookmarks.BookmarkList
-  local new_list = domain.bookmark_list.new(param.name, repo.generate_datetime_id())
+  local new_list = domain.bookmark_list.new(param.name, utils.generate_datetime_id())
 
   table.insert(new_lists, new_list)
   repo.bookmark_list.write.save_all(new_lists)
@@ -93,6 +93,8 @@ local function goto_bookmark(bookmark, opts)
   for _, hook in ipairs(hooks) do
     hook(bookmark, projects)
   end
+
+  sign.refresh_signs()
 end
 
 local function goto_last_visited_bookmark()
@@ -108,6 +110,8 @@ local function goto_last_visited_bookmark()
   if last_bookmark then
     goto_bookmark(last_bookmark)
   end
+
+  sign.refresh_signs()
 end
 
 -- TODO: trigger by `BufferEnter` Event
@@ -171,11 +175,6 @@ local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)
 end
 
-local function buffer_display()
-  local lists = repo.bookmark_list.read.find_all()
-  require("bookmarks.render.main").render(lists)
-end
-
 return {
   mark = mark,
   rename_bookmark = rename_bookmark,
@@ -194,5 +193,5 @@ return {
     open_bookmarks_jsonfile = open_bookmarks_jsonfile,
   },
 
-  buffer_display = buffer_display,
+  tree = require("bookmarks.tree.api"),
 }

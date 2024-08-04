@@ -1,11 +1,15 @@
 local bookmark_scope = require("bookmarks.domain.bookmark")
 local utils = require("bookmarks.utils")
+local _type = require("bookmarks.domain.type").type
+local _get_value_type = require("bookmarks.domain.type").get_value_type
 
 ---@class Bookmarks.BookmarkList
+---@field id string
 ---@field name string
 ---@field is_active boolean
----@field project_path_name_map {string: string}
----@field bookmarks Bookmarks.Bookmark[]
+---@field project_path_name_map {string: string}  -- bookmark specific path_name map, used to allow overwrite the project path to share with others
+---@field bookmarks Bookmarks.Node[]
+---@field collapse boolean treeview runtime status, may need refactor this field later
 
 local M = {}
 
@@ -32,8 +36,12 @@ end
 function M.find_bookmark_by_location(self, location)
   -- TODO: self location path
   for _, b in ipairs(self.bookmarks) do
-    if b.location.path == location.path and b.location.line == location.line then
-      return b
+    local b_type = _get_value_type(b)
+    if b_type == _type.BOOKMARK then
+      ---@cast b Bookmarks.Bookmark
+      if b.location.path == location.path and b.location.line == location.line then
+        return b
+      end
     end
   end
   return nil
@@ -86,6 +94,46 @@ function M.contains_bookmark(self, bookmark, projects)
   end
 
   return false
+end
+
+---@param self Bookmarks.BookmarkList
+---@param id string | number
+---@return Bookmarks.Bookmark?
+function M.find_bookmark_by_id(self, id)
+  for _, b in ipairs(self.bookmarks) do
+    if b.id == id then
+      ---@type Bookmarks.Bookmark
+      return b
+    end
+
+    if _get_value_type(b) == _type.BOOKMARK_LIST then
+      ---@cast b Bookmarks.BookmarkList
+      M.find_bookmark_by_id(b, id)
+    end
+  end
+  return nil
+end
+
+---get all bookmarks in one dimension array
+---@param self Bookmarks.BookmarkList
+---@return Bookmarks.Bookmark[]
+function M.get_all_marks(self)
+  local r = {}
+
+  local function __get_all_marks(list, result)
+    for _, b in ipairs(list.bookmarks) do
+      if _get_value_type(b) == _type.BOOKMARK then
+        ---@cast b Bookmarks.Bookmark
+        table.insert(result, b)
+      else
+        __get_all_marks(b, result)
+      end
+    end
+  end
+
+  __get_all_marks(self, r)
+
+  return r
 end
 
 return M

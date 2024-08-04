@@ -3,11 +3,13 @@ local M = {}
 ---@param bookmark Bookmarks.Bookmark
 ---@return string
 function M.render_bookmark(bookmark)
-  return "    ["
+  if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.bookmark_formt then
+    return vim.g.bookmarks_config.treeview.bookmark_format(bookmark)
+  end
+  return bookmark.name
+    .. " ["
     .. bookmark.location.project_name
     .. "] "
-    .. bookmark.name
-    .. ": "
     .. bookmark.location.relative_path
     .. " : "
     .. bookmark.content
