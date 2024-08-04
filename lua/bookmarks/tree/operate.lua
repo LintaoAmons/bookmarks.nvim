@@ -51,7 +51,11 @@ end
 
 function M.delete()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
-  api.tree.delete(line_no)
+  vim.ui.input({ prompt = "You really want to delete the bookmark? y/N" }, function(input)
+    if input == "y" then
+      api.tree.delete(line_no)
+    end
+  end)
 end
 
 function M.quit()
