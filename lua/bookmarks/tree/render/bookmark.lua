@@ -3,7 +3,7 @@ local M = {}
 ---@param bookmark Bookmarks.Bookmark
 ---@return string
 function M.render_bookmark(bookmark)
-  if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.bookmark_formt then
+  if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.bookmark_format then
     return vim.g.bookmarks_config.treeview.bookmark_format(bookmark)
   end
   return bookmark.name
