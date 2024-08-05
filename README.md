@@ -119,17 +119,19 @@ You can look into the code to find the structure of those two domain objects
 
 > just because I don't know how to write Telescope extension, so I somehow do it this way.
 
-| Command                   | Description                                                                                 |
-| ------------------------- | ------------------------------------------------------------------------------------------- |
-| [List] new                | create a new BookmarkList and set it to active and mark current line into this BookmarkList |
-| [List] rename             | rename a BookmarkList                                                                       |
-| [List] delete             | delete a bookmark list                                                                      |
-| [List] set active         | set a BookmarkList as active                                                                |
-| [List] Browsing all lists |                                                                                             |
-| [Mark] mark to list       | bookmark current line and add it to specific bookmark list                                  |
-| [Mark] rename bookmark    | rename selected bookmark                                                                    |
-| [Mark] Browsing all marks |                                                                                             |
-| [Mark] delete bookmark    | delete selected bookmarks                                                                   |
+| Command                             | Description                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| [List] new                          | create a new BookmarkList and set it to active and mark current line into this BookmarkList |
+| [List] rename                       | rename a BookmarkList                                                                       |
+| [List] delete                       | delete a bookmark list                                                                      |
+| [List] set active                   | set a BookmarkList as active                                                                |
+| [List] Browsing all lists           |                                                                                             |
+| [Mark] mark to list                 | bookmark current line and add it to specific bookmark list                                  |
+| [Mark] rename bookmark              | rename selected bookmark                                                                    |
+| [Mark] Browsing all marks           |                                                                                             |
+| [Mark] Bookmarks of current project |                                                                                             |
+| [Mark] grep the marked files        | grep in all the files that contain bookmarks                                                |
+| [Mark] delete bookmark              | delete selected bookmarks                                                                   |
 
 Also if you want to bind a shortcut to those commands, you can do it by write some code....
 
@@ -168,8 +170,6 @@ vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find 
 vim.keymap.set({ "n", "v" }, "mg", "<cmd>BookmarksGotoRecent<cr>", { desc = "Go to latest visited/created Bookmark" })
 ```
 
-
-
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
@@ -177,9 +177,9 @@ Don't hesitate to ask me anything about the codebase if you want to contribute.
 By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://lintao-index.pages.dev/assets/images/wechat-437d6c12efa9f89bab63c7fe07ce1927.png)
 
 - How to get start:
-    1. `plugin/bookmarks.lua` the entry point of the plugin
-    2. `lua/bookmarks/domain` where the main objects/concepts live
-    3. code layers: user --> `lua/bookmarks/adapter` --> `lua/bookmarks/api` --> `lua/bookmarks/repo` --> json db
+  1. `plugin/bookmarks.lua` the entry point of the plugin
+  2. `lua/bookmarks/domain` where the main objects/concepts live
+  3. code layers: user --> `lua/bookmarks/adapter` --> `lua/bookmarks/api` --> `lua/bookmarks/repo` --> json db
 
 ## Some Other Neovim Stuff
 
@@ -218,6 +218,6 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
 - [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
-    - just use `smart-open.nvim`
+  - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
