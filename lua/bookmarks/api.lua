@@ -69,7 +69,7 @@ local function set_active_list(name)
     else
       value.is_active = false
     end
-return value
+    return value
   end, bookmark_lists)
   repo.bookmark_list.write.save_all(updated)
 

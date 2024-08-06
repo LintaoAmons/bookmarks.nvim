@@ -47,10 +47,6 @@ vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookma
 })
 vim.api.nvim_create_user_command("BookmarksTree", api.tree.open_treeview, {})
 
-vim.api.nvim_create_user_command(
-  "BookmarksCalibration", 
-  api.calibrate_bookmarks, 
-  {
-  desc = "Calibrate the bookmarks jsonfile, this will change bookmarks line_no"
-  }
-)
+vim.api.nvim_create_user_command("BookmarksCalibration", api.calibrate_bookmarks, {
+  desc = "Calibrate the bookmarks jsonfile, this will change bookmarks line_no",
+})
