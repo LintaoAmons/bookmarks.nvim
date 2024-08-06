@@ -60,4 +60,71 @@ function M.is_same_location(b1, b2, projects)
   return false
 end
 
+---@param self Bookmarks.Bookmark
+---@return {has_msg: boolean, msg: string, hightlight: boolean}
+function M.calibrate(self)
+  local msg = ""
+  local has_msg = false
+  local file = io.open(self.location.path, "r")
+  local line_no = 1
+  local new_line_no = -1
+  local hightlight = false
+
+  if not file then
+    msg = "file not found"
+    goto ret
+  end
+
+  for line in file:lines() do
+    if line ~= self.content then
+      goto continue
+    end
+
+    if new_line_no == -1 then
+      new_line_no = line_no
+      if new_line_no == self.location.line then
+        goto ret
+      end
+    else
+      msg = "content is not unique"
+      new_line_no = -1
+      goto ret
+    end
+
+    ::continue::
+    line_no = line_no + 1
+  end
+
+  if new_line_no == -1 then
+    msg = "content not found"
+    goto ret
+  end
+
+  msg = string.format("line number changed from %d to %d", self.location.line, new_line_no)
+  self.location.line = new_line_no
+  hightlight = true
+
+  ::ret::
+  if file then
+    file:close()
+  end
+
+  if msg ~= "" then
+    has_msg = true
+  end
+
+  msg = string.format("[%s]%s:%s ----> %s",
+    self.name,
+    self.location.relative_path,
+    self.content,
+    msg
+  )
+
+  return {
+    has_msg = has_msg,
+    msg = msg,
+    hightlight = hightlight,
+  }
+end
+
 return M

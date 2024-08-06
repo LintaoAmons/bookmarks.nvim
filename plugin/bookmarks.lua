@@ -46,3 +46,11 @@ vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookma
   desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
 })
 vim.api.nvim_create_user_command("BookmarksTree", api.tree.open_treeview, {})
+
+vim.api.nvim_create_user_command(
+  "BookmarksCalibration", 
+  api.calibrate_bookmarks, 
+  {
+  desc = "Calibrate the bookmarks jsonfile, this will change bookmarks line_no"
+  }
+)

@@ -69,7 +69,7 @@ local function set_active_list(name)
     else
       value.is_active = false
     end
-    return value
+return value
   end, bookmark_lists)
   repo.bookmark_list.write.save_all(updated)
 
@@ -171,6 +171,47 @@ local function reload_bookmarks()
   vim.g.bookmarks_cache = nil
 end
 
+local function calibrate_bookmarks()
+  local bookmark_lists = repo.bookmark_list.read.find_all()
+  local results = {}
+  local highlights = {}
+  local line_no = -1
+  for _, list in ipairs(bookmark_lists) do
+    for _, bookmark in ipairs(domain.bookmark_list.get_all_marks(list)) do
+      local ret = domain.bookmark.calibrate(bookmark)
+      if ret.has_msg then
+        table.insert(results, ret.msg)
+        line_no = line_no + 1
+      end
+
+      if ret.hightlight then
+        table.insert(highlights, line_no)
+      end
+    end
+  end
+
+  repo.bookmark_list.write.save_all(bookmark_lists)
+  sign.refresh_signs()
+  sign.refresh_tree()
+
+  if not vim.g.bookmarks_config.show_calibrate_result then
+    return
+  end
+
+  local temp_buf = vim.api.nvim_create_buf(false, true)
+
+  vim.api.nvim_buf_set_lines(temp_buf, 0, -1, false, results)
+  vim.bo[temp_buf].buftype = "nofile"
+  vim.bo[temp_buf].modifiable = false
+
+  vim.api.nvim_set_current_buf(temp_buf)
+
+  local _namespace = sign.namespace
+  for _, line in ipairs(highlights) do
+    vim.api.nvim_buf_add_highlight(temp_buf, _namespace.ns, _namespace.hl_name, line, 0, -1)
+  end
+end
+
 local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)
 end
@@ -192,6 +233,6 @@ return {
     reload_bookmarks = reload_bookmarks,
     open_bookmarks_jsonfile = open_bookmarks_jsonfile,
   },
-
+  calibrate_bookmarks = calibrate_bookmarks,
   tree = require("bookmarks.tree.api"),
 }

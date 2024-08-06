@@ -13,6 +13,7 @@ local default_config = {
   -- you can find the file under the same folder
   enable_backup = true,
   -- treeview options
+  show_calibrate_result = true,
   treeview = {
     bookmark_format = function(bookmark)
       return bookmark.name
