@@ -214,11 +214,12 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 
 ### V2
 
-- [ ] refactor: extract picker module and remove unused modules
-- [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
-- [ ] buffer renderer
+- [ ] picker
+  - [ ] refactor: extract picker module and remove unused modules
+  - [ ] get bookmarks in active list --> filter --> sort --> telescope/fzflua
 - [ ] filetree-like BookmarkList and Bookmark browsing.
   - [x] MVP thx! @shanlihou
+  - [ ] bookmark filter
   - [ ] Add top level bookmark list
   - [ ] sort/modify by bookmark.order field
   - [ ] floating preview window
@@ -228,3 +229,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
+
+### V3
+
+- [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
