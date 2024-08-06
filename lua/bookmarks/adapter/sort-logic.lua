@@ -1,3 +1,5 @@
+-- TODO: add more sort logics
+
 local M = {
   last_visited = function(bookmarks)
     table.sort(bookmarks, function(a, b)
