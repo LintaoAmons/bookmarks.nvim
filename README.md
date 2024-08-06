@@ -49,6 +49,11 @@ return {
       signs = {
         mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
       },
+      picker = {
+        -- choose built-in sort logic by name: string, find all the sort logics in `bookmarks.adapter.sort-logic`
+        -- or custom sort logic: function(bookmarks: Bookmarks.Bookmark[]): nil
+        sort_by = "last_visited",
+      },
       -- optional, backup the json db file when a new neovim session started and you try to mark a place
       -- you can find the file under the same folder
       enable_backup = true,
