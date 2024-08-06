@@ -219,6 +219,8 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 - [ ] buffer renderer
 - [ ] filetree-like BookmarkList and Bookmark browsing.
   - [x] MVP thx! @shanlihou
+  - [ ] Add top level bookmark list
+  - [ ] sort/modify by bookmark.order field
   - [ ] floating preview window
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
