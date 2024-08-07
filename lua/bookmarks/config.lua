@@ -74,7 +74,7 @@ local setup = function(user_config)
 
   if cfg.auto_calibrate_cur_buf then
     vim.api.nvim_create_autocmd({"BufEnter"}, {
-      pattern = {"*"},
+      pattern = { "*" },
       callback = function()
         require("bookmarks.api").calibrate_current_window()
       end,
