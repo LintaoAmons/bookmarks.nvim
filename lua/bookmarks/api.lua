@@ -171,6 +171,36 @@ local function reload_bookmarks()
   vim.g.bookmarks_cache = nil
 end
 
+local function calibrate_current_window()
+  local cur_buf = vim.api.nvim_get_current_buf()
+  local cur_path = vim.api.nvim_buf_get_name(cur_buf)
+  local bookmark_list = repo.bookmark_list.write.find_or_set_active()
+  if not bookmark_list then
+    return
+  end
+
+  local bookmarks = domain.bookmark_list.find_bookmarks_by_abs_path(bookmark_list, cur_path)
+  if #bookmarks == 0 then
+    return
+  end
+
+  local changed = false
+  for _, bookmark in ipairs(bookmarks) do
+    local ret = domain.bookmark.calibrate(bookmark)
+    if ret.changed then
+      changed = true
+    end
+  end
+
+  if not changed then
+    return
+  end
+  vim.print("Calibrated " .. #bookmarks .. " bookmarks in current buffer")
+  repo.bookmark_list.write.save(bookmark_list)
+  sign.refresh_signs()
+  sign.refresh_tree()
+end
+
 local function calibrate_bookmarks()
   local bookmark_lists = repo.bookmark_list.read.find_all()
   local results = {}
@@ -184,7 +214,7 @@ local function calibrate_bookmarks()
         line_no = line_no + 1
       end
 
-      if ret.hightlight then
+      if ret.changed then
         table.insert(highlights, line_no)
       end
     end
@@ -235,4 +265,5 @@ return {
   },
   calibrate_bookmarks = calibrate_bookmarks,
   tree = require("bookmarks.tree.api"),
+  calibrate_current_window = calibrate_current_window,
 }

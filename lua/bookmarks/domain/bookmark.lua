@@ -62,14 +62,14 @@ function M.is_same_location(b1, b2, projects)
 end
 
 ---@param self Bookmarks.Bookmark
----@return {has_msg: boolean, msg: string, hightlight: boolean}
+---@return {has_msg: boolean, msg: string, changed: boolean}
 function M.calibrate(self)
   local msg = ""
   local has_msg = false
   local file = io.open(self.location.path, "r")
   local line_no = 1
   local new_line_no = -1
-  local hightlight = false
+  local changed = false
 
   if not file then
     msg = "file not found"
@@ -103,7 +103,7 @@ function M.calibrate(self)
 
   msg = string.format("line number changed from %d to %d", self.location.line, new_line_no)
   self.location.line = new_line_no
-  hightlight = true
+  changed = true
 
   ::ret::
   if file then
@@ -124,7 +124,7 @@ function M.calibrate(self)
   return {
     has_msg = has_msg,
     msg = msg,
-    hightlight = hightlight,
+    changed = changed,
   }
 end
 

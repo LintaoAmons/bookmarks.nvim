@@ -17,8 +17,10 @@ local default_config = {
   -- optional, backup the json db file when a new neovim session started and you try to mark a place
   -- you can find the file under the same folder
   enable_backup = true,
-  -- treeview options
+  -- optional, show the result of the calibration when you try to calibrate the bookmarks
   show_calibrate_result = true,
+  auto_calibrate_cur_buf = false,
+  -- treeview options
   treeview = {
     bookmark_format = function(bookmark)
       return bookmark.name
@@ -69,6 +71,15 @@ local setup = function(user_config)
   vim.g.bookmarks_config = cfg
 
   require("bookmarks.sign").setup(cfg.signs)
+
+  if cfg.auto_calibrate_cur_buf then
+    vim.api.nvim_create_autocmd({"BufEnter"}, {
+      pattern = {"*"},
+      callback = function()
+        require("bookmarks.api").calibrate_current_window()
+      end,
+    })
+  end
 end
 
 return {
