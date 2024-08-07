@@ -2,6 +2,7 @@ local repo = require("bookmarks.repo")
 local _mark_repo = require("bookmarks.repo.bookmark")
 local _bookmark_list = require("bookmarks.domain").bookmark_list
 local common = require("bookmarks.adapter.common")
+local _sort_logic = require("bookmarks.adapter.sort-logic")
 
 -- TODO: check dependencies firstly
 local pickers = require("telescope.pickers")
@@ -73,9 +74,7 @@ local function pick_bookmark(callback, opts)
     bookmarks = _bookmark_list.get_all_marks(bookmark_list)
   end
 
-  table.sort(bookmarks, function(a, b)
-    return a.visited_at > b.visited_at
-  end)
+  _sort_logic.sort_by(bookmarks)
 
   pickers
     .new(opts, {

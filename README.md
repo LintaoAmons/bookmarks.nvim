@@ -49,6 +49,11 @@ return {
       signs = {
         mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
       },
+      picker = {
+        -- choose built-in sort logic by name: string, find all the sort logics in `bookmarks.adapter.sort-logic`
+        -- or custom sort logic: function(bookmarks: Bookmarks.Bookmark[]): nil
+        sort_by = "last_visited",
+      },
       -- optional, backup the json db file when a new neovim session started and you try to mark a place
       -- you can find the file under the same folder
       enable_backup = true,
@@ -209,11 +214,14 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 
 ### V2
 
-- [ ] refactor: extract picker module and remove unused modules
-- [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
-- [ ] buffer renderer
+- [ ] picker
+  - [ ] refactor: extract picker module and remove unused modules
+  - [ ] get bookmarks in active list --> filter --> sort --> telescope/fzflua
 - [ ] filetree-like BookmarkList and Bookmark browsing.
   - [x] MVP thx! @shanlihou
+  - [ ] bookmark filter
+  - [ ] Add top level bookmark list
+  - [ ] sort/modify by bookmark.order field
   - [ ] floating preview window
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
@@ -221,3 +229,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
+
+### V3
+
+- [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
