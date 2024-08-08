@@ -194,7 +194,7 @@ end
 
 ---@param root_dir string
 local function reset_new_db_path(root_dir)
-  local dir = vim.fn.stdpath('data') .. "/bookmarks/"
+  local dir = vim.fn.stdpath("data") .. "/bookmarks/"
   root_dir = percent_encode(root_dir)
   root_dir = string.format("%s.db.json", root_dir)
   local db_path = dir .. root_dir

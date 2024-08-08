@@ -29,7 +29,7 @@ local get_db = function()
 end
 
 local reset_db = function(db_path)
-  local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config, {json_db_path = db_path})
+  local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config, { json_db_path = db_path })
   vim.g.bookmarks_config = cfg
   vim.g.bookmarks_cache = nil
   get_db()
