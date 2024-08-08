@@ -37,11 +37,6 @@ vim.api.nvim_create_user_command(
   api.goto_last_visited_bookmark,
   { desc = "Go to latest visited/created Bookmark" }
 )
-vim.api.nvim_create_user_command(
-  "BookmarksReload",
-  api.helper.reload_bookmarks,
-  { desc = "Clean the cache and resync the bookmarks jsonfile" }
-)
 vim.api.nvim_create_user_command("BookmarksEditJsonFile", api.helper.open_bookmarks_jsonfile, {
   desc = "An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing",
 })

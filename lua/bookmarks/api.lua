@@ -217,7 +217,6 @@ return {
   add_recent = add_recent,
   find_existing_bookmark_under_cursor = find_existing_bookmark_under_cursor,
   helper = {
-    reload_bookmarks = reload_bookmarks,
     open_bookmarks_jsonfile = open_bookmarks_jsonfile,
   },
 

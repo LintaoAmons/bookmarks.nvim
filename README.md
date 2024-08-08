@@ -43,7 +43,7 @@ return {
   },
   config = function()
     local opts = {
-      -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well, dont forget run `BookmarksReload` command to clean the cache)
+      -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well)
       json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
       -- This is how the sign looks.
       signs = {
@@ -115,8 +115,7 @@ You can look into the code to find the structure of those two domain objects
 | `BookmarksGoto`         | Go to bookmark at current active BookmarkList                                                                                       |
 | `BookmarksCommands`     | Find and trigger a bookmark command.                                                                                                |
 | `BookmarksGotoRecent`   | Go to latest visited/created Bookmark                                                                                               |
-| `BookmarksReload`       | Clean the cache and resync the bookmarks jsonfile                                                                                   |
-| `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing                         |
+| `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile                                                                                               |
 | `BookmarksTree`         | Display all bookmarks with tree-view, and use "cut", "paste", "create folder" to edit the tree.                                     |
 
 <details>
