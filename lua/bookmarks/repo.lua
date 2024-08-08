@@ -8,7 +8,6 @@ local utils = require("bookmarks.utils")
 
 ---@return Bookmarks.DB
 local get_db = function()
-
   local ok, result =
     pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path, { projects = {}, bookmark_lists = {} })
 
