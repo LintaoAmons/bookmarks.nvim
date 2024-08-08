@@ -28,6 +28,13 @@ local get_db = function()
   return result
 end
 
+local reset_db = function(db_path)
+  local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config, {json_db_path = db_path})
+  vim.g.bookmarks_config = cfg
+  vim.g.bookmarks_cache = nil
+  get_db()
+end
+
 ---@param domain Bookmarks.DB
 local save_db = function(domain)
   local current_config = vim.deepcopy(vim.g.bookmarks_config)
@@ -248,6 +255,7 @@ end
 return {
   db = {
     get = get_db,
+    reset = reset_db,
   },
   bookmark_list = {
     read = {
