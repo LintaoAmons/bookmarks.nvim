@@ -167,10 +167,6 @@ local function find_existing_bookmark_under_cursor()
   return domain.bookmark_list.find_bookmark_by_location(bookmark_list, domain.location.get_current_location())
 end
 
-local function reload_bookmarks()
-  vim.g.bookmarks_cache = nil
-end
-
 local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)
 end

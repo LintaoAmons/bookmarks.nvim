@@ -8,9 +8,6 @@ local utils = require("bookmarks.utils")
 
 ---@return Bookmarks.DB
 local get_db = function()
-  if vim.g.bookmarks_cache then
-    return vim.g.bookmarks_cache
-  end
 
   local ok, result =
     pcall(json.read_or_init_json_file, vim.g.bookmarks_config.json_db_path, { projects = {}, bookmark_lists = {} })
@@ -23,15 +20,12 @@ local get_db = function()
     )
   end
 
-  vim.g.bookmarks_cache = result
-
   return result
 end
 
 local reset_db = function(db_path)
   local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config, { json_db_path = db_path })
   vim.g.bookmarks_config = cfg
-  vim.g.bookmarks_cache = nil
   get_db()
 end
 
@@ -44,7 +38,6 @@ local save_db = function(domain)
     vim.g.bookmarks_config = current_config
   end
 
-  vim.g.bookmarks_cache = domain
   json.write_json_file(domain, vim.g.bookmarks_config.json_db_path)
 end
 
