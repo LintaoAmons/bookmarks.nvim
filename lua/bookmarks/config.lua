@@ -73,7 +73,7 @@ local setup = function(user_config)
   require("bookmarks.sign").setup(cfg.signs)
 
   if cfg.auto_calibrate_cur_buf then
-    vim.api.nvim_create_autocmd({"BufEnter"}, {
+    vim.api.nvim_create_autocmd({ "BufEnter" }, {
       pattern = { "*" },
       callback = function()
         require("bookmarks.api").calibrate_current_window()
