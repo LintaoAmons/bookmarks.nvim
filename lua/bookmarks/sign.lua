@@ -106,6 +106,10 @@ local function refresh_tree()
     return
   end
 
+  if not vim.api.nvim_buf_is_valid(ctx.buf) then
+    return
+  end
+
   clean_tree_cache(ctx.buf)
 
   local bookmark_lists = repo.bookmark_list.read.find_all()
