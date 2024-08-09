@@ -67,11 +67,7 @@ function M.calibrate(self)
   local file = io.open(self.location.path, "r")
   local line_no = 1
   local new_line_no = -1
-  local prefix = string.format("[%s]%s:%s ----> ",
-    self.name,
-    self.location.relative_path,
-    self.content
-  )
+  local prefix = string.format("[%s]%s:%s ----> ", self.name, self.location.relative_path, self.content)
 
   if not file then
     return {
