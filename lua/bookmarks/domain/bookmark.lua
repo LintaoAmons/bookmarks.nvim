@@ -64,19 +64,31 @@ end
 ---@param self Bookmarks.Bookmark
 ---@return {has_msg: boolean, msg: string, changed: boolean}
 function M.calibrate(self)
-  local msg = ""
-  local has_msg = false
   local file = io.open(self.location.path, "r")
   local line_no = 1
   local new_line_no = -1
-  local changed = false
+  local prefix = string.format("[%s]%s:%s ----> ",
+    self.name,
+    self.location.relative_path,
+    self.content
+  )
 
   if not file then
-    msg = "file not found"
-    goto ret
+    return {
+      has_msg = true,
+      msg = prefix .. "file not found",
+      changed = false,
+    }
   end
 
+  local lines = {}
   for line in file:lines() do
+    table.insert(lines, line)
+  end
+
+  file:close()
+
+  for _, line in ipairs(lines) do
     if line ~= self.content then
       goto continue
     end
@@ -84,12 +96,18 @@ function M.calibrate(self)
     if new_line_no == -1 then
       new_line_no = line_no
       if new_line_no == self.location.line then
-        goto ret
+        return {
+          has_msg = false,
+          msg = "",
+          changed = false,
+        }
       end
     else
-      msg = "content is not unique"
-      new_line_no = -1
-      goto ret
+      return {
+        has_msg = true,
+        msg = prefix .. "content is not unique",
+        changed = false,
+      }
     end
 
     ::continue::
@@ -97,34 +115,19 @@ function M.calibrate(self)
   end
 
   if new_line_no == -1 then
-    msg = "content not found"
-    goto ret
+    return {
+      has_msg = true,
+      msg = prefix .. "content not found",
+      changed = false,
+    }
   end
 
-  msg = string.format("line number changed from %d to %d", self.location.line, new_line_no)
+  local msg = string.format("line number changed from %d to %d", self.location.line, new_line_no)
   self.location.line = new_line_no
-  changed = true
-
-  ::ret::
-  if file then
-    file:close()
-  end
-
-  if msg ~= "" then
-    has_msg = true
-  end
-
-  msg = string.format("[%s]%s:%s ----> %s",
-    self.name,
-    self.location.relative_path,
-    self.content,
-    msg
-  )
-
   return {
-    has_msg = has_msg,
-    msg = msg,
-    changed = changed,
+    has_msg = true,
+    msg = prefix .. msg,
+    changed = true,
   }
 end
 

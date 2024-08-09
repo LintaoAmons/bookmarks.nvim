@@ -19,6 +19,7 @@ local default_config = {
   enable_backup = true,
   -- optional, show the result of the calibration when you try to calibrate the bookmarks
   show_calibrate_result = true,
+  -- optional, auto calibrate the current buffer when you enter it
   auto_calibrate_cur_buf = false,
   -- treeview options
   treeview = {
