@@ -62,9 +62,10 @@ function M.is_same_location(b1, b2, projects)
 end
 
 ---@param self Bookmarks.Bookmark
+---@param projects Bookmarks.Project[]
 ---@return {has_msg: boolean, msg: string, changed: boolean}
-function M.calibrate(self)
-  local file = io.open(self.location.path, "r")
+function M.calibrate(self, projects)
+  local file = io.open(M.fullpath(self, projects), "r")
   local line_no = 1
   local new_line_no = -1
   local prefix = string.format("[%s]%s:%s ----> ", self.name, self.location.relative_path, self.content)

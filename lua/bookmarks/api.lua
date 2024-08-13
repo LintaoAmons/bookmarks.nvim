@@ -179,14 +179,15 @@ local function calibrate_current_window()
     return
   end
 
-  local bookmarks = domain.bookmark_list.find_bookmarks_by_abs_path(bookmark_list, cur_path)
+  local projects = repo.project.findall()
+  local bookmarks = domain.bookmark_list.find_bookmarks_by_abs_path(bookmark_list, cur_path, projects)
   if #bookmarks == 0 then
     return
   end
 
   local changed = false
   for _, bookmark in ipairs(bookmarks) do
-    local ret = domain.bookmark.calibrate(bookmark)
+    local ret = domain.bookmark.calibrate(bookmark, projects)
     if ret.changed then
       changed = true
     end
@@ -203,12 +204,13 @@ end
 
 local function calibrate_bookmarks()
   local bookmark_lists = repo.bookmark_list.read.find_all()
+  local projects = repo.project.findall()
   local results = {}
   local highlights = {}
   local line_no = -1
   for _, list in ipairs(bookmark_lists) do
     for _, bookmark in ipairs(domain.bookmark_list.get_all_marks(list)) do
-      local ret = domain.bookmark.calibrate(bookmark)
+      local ret = domain.bookmark.calibrate(bookmark, projects)
       if ret.has_msg then
         table.insert(results, ret.msg)
         line_no = line_no + 1
