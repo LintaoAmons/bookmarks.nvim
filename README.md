@@ -4,19 +4,19 @@
 >
 > Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
 
-- Simple: Add, Rename and Remove mark with only one command, less shortcuts more productivity
-- Persistent: save your bookmarks into a human reable json file, which you can manipulate munally
-- Accessible: Find your bookmark by telescope or Treeview with ease
-- Informative: mark with a description, so you can record more information
-- Visibility: display icon and name at the marked lines, and highlight marked lines
-- Groups: arrange your bookmarks in groups, so keep you away from noises
-- Portable: Share you bookmarks with others/or your another device by simple changing the project path in the json file
+- Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
+- Persistent: save your bookmarks into a human readable json file, which you can manipulate manually.
+- Accessible: Find your bookmark by telescope or Treeview with ease.
+- Informative: mark with a description, so you can record more information.
+- Visibility: display icon and name at the marked lines, and highlight marked lines.
+- Groups: arrange your bookmarks in groups, so keep you away from noises.
+- Portable: Easily share your bookmarks across devices or with others by modifying the project path in the JSON file.
 
 ![showcase](https://github.com/user-attachments/assets/e47327bb-7dce-43a5-9c74-aaeb58091648)
 
 ## Install and Config
 
-- Simple version: everything should work out of box if you are ok with the default config.
+- Simple version: everything should work out of the box if you are ok with the default config.
 
 ```lua
 -- with lazy.nvim
@@ -43,7 +43,7 @@ return {
   },
   config = function()
     local opts = {
-      -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well, dont forget run `BookmarksReload` command to clean the cache)
+      -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well)
       json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
       -- This is how the sign looks.
       signs = {
@@ -105,7 +105,7 @@ return {
 
 There's two key concepts in this plugin: `BookmarkList` and `Bookmark`.
 
-You can look into the code to find the structure of those two domain objects
+You can look into the code to find the structure of those two domain objects.
 
 ### Commands
 
@@ -115,8 +115,7 @@ You can look into the code to find the structure of those two domain objects
 | `BookmarksGoto`         | Go to bookmark at current active BookmarkList                                                                                       |
 | `BookmarksCommands`     | Find and trigger a bookmark command.                                                                                                |
 | `BookmarksGotoRecent`   | Go to latest visited/created Bookmark                                                                                               |
-| `BookmarksReload`       | Clean the cache and resync the bookmarks jsonfile                                                                                   |
-| `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile, remember BookmarksReload to clean the cache after you finish editing                         |
+| `BookmarksEditJsonFile` | An shortcut to edit bookmark jsonfile                                                                                               |
 | `BookmarksTree`         | Display all bookmarks with tree-view, and use "cut", "paste", "create folder" to edit the tree.                                     |
 
 <details>
@@ -138,7 +137,7 @@ You can look into the code to find the structure of those two domain objects
 | [Mark] grep the marked files        | grep in all the files that contain bookmarks                                                |
 | [Mark] delete bookmark              | delete selected bookmarks                                                                   |
 
-Also if you want to bind a shortcut to those commands, you can do it by write some code....
+Also if you want to bind a shortcut to those commands, you can do it by writing some code....
 
 ```lua
 local function call_bookmark_command()
@@ -162,11 +161,11 @@ vim.keymap.set("n", "<leader>ll", call_bookmark_command)
 
 ### BookmarksTree
 
-check the tree section in the config to find out all the actions you can use
+Check the tree section in the config to find out all the actions you can use.
 
 ### Keymap
 
-This plugin don't provide any default keybinding. I recommend you to have those three keybindings.
+This plugin doesn't provide any default keybinding. I recommend you to have these four keybindings.
 
 ```lua
 vim.keymap.set({ "n", "v" }, "mm", "<cmd>BookmarksMark<cr>", { desc = "Mark current line into active BookmarkList." })
@@ -181,7 +180,7 @@ Don't hesitate to ask me anything about the codebase if you want to contribute.
 
 By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://lintao-index.pages.dev/assets/images/wechat-437d6c12efa9f89bab63c7fe07ce1927.png)
 
-- How to get start:
+- How to get started:
   1. `plugin/bookmarks.lua` the entry point of the plugin
   2. `lua/bookmarks/domain` where the main objects/concepts live
   3. code layers: user --> `lua/bookmarks/adapter` --> `lua/bookmarks/api` --> `lua/bookmarks/repo` --> json db
@@ -202,7 +201,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [x] `!newlist [listname]` bookmark current line into a newly created bookmark list and set the list as current active list.
 - [x] remove parse commands, prefer BookmarkCommands instead
 - [x] `BookmarkCommands` commands picker, a picker allow user to trigger any bookmark command.
-- [x] more useful information when deal with corrupted json db (no issues report yet)
+- [x] more useful information when dealing with corrupted json db (no issues report yet)
 - [x] telescope enhancement (use specific command instead)
 - [x] A new command to create bookmark and put it into specific bookmark list (instead current active one)
 - [x] Project

@@ -83,7 +83,16 @@ local function goto_bookmark(bookmark, opts)
   local open_method = opts.open_method or "e"
   local projects = repo.project.findall()
   local fullpath = domain.bookmark.fullpath(bookmark, projects)
+
+  local curren_bufnr = vim.api.nvim_get_current_buf()
+  -- check if the buffer have unsaved changes
+  if vim.api.nvim_buf_get_option(curren_bufnr, "modified") then
+    utils.log("Please save the current buffer before goto bookmark", vim.log.levels.WARN)
+    return
+  end
+
   vim.api.nvim_exec2(open_method .. " " .. fullpath, {})
+
   pcall(vim.api.nvim_win_set_cursor, 0, { bookmark.location.line, bookmark.location.col })
   vim.cmd("norm! zz")
   bookmark.visited_at = os.time()
@@ -244,14 +253,47 @@ local function calibrate_bookmarks()
   end
 end
 
+
 local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)
+end
+
+---@param c string The single character to convert
+---@return string The hex representation of that character
+local function char_to_hex(c)
+  return string.format("%%%02X", string.byte(c))
+end
+
+---@param str string The string to encode
+---@return string The percent encoded string
+local function percent_encode(str)
+  if str == nil then
+    return ""
+  end
+  str = str:gsub("\n", "\r\n")
+
+  return (str:gsub("([/\\:*?\"'<>+ |%.%%])", char_to_hex))
+end
+
+---@param root_dir string
+local function reset_new_db_path(root_dir)
+  local dir = vim.fn.stdpath("data") .. "/bookmarks/"
+  root_dir = percent_encode(root_dir)
+  root_dir = string.format("%s.db.json", root_dir)
+  local db_path = dir .. root_dir
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.fn.mkdir(dir, "p")
+  end
+
+  repo.db.reset(db_path)
+  sign.refresh_signs()
+  sign.refresh_tree()
 end
 
 return {
   mark = mark,
   rename_bookmark = rename_bookmark,
-
+  reset_new_db_path = reset_new_db_path,
   add_list = add_list,
   set_active_list = set_active_list,
   rename_bookmark_list = rename_bookmark_list,
@@ -262,7 +304,6 @@ return {
   add_recent = add_recent,
   find_existing_bookmark_under_cursor = find_existing_bookmark_under_cursor,
   helper = {
-    reload_bookmarks = reload_bookmarks,
     open_bookmarks_jsonfile = open_bookmarks_jsonfile,
   },
   calibrate_bookmarks = calibrate_bookmarks,

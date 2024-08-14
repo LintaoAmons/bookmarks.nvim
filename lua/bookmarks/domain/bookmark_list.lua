@@ -31,11 +31,30 @@ function M.add_bookmark(self, bookmark)
 end
 
 ---@param self Bookmarks.BookmarkList
+---@param bookmark Bookmarks.Bookmark
+function M.remove_bookmark(self, bookmark)
+  for i, child in ipairs(self.bookmarks) do
+    if child.id == bookmark.id then
+      return table.remove(self.bookmarks, i)
+    end
+
+    local cur_type = _get_value_type(child)
+    if cur_type == _type.BOOKMARK_LIST then
+      ---@cast child Bookmarks.BookmarkList
+      local ret = M.remove_bookmark(child, bookmark)
+      if ret ~= nil then
+        return ret
+      end
+    end
+  end
+end
+
+---@param self Bookmarks.BookmarkList
 ---@param location Bookmarks.Location
 ---@return Bookmarks.Bookmark?
 function M.find_bookmark_by_location(self, location)
   -- TODO: self location path
-  for _, b in ipairs(self.bookmarks) do
+  for _, b in ipairs(M.get_all_marks(self)) do
     local b_type = _get_value_type(b)
     if b_type == _type.BOOKMARK then
       ---@cast b Bookmarks.Bookmark
@@ -77,7 +96,7 @@ function M.toggle_bookmarks(self, bookmark, projects)
       M.add_bookmark(updated_bookmark_list, bookmark)
     end
   else
-    table.insert(updated_bookmark_list.bookmarks, bookmark)
+    M.add_bookmark(updated_bookmark_list, bookmark)
   end
 
   return updated_bookmark_list
@@ -85,22 +104,10 @@ end
 
 ---@param self Bookmarks.BookmarkList
 ---@param bookmark Bookmarks.Bookmark
-function M.remove_bookmark(self, bookmark, projects)
-  local new_bookmarks = {}
-  for _, b in ipairs(self.bookmarks) do
-    if not bookmark_scope.is_same_location(b, bookmark, projects) then
-      table.insert(new_bookmarks, b)
-    end
-  end
-  self.bookmarks = new_bookmarks
-end
-
----@param self Bookmarks.BookmarkList
----@param bookmark Bookmarks.Bookmark
 ---@param projects Bookmarks.Project[]
 ---@return boolean
 function M.contains_bookmark(self, bookmark, projects)
-  for _, b in ipairs(self.bookmarks) do
+  for _, b in ipairs(M.get_all_marks(self)) do
     ---@cast b Bookmarks.Bookmark
     if bookmark_scope.is_same_location(b, bookmark, projects) then
       return true
@@ -114,7 +121,7 @@ end
 ---@param id string | number
 ---@return Bookmarks.Bookmark?
 function M.find_bookmark_by_id(self, id)
-  for _, b in ipairs(self.bookmarks) do
+  for _, b in ipairs(M.get_all_marks(self)) do
     if b.id == id then
       ---@type Bookmarks.Bookmark
       return b
