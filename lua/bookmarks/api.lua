@@ -167,6 +167,7 @@ local function rename_bookmark_list(new_name, bookmark_list_name)
   local bookmark_list = repo.bookmark_list.read.must_find_by_name(bookmark_list_name)
   local old_name = bookmark_list.name
   bookmark_list.name = new_name
+
   repo.bookmark_list.write.save(bookmark_list)
   repo.bookmark_list.write.delete(old_name)
 end
@@ -174,10 +175,6 @@ end
 local function find_existing_bookmark_under_cursor()
   local bookmark_list = repo.bookmark_list.write.find_or_set_active()
   return domain.bookmark_list.find_bookmark_by_location(bookmark_list, domain.location.get_current_location())
-end
-
-local function reload_bookmarks()
-  vim.g.bookmarks_cache = nil
 end
 
 local function calibrate_current_window()
@@ -252,7 +249,6 @@ local function calibrate_bookmarks()
     vim.api.nvim_buf_add_highlight(temp_buf, _namespace.ns, _namespace.hl_name, line, 0, -1)
   end
 end
-
 
 local function open_bookmarks_jsonfile()
   vim.cmd("e " .. vim.g.bookmarks_config.json_db_path)

@@ -84,17 +84,6 @@ local function safe_refresh_signs(bookmarks)
   pcall(_refresh_signs, bookmarks)
 end
 
-local function bookmark_sign_autocmd()
-  -- TODO: check the autocmd
-  vim.api.nvim_create_augroup(ns_name, { clear = true })
-  vim.api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
-    group = ns_name,
-    callback = function(_)
-      safe_refresh_signs()
-    end,
-  })
-end
-
 local function clean_tree_cache(buf)
   vim.b[buf]._bm_context = nil
   vim.b[buf]._bm_tree_cut = nil
@@ -124,7 +113,6 @@ end
 
 return {
   setup = setup,
-  bookmark_sign_autocmd = bookmark_sign_autocmd,
   refresh_signs = safe_refresh_signs,
   refresh_tree = refresh_tree,
   namespace = {
