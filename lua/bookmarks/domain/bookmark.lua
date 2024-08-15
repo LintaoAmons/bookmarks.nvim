@@ -50,82 +50,52 @@ function M.fullpath(self, projects)
   end
 end
 
----@param b1 Bookmarks.Bookmark
----@param b2 Bookmarks.Bookmark
----@param projects Bookmarks.Project[]
----@return boolean
-function M.is_same_location(b1, b2, projects)
-  if M.fullpath(b1, projects) == M.fullpath(b2, projects) and b1.location.line == b2.location.line then
-    return true
-  end
-  return false
-end
-
 ---@param self Bookmarks.Bookmark
 ---@param projects Bookmarks.Project[]
 ---@return {has_msg: boolean, msg: string, changed: boolean}
 function M.calibrate(self, projects)
-  local file = io.open(M.fullpath(self, projects), "r")
-  local line_no = 1
-  local new_line_no = -1
-  local prefix = string.format("[%s]%s:%s ----> ", self.name, self.location.relative_path, self.content)
-
-  if not file then
-    return {
-      has_msg = true,
-      msg = prefix .. "file not found",
-      changed = false,
-    }
+  if not self.content or self.content == "" then
+    return { has_msg = false, msg = "", changed = false }
   end
 
-  local lines = {}
+  local prefix = string.format("[%s]%s:%s ----> ", self.name, self.location.relative_path, self.content)
+  local file = io.open(M.fullpath(self, projects), "r")
+
+  if not file then
+    return { has_msg = true, msg = prefix .. "file not found", changed = false }
+  end
+
+  local new_line_no = -1
+  local line_no = 0
+
   for line in file:lines() do
-    table.insert(lines, line)
+    line_no = line_no + 1
+
+    if line == self.content then
+      if new_line_no == -1 then
+        new_line_no = line_no
+        if new_line_no == self.location.line then
+          file:close()
+          return { has_msg = false, msg = "", changed = false }
+        end
+      else
+        file:close()
+        return { has_msg = true, msg = prefix .. "content is not unique", changed = false }
+      end
+    end
+
   end
 
   file:close()
 
-  for _, line in ipairs(lines) do
-    if line ~= self.content then
-      goto continue
-    end
-
-    if new_line_no == -1 then
-      new_line_no = line_no
-      if new_line_no == self.location.line then
-        return {
-          has_msg = false,
-          msg = "",
-          changed = false,
-        }
-      end
-    else
-      return {
-        has_msg = true,
-        msg = prefix .. "content is not unique",
-        changed = false,
-      }
-    end
-
-    ::continue::
-    line_no = line_no + 1
-  end
-
   if new_line_no == -1 then
-    return {
-      has_msg = true,
-      msg = prefix .. "content not found",
-      changed = false,
-    }
+    return { has_msg = true, msg = prefix .. "content not found", changed = false }
   end
 
   local msg = string.format("line number changed from %d to %d", self.location.line, new_line_no)
   self.location.line = new_line_no
-  return {
-    has_msg = true,
-    msg = prefix .. msg,
-    changed = true,
-  }
+
+  return { has_msg = true, msg = prefix .. msg, changed = true }
 end
 
 return M
