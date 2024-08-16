@@ -67,6 +67,20 @@ function M.find_bookmark_by_location(self, location)
 end
 
 ---@param self Bookmarks.BookmarkList
+---@param path string
+---@param projects Bookmarks.Project[]
+---@return Bookmarks.Bookmark[]
+function M.find_bookmarks_by_abs_path(self, path, projects)
+  local r = {}
+  for _, b in ipairs(M.get_all_marks(self)) do
+    if bookmark_scope.fullpath(b, projects) == path then
+      table.insert(r, b)
+    end
+  end
+  return r
+end
+
+---@param self Bookmarks.BookmarkList
 ---@param bookmark Bookmarks.Bookmark
 ---@param projects Bookmarks.Project[]
 ---@return Bookmarks.BookmarkList
