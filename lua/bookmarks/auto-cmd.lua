@@ -6,7 +6,6 @@ M.setup = function()
 
   vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
     pattern = { "*" },
-    
     group = GROUP_NAME,
     callback = function()
       if vim.g.bookmarks_config and vim.g.bookmarks_config.auto_calibrate_cur_buf then

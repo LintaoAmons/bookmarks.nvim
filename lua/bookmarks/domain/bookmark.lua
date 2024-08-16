@@ -83,7 +83,6 @@ function M.calibrate(self, projects)
         return { has_msg = true, msg = prefix .. "content is not unique", changed = false }
       end
     end
-
   end
 
   file:close()
