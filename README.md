@@ -222,6 +222,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [ ] get bookmarks in active list --> filter --> sort --> telescope/fzflua
 - [ ] filetree-like BookmarkList and Bookmark browsing.
   - [x] MVP thx! @shanlihou
+  - [ ] action alias or rename some of the actions to make it more readable for users
   - [ ] bookmark filter
   - [ ] Add top level bookmark list
   - [ ] sort/modify by bookmark.order field
@@ -232,6 +233,8 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
+  - [x] Init and calibrate by full match of the line content
+  - [ ] A match algorithm that can tolerate small changes of the line content 
 
 ### V3
 
