@@ -8,6 +8,9 @@ local default_config = {
   -- This is how the sign looks.
   signs = {
     mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
+    desc_format = function(desc)
+      return desc
+    end,
   },
   picker = {
     -- choose built-in sort logic by name: string, find all the sort logics in `bookmarks.adapter.sort-logic`
