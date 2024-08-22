@@ -7,6 +7,7 @@ local ns = vim.api.nvim_create_namespace(ns_name)
 
 ---@class Signs
 ---@field mark Sign
+---@field desc_format function(string):string
 -- ---@field annotation Sign -- TODO:
 
 ---@class Sign
@@ -16,14 +17,13 @@ local ns = vim.api.nvim_create_namespace(ns_name)
 
 ---@param signs Signs
 local function setup(signs)
-  for k, _ in pairs(signs) do
-    vim.fn.sign_define(hl_name, { text = signs[k].icon, texthl = hl_name })
-    if signs[k].color then
-      vim.api.nvim_set_hl(0, hl_name, { foreground = signs[k].color })
-    end
-    if signs[k].line_bg then
-      vim.api.nvim_set_hl(0, hl_name_line, { bg = signs[k].line_bg })
-    end
+  local mark = signs.mark
+  vim.fn.sign_define(hl_name, { text = mark.icon, texthl = hl_name })
+  if mark.color then
+    vim.api.nvim_set_hl(0, hl_name, { foreground = mark.color })
+  end
+  if mark.line_bg then
+    vim.api.nvim_set_hl(0, hl_name_line, { bg = mark.line_bg })
   end
 end
 
@@ -74,7 +74,8 @@ local function _refresh_signs(bookmarks)
   for _, bookmark in ipairs(bookmarks) do
     local filepath = vim.fn.expand("%:p")
     if filepath == bookmark.location.path then
-      pcall(place_sign, bookmark.location.line, buf_number, bookmark.name)
+      local desc = vim.g.bookmarks_config.signs.desc_format(bookmark.name)
+      pcall(place_sign, bookmark.location.line, buf_number, desc)
     end
   end
 end
