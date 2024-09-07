@@ -27,11 +27,7 @@ local default_config = {
   -- treeview options
   treeview = {
     bookmark_format = function(bookmark)
-      if bookmark.name ~= "" then
-        return bookmark.name
-      else
-        return "[No Name]"
-      end
+      if bookmark.name ~= "" then return bookmark.name else return "[No Name]" end
     end,
     keymap = {
       quit = { "q", "<ESC>" },

@@ -1,9 +1,5 @@
 # Bookmarks.nvim
 
-> v1.2.0: tree-view
->
-> Function Preview: https://lintao-index.pages.dev/docs/Vim/Neovim/my-plugins-docs/bookmarks.nvim/release-log
-
 - Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
 - Persistent: save your bookmarks into a human readable json file, which you can manipulate manually.
 - Accessible: Find your bookmark by telescope or Treeview with ease.
@@ -36,7 +32,9 @@ return {
 ```lua
 return {
   "LintaoAmons/bookmarks.nvim",
-  -- tag = "v0.5.4", -- optional, pin the plugin at specific version for stability
+  -- recommand, pin the plugin at specific version for stability
+  -- backup your db.json file when you want to upgrade the plugin
+  tag = "v1.4.1", 
   dependencies = {
     { "nvim-telescope/telescope.nvim" },
     { "stevearc/dressing.nvim" }, -- optional: to have the same UI shown in the GIF
@@ -64,7 +62,7 @@ return {
       -- treeview options
       treeview = {
         bookmark_format = function(bookmark)
-          return bookmark.name .. " [" .. bookmark.location.project_name .. "] " .. bookmark.location.relative_path .. " : " .. bookmark.content
+          if bookmark.name ~= "" then return bookmark.name else return "[No Name]" end
         end,
         keymap = {
           quit = { "q", "<ESC>" },
