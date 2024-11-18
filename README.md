@@ -233,6 +233,7 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 - [ ] smart location calibration according to bookmark content
   - [x] Init and calibrate by full match of the line content
   - [ ] A match algorithm that can tolerate small changes of the line content 
+- [ ] auto generate bookmark name by AI (Sent request to openai api, etc)
 
 ### V3
 
