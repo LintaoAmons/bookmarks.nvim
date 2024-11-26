@@ -72,13 +72,6 @@ local setup = function(user_config)
     or default_config
   vim.g.bookmarks_config = cfg
 
-  vim.notify(
-    [[*Breaking change comming:*
-if you don't want any breakding changes and avoid this warning, 
-please pin your version to `v1.4.2`.]],
-    vim.log.levels.WARN,
-    { title = "Bookmarks.nvim breaking change", icon = "" }
-  )
   require("bookmarks.sign").setup(cfg.signs)
   require("bookmarks.auto-cmd").setup()
 end
