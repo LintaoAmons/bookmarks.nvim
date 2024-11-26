@@ -5,7 +5,6 @@
 local default_config = {
   -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well, dont forget run `BookmarksReload` command to clean the cache)
   json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
-  breaking_change_warning = true,
   -- This is how the sign looks.
   signs = {
     mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
@@ -73,11 +72,15 @@ local setup = function(user_config)
     or default_config
   vim.g.bookmarks_config = cfg
 
-  if vim.g.bookmarks_config.breaking_change_warning then
-    vim.api.nvim_echo({
-      { "[Bookmarks.nvim] Breaking change: please pin your version to v1.4.1-before-breaking-change", "WarningMsg" },
-    }, true, {})
-  end
+  vim.notify(
+    [[*Breaking change comming:*
+please pin your version to `v1.4.1-before-breaking-change`
+if you don't want any breakding changes.
+To avoid this warning, 
+please pin your version to `v1.4.2-no-warning`.]],
+    vim.log.levels.WARN,
+    { title = "Bookmarks.nvim breaking change", icon = "" }
+  )
   require("bookmarks.sign").setup(cfg.signs)
   require("bookmarks.auto-cmd").setup()
 end
