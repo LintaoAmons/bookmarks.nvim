@@ -74,10 +74,8 @@ local setup = function(user_config)
 
   vim.notify(
     [[*Breaking change comming:*
-please pin your version to `v1.4.1-before-breaking-change`
-if you don't want any breakding changes.
-To avoid this warning, 
-please pin your version to `v1.4.2-no-warning`.]],
+if you don't want any breakding changes and avoid this warning, 
+please pin your version to `v1.4.2`.]],
     vim.log.levels.WARN,
     { title = "Bookmarks.nvim breaking change", icon = "" }
   )

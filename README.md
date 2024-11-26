@@ -1,5 +1,7 @@
 > [!WARNING]
-> This project is under overhaul, please pin your version to `v1.4.1-before-breaking-change` if you don't want any breaking change.
+> *Breaking change comming:*
+> if you don't want any breakding changes and avoid this warning, 
+> please pin your version to `v1.4.2`.
 
 # Bookmarks.nvim
 
