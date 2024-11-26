@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project is under overhaul, please pin your version to `v1.4.1-before-breaking-change` if you don't want any breaking change.
+
 # Bookmarks.nvim
 
 - Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
