@@ -1,8 +1,3 @@
-> [!WARNING]
-> *Breaking change comming:*
-> if you don't want any breakding changes and avoid this warning, 
-> please pin your version to `v1.4.2`.
-
 # Bookmarks.nvim
 
 - Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
@@ -220,11 +215,26 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 
 ### V2
 
+- [x] filetree-like BookmarkList and Bookmark browsing.
+  - [x] MVP thx! @shanlihou
+- [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
+  - just use `smart-open.nvim`
+- [x] smart location calibration according to bookmark content
+  - [x] Init and calibrate by full match of the line content
+
+### V3
+
+- [ ] refactor: only one type for bookmark and bookmark_list
+- [ ] add description to bookmarks
+- [ ] refactor: save to sqlite db
+- [ ] remove project entity
+
+### Backlog
+
 - [ ] picker
   - [ ] refactor: extract picker module and remove unused modules
   - [ ] get bookmarks in active list --> filter --> sort --> telescope/fzflua
 - [ ] filetree-like BookmarkList and Bookmark browsing.
-  - [x] MVP thx! @shanlihou
   - [ ] action alias or rename some of the actions to make it more readable for users
   - [ ] bookmark filter
   - [ ] Add top level bookmark list
@@ -232,14 +242,8 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [ ] floating preview window
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
-- [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
-  - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
-  - [x] Init and calibrate by full match of the line content
   - [ ] A match algorithm that can tolerate small changes of the line content 
 - [ ] auto generate bookmark name by AI (Sent request to openai api, etc)
-
-### V3
-
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
