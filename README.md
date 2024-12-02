@@ -1,23 +1,13 @@
-> [!WARNING]
-> *Breaking change comming:*
-> if you don't want any breakding changes and avoid this warning, 
-> please pin your version to `v1.4.2`.
-
 # Bookmarks.nvim
 
 - Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
-- Persistent: save your bookmarks into a human readable json file, which you can manipulate manually.
+- Persistent: save your bookmarks into a sqlite db file
 - Accessible: Find your bookmark by telescope or Treeview with ease.
-- Informative: mark with a description, so you can record more information.
+- Informative: mark with a name or description, so you can record more information.
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Groups: arrange your bookmarks in groups, so keep you away from noises.
-- Portable: Easily share your bookmarks across devices or with others by modifying the project path in the JSON file.
-
-![showcase](https://github.com/user-attachments/assets/e47327bb-7dce-43a5-9c74-aaeb58091648)
 
 ## Install and Config
-
-- Simple version: everything should work out of the box if you are ok with the default config.
 
 ```lua
 -- with lazy.nvim
@@ -27,8 +17,14 @@ return {
   dependencies = {
     {"nvim-telescope/telescope.nvim"},
     {"stevearc/dressing.nvim"} -- optional: to have the same UI shown in the GIF
-  }
+  },
+  config = function()
+    local opts = {} -- go to the following section to see all the options
+    require("bookmarks").setup(opts) -- you must call setup to init sqlite db
+  end,
 }
+
+-- run :BookmarksInfo to see the running status of the plugin
 ```
 
 <details>
@@ -39,7 +35,7 @@ return {
   "LintaoAmons/bookmarks.nvim",
   -- recommand, pin the plugin at specific version for stability
   -- backup your db.json file when you want to upgrade the plugin
-  tag = "v1.4.1", 
+  tag = "v1.4.1",
   dependencies = {
     { "nvim-telescope/telescope.nvim" },
     { "stevearc/dressing.nvim" }, -- optional: to have the same UI shown in the GIF
@@ -220,11 +216,26 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
 
 ### V2
 
+- [x] filetree-like BookmarkList and Bookmark browsing.
+  - [x] MVP thx! @shanlihou
+- [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
+  - just use `smart-open.nvim`
+- [x] smart location calibration according to bookmark content
+  - [x] Init and calibrate by full match of the line content
+
+### V3
+
+- [ ] refactor: only one type for bookmark and bookmark_list
+- [ ] add description to bookmarks
+- [ ] refactor: save to sqlite db
+- [ ] remove project entity
+
+### Backlog
+
 - [ ] picker
   - [ ] refactor: extract picker module and remove unused modules
   - [ ] get bookmarks in active list --> filter --> sort --> telescope/fzflua
 - [ ] filetree-like BookmarkList and Bookmark browsing.
-  - [x] MVP thx! @shanlihou
   - [ ] action alias or rename some of the actions to make it more readable for users
   - [ ] bookmark filter
   - [ ] Add top level bookmark list
@@ -232,14 +243,8 @@ By [telegram](https://t.me/+ssgpiHyY9580ZWFl) or [微信: CateFat](https://linta
   - [ ] floating preview window
   - [ ] better default bookmark render format(string format, then better UI)
   - [ ] `u` undo. Expecially for unexpected `d` delete
-- [x] ~Recent files as bookmarks: record all the buffer the user recently opened and sort by the visited_at~
-  - just use `smart-open.nvim`
 - [ ] goto next/prev bookmark in the current buffer
 - [ ] smart location calibration according to bookmark content
-  - [x] Init and calibrate by full match of the line content
-  - [ ] A match algorithm that can tolerate small changes of the line content 
+  - [ ] A match algorithm that can tolerate small changes of the line content
 - [ ] auto generate bookmark name by AI (Sent request to openai api, etc)
-
-### V3
-
 - [ ] Sequance diagram out of bookmarks: Pattern `[actor] -->actor sequance_number :: desc`
