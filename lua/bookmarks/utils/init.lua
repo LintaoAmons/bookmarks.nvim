@@ -1,8 +1,28 @@
+---Get the current version of the project
+---@return string|nil version The git commit hash or nil if error
 local function get_current_version()
-  local result, _ = vim.fn.system("git rev-parse --short HEAD"):gsub("\n", "")
-  return result
+  -- Check if git command exists
+  local has_git = vim.fn.executable("git") == 1
+  if not has_git then
+    return nil
+  end
+
+  -- Execute git command and capture both output and error
+  local output = vim.fn.system("git rev-parse --short HEAD")
+  local exit_code = vim.v.shell_error
+
+  if exit_code ~= 0 then
+    return nil
+  end
+
+  -- Clean up the output by removing newline
+  local version = output:gsub("\n", "")
+  return version
 end
 
+---Trim leading and trailing whitespace from a string
+---@param str string
+---@return string
 local function trim(str)
   return str:gsub("^%s+", ""):gsub("%s+$", "")
 end
@@ -29,6 +49,7 @@ local function shorten_file_path(file_path)
   return table.concat(shorten, "/") .. "/" .. filename
 end
 
+---Deep copy a table
 ---@param original any
 ---@return any
 local function deep_copy(original)
@@ -70,6 +91,7 @@ local function is_homedir(path)
   return path == home_dir
 end
 
+---Find the project path by traversing up the directory tree
 ---@return string|nil
 local function find_project_path()
   for i = 1, 30, 1 do
@@ -84,6 +106,7 @@ local function find_project_path()
   return nil
 end
 
+---Find the project name by traversing up the directory tree
 ---@return string
 local function find_project_name()
   local project_path = find_project_path()
@@ -93,6 +116,8 @@ local function find_project_name()
   return ""
 end
 
+---Get the relative path of the current buffer
+---@return string
 local function get_buf_relative_path()
   local buf_path = vim.fn.expand("%:p")
   local project_path = find_project_path() or ""
