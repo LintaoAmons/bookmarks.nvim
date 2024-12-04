@@ -2,6 +2,12 @@
 > *Breaking change comming:*
 > if you don't want any breakding changes and avoid this warning, 
 > please pin your version to `v1.4.2`.
+>
+> The new version is already useable
+>
+> switch your branch to `refactor-remodel-and-sqlite` to help me on testing
+>
+> Let me know your workflows and painpoints, and make it better together
 
 # Bookmarks.nvim
 
