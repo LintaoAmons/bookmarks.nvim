@@ -63,16 +63,19 @@ local default_config = {
     end,
   },
 
+  -- stylua: ignore start
+  ---@type { keymap: { [string]: string|string[] } } 
   treeview = {
     keymap = {
-      quit = { "q", "<ESC>" },
-      refresh = "R",
-      create_list = "a",
-      level_up = "u",
-      set_root = ".",
-      toggle = "o",
-      move_up = "<localleader>k",
-      move_down = "<localleader>j",
+      quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
+      refresh = "R",                -- Reload and redraw the tree view
+      create_list = "a",            -- Create a new list under the current node
+      level_up = "u",               -- Navigate up one level in the tree hierarchy
+      set_root = ".",               -- Set current list as root of the tree view, also set as active list
+      set_active = "m",             -- Set current list as the active list for bookmarks
+      toggle = "o",                 -- Toggle list expansion or go to bookmark location
+      move_up = "<localleader>k",   -- Move current node up in the list
+      move_down = "<localleader>j", -- Move current node down in the list
       -- tree_cut = "x",
       -- tree_paste = "p",
       -- delete = "d",
@@ -80,6 +83,7 @@ local default_config = {
       -- copy = "c",
     },
   },
+  -- stylua: ignore end
 }
 
 ---Get the database file path from config or fallback

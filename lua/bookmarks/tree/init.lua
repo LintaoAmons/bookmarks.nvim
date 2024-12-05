@@ -46,37 +46,40 @@ local function clean_tree_cache(buf)
 end
 
 ---Toggle the tree view
---- FIXME: close tree view then reopen it will throw error
+---Toggle the tree view
 function M.toggle()
   local cur_window = vim.api.nvim_get_current_win()
   local ctx = vim.g.bookmark_tree_view_ctx
-  local buf = ctx and ctx.buf or vim.api.nvim_create_buf(false, true)
-  local win = ctx and ctx.win or create_vsplit_with_width({ width = 30 })
-  local previous_window = ctx and ctx.previous_window
+
+  -- Handle existing tree view
+  if ctx and vim.api.nvim_win_is_valid(ctx.win) then
+    if cur_window == ctx.win then
+      -- Close tree view when it's focused
+      vim.api.nvim_win_close(ctx.win, true)
+      vim.g.bookmark_tree_view_ctx = nil
+
+      -- Return to previous window if valid
+      if ctx.previous_window and vim.api.nvim_win_is_valid(ctx.previous_window) then
+        vim.api.nvim_set_current_win(ctx.previous_window)
+      end
+      return
+    end
+
+    -- Switch to existing tree view
+    vim.api.nvim_set_current_win(ctx.win)
+    return
+  end
+
+  -- Create new tree view
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = create_vsplit_with_width({ width = 30 })
+
   register_local_shortcuts(buf)
   vim.g.bookmark_tree_view_ctx = {
     buf = buf,
     win = win,
     previous_window = cur_window,
   }
-
-  -- Check if tree view exists
-  if ctx and vim.api.nvim_win_is_valid(ctx.win) then
-    if cur_window == ctx.win then
-      -- Case: tree view is focused, close it
-      vim.api.nvim_win_close(ctx.win, true)
-      vim.g.bookmark_tree_view_ctx = nil
-      -- Switch back to previous window if it's still valid
-      if previous_window and vim.api.nvim_win_is_valid(previous_window) then
-        vim.api.nvim_set_current_win(previous_window)
-      end
-      return
-    else
-      -- Case: tree view exists but not focused, switch to it
-      vim.api.nvim_set_current_win(ctx.win)
-      return
-    end
-  end
 
   local node = Repo.get_active_list()
   Render.refresh(node)

@@ -106,6 +106,7 @@ function M.set_root()
 
   -- Refresh tree view with new root
   if root_node then
+    Service.set_active_list(root_node.id)
     Render.refresh(root_node)
   end
 end
@@ -265,12 +266,44 @@ function M.move_down()
   vim.api.nvim_win_set_cursor(0, { line_no + 1, 0 })
 end
 
---- TODO: set active list
--- function M.active()
---   local line_no = vim.api.nvim_win_get_cursor(0)[1]
---   local ctx = vim.b._bm_context.line_contexts[line_no]
---   api.set_active_list(ctx.root_name)
--- end
+function M.set_active()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node then
+    return
+  end
+
+  -- If it's a bookmark, get its parent list
+  local list_node
+  if node.type ~= "list" then
+    local parent_id = Repo.get_parent_id(node.id)
+    if not parent_id then
+      return
+    end
+    list_node = Repo.find_node(parent_id)
+  else
+    list_node = node
+  end
+
+  -- Set the active list
+  if list_node then
+    Service.set_active_list(list_node.id)
+    -- Refresh tree view to update UI
+    local root = Repo.find_node(ctx.lines_ctx.root_id)
+    if root then
+      Render.refresh(root)
+    end
+  end
+end
 
 ---Refresh tree view
 function M.refresh()
@@ -279,7 +312,7 @@ function M.refresh()
   if not root then
     error(string.format("Failed to find root node with id: %d", ctx.root_id))
   end
-  require("bookmarks.tree.render").refresh(root)
+  Render.refresh(root)
 end
 
 return M

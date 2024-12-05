@@ -58,6 +58,8 @@ function M.pick_bookmark_list(callback, opts)
             start_picker(Repo.find_lists())
           end)
 
+          --- TODO: set active list action
+
           return true
         end,
       })

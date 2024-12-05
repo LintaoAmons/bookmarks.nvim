@@ -1,3 +1,5 @@
+local Node = require("bookmarks.domain.node")
+
 local M = {}
 local has_sqlite, sqlite = pcall(require, "sqlite")
 if not has_sqlite then
@@ -7,7 +9,7 @@ end
 local tbl = require("sqlite.tbl")
 
 -- Database schema definitions
-local nodes = tbl("nodes", {
+local nodes_tbl = tbl("nodes", {
   id = true,
   type = { "text", required = true },
   name = { "text", required = true },
@@ -23,14 +25,14 @@ local nodes = tbl("nodes", {
   visited_at = "integer",
 })
 
-local node_relationships = tbl("node_relationships", {
+local node_relationships_tbl = tbl("node_relationships", {
   id = true,
   parent_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
   child_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
   created_at = { "integer", required = true },
 })
 
-local active_list = tbl("active_list", {
+local active_list_tbl = tbl("active_list", {
   id = true,
   list_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
   updated_at = { "integer", required = true },
@@ -49,9 +51,9 @@ M._DB = DB
 function M.setup(db_dir)
   DB = sqlite({
     uri = db_dir,
-    nodes = nodes,
-    node_relationships = node_relationships,
-    active_list = active_list,
+    nodes = nodes_tbl,
+    node_relationships = node_relationships_tbl,
+    active_list = active_list_tbl,
   })
   M._DB = DB
 
@@ -150,7 +152,15 @@ end
 function M.insert_node(node, parent_id)
   parent_id = parent_id or 0
 
+  -- Find the parent node's children count for ordering
+  local children = DB.node_relationships:get({
+    where = { parent_id = parent_id },
+  })
+
+  -- Set the new node's order to be after all existing children
   local row = node_to_db_row(node)
+  row.node_order = #children
+
   local id = DB.nodes:insert(row)
 
   DB.node_relationships:insert({
@@ -281,13 +291,22 @@ end
 
 ---find a node by location
 ---@param location Bookmarks.Location
+---@param opts? { all_bookmarks: boolean }
 ---@return Bookmarks.Node?
-function M.find_bookmark_by_location(location)
-  local row = DB.nodes:where({
-    type = "bookmark",
-    location_path = location.path,
-    location_line = location.line,
-  })
+function M.find_bookmark_by_location(location, opts)
+  opts = opts or {}
+  local row
+  if opts.all_bookmarks then
+    row = DB.nodes:where({
+      type = "bookmark",
+      location_path = location.path,
+      location_line = location.line,
+    })
+  else
+    -- find in active list
+    local active_list = M.get_active_list()
+    return Node.find_mark_by_location(active_list, location)
+  end
 
   if not row then
     return nil

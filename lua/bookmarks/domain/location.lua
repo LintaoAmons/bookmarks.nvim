@@ -18,4 +18,11 @@ function M.get_current_location()
   }
 end
 
+---@param a Bookmarks.Location
+---@param b Bookmarks.Location
+---@return boolean # true if the locations are the same
+M.same_line = function(a, b)
+  return a.line == b.line and a.path == b.path
+end
+
 return M

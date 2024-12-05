@@ -93,6 +93,27 @@ function M.find_node(node, target_id)
   return nil
 end
 
+---Find a node by location in a list
+---@param node Bookmarks.Node # The list to search in
+---@param location Bookmarks.Location # The location to search for
+---@return Bookmarks.Node? # Returns the first matching bookmark or nil if not found
+function M.find_mark_by_location(node, location)
+  if node.type == "bookmark" then
+    if Location.same_line(node.location, location) then
+      return node
+    end
+    return nil
+  end
+
+  for _, child in ipairs(node.children) do
+    local found = M.find_mark_by_location(child, location)
+    if found then
+      return found
+    end
+  end
+  return nil
+end
+
 ---@param node Bookmarks.Node
 ---@return Bookmarks.Node[] # Returns only bookmark nodes
 function M.get_all_bookmarks(node)
