@@ -1,24 +1,28 @@
-local utils = require("bookmarks.utils")
-
 ---@class Bookmarks.Location
 ---@field path string
----@field project_name string?
----@field relative_path string?
 ---@field line number
 ---@field col number
 
 local M = {}
 
+---Get the current location of the cursor
 ---@return Bookmarks.Location
 function M.get_current_location()
-  local cursor = vim.api.nvim_win_get_cursor(0)
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  local path = vim.api.nvim_buf_get_name(0)
+  local col = vim.api.nvim_win_get_cursor(0)[2]
   return {
-    path = vim.fn.expand("%:p"),
-    project_name = utils.find_project_name(),
-    relative_path = utils.get_buf_relative_path(),
-    line = cursor[1],
-    col = cursor[2],
+    path = path,
+    line = line,
+    col = col,
   }
+end
+
+---@param a Bookmarks.Location
+---@param b Bookmarks.Location
+---@return boolean # true if the locations are the same
+M.same_line = function(a, b)
+  return a.line == b.line and a.path == b.path
 end
 
 return M
