@@ -7,7 +7,10 @@
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
 
-[![YouTube](http://i.ytimg.com/vi/RoyXQYauiLo/hqdefault.jpg)](https://www.youtube.com/watch?v=RoyXQYauiLo)
+> Click the Image to view the vedio
+<a href="https://www.youtube.com/watch?v=RoyXQYauiLo">
+<img width="1910" alt="image" src="https://github.com/user-attachments/assets/08806798-d87a-4191-b5d7-9259e50390c3" />
+</a>
 
 ## Install and Config
 
