@@ -7,6 +7,8 @@
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
 
+[![YouTube](http://i.ytimg.com/vi/RoyXQYauiLo/hqdefault.jpg)](https://www.youtube.com/watch?v=RoyXQYauiLo)
+
 ## Install and Config
 
 ```lua
