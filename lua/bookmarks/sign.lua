@@ -1,5 +1,5 @@
-local repo = require("bookmarks.repo")
-local domain = require("bookmarks.domain")
+local Repo = require("bookmarks.domain.repo")
+local Node = require("bookmarks.domain.node")
 local ns_name = "BookmarksNvim"
 local hl_name = "BookmarksNvimSign"
 local hl_name_line = "BookmarksNvimLine"
@@ -15,8 +15,10 @@ local ns = vim.api.nvim_create_namespace(ns_name)
 ---@field color? string
 ---@field line_bg? string
 
+local M = {}
+
 ---@param signs Signs
-local function setup(signs)
+function M.setup(signs)
   local mark = signs.mark
   vim.fn.sign_define(hl_name, { text = mark.icon, texthl = hl_name })
   if mark.color then
@@ -28,7 +30,7 @@ local function setup(signs)
 end
 
 ---@param line number
-local function place_sign(line, buf_number, desc)
+function M.place_sign(line, buf_number, desc)
   vim.fn.sign_place(line, ns_name, hl_name, buf_number, { lnum = line })
   local at_end = -1
   local row = line - 1
@@ -48,7 +50,7 @@ local function place_sign(line, buf_number, desc)
   })
 end
 
-local function clean()
+function M.clean()
   pcall(vim.fn.sign_unplace, ns_name)
   local all = vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {})
   for _, extmark in ipairs(all) do
@@ -63,61 +65,26 @@ local function clean()
   end
 end
 
----@param bookmarks? Bookmarks.Bookmark[]
-local function _refresh_signs(bookmarks)
-  clean()
+---@param bookmarks? Bookmarks.Node[]
+function M._refresh_signs(bookmarks)
+  M.clean()
 
-  local active_list = repo.bookmark_list.write.find_or_set_active()
+  local active_list = Repo.get_active_list()
 
-  bookmarks = bookmarks or domain.bookmark_list.get_all_marks(active_list)
+  bookmarks = bookmarks or Node.get_all_bookmarks(active_list)
   local buf_number = vim.api.nvim_get_current_buf()
   for _, bookmark in ipairs(bookmarks) do
     local filepath = vim.fn.expand("%:p")
     if filepath == bookmark.location.path then
       local desc = vim.g.bookmarks_config.signs.desc_format(bookmark.name)
-      pcall(place_sign, bookmark.location.line, buf_number, desc)
+      pcall(M.place_sign, bookmark.location.line, buf_number, desc)
     end
   end
 end
 
----@param bookmarks? Bookmarks.Bookmark[]
-local function safe_refresh_signs(bookmarks)
-  pcall(_refresh_signs, bookmarks)
+---@param bookmarks? Bookmarks.Node[]
+function M.safe_refresh_signs(bookmarks)
+  pcall(M._refresh_signs, bookmarks)
 end
 
-local function clean_tree_cache(buf)
-  vim.b[buf]._bm_context = nil
-  vim.b[buf]._bm_tree_cut = nil
-end
-
-local function refresh_tree()
-  local ctx = vim.g.bookmark_list_win_ctx
-  if ctx == nil then
-    return
-  end
-
-  if not vim.api.nvim_buf_is_valid(ctx.buf) then
-    return
-  end
-
-  clean_tree_cache(ctx.buf)
-
-  local bookmark_lists = repo.bookmark_list.read.find_all()
-  local context, lines = require("bookmarks.tree.render.context").from_bookmark_lists(bookmark_lists)
-
-  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", true)
-  vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_option(ctx.buf, "modifiable", false)
-
-  vim.b[ctx.buf]._bm_context = context
-end
-
-return {
-  setup = setup,
-  refresh_signs = safe_refresh_signs,
-  refresh_tree = refresh_tree,
-  namespace = {
-    ns = ns,
-    hl_name = hl_name,
-  },
-}
+return M
