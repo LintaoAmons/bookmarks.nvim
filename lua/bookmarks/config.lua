@@ -1,70 +1,112 @@
 ---@class Bookmarks.Config
----@field json_db_path string
----@field signs Signs
----@field hooks? Bookmarks.Hook[]
 local default_config = {
-  -- where you want to put your bookmarks db file (a simple readable json file, which you can edit manually as well, dont forget run `BookmarksReload` command to clean the cache)
-  json_db_path = vim.fs.normalize(vim.fn.stdpath("config") .. "/bookmarks.db.json"),
-  -- This is how the sign looks.
+  -- Directory to store the database file
+  -- Default: vim.fn.stdpath("data")
+  -- You can set a custom directory
+  -- The plugin will:
+  --   1. Create the directory if it doesn't exist
+  --   2. Create `bookmarks.sqlite.db` inside this directory
+  ---@type string?
+  db_dir = nil, -- if nil, fallback to default `stdpath("data")`
+
+  -- Bookmarks sign configurations
   signs = {
-    mark = { icon = "󰃁", color = "red", line_bg = "#572626" },
+    -- Sign mark icon and color in the gutter
+    mark = {
+      icon = "󰃁",
+      color = "red",
+      line_bg = "#572626",
+    },
+    -- TODO: change param to BookmarkNode
+    -- Format bookmark description text
     desc_format = function(desc)
       return desc
     end,
   },
+
+  -- Telescope/picker configurations
   picker = {
-    -- choose built-in sort logic by name: string, find all the sort logics in `bookmarks.adapter.sort-logic`
-    -- or custom sort logic: function(bookmarks: Bookmarks.Bookmark[]): nil
+    -- Sort logic for bookmark list
+    -- Built-in options: "last_visited", "created_date"
+    -- Or provide custom sort function
+    ---@type: string | fun(bookmarks: Bookmarks.Bookmark[]): nil
     sort_by = "last_visited",
   },
-  -- optional, backup the json db file when a new neovim session started and you try to mark a place
-  -- you can find the file under the same folder
-  enable_backup = true,
-  -- optional, show the result of the calibration when you try to calibrate the bookmarks
-  show_calibrate_result = true,
-  -- optional, auto calibrate the current buffer when you enter it
-  auto_calibrate_cur_buf = true,
-  -- treeview options
-  treeview = {
-    bookmark_format = function(bookmark)
-      if bookmark.name ~= "" then
-        return bookmark.name
-      else
-        return "[No Name]"
-      end
-    end,
-    keymap = {
-      quit = { "q", "<ESC>" },
-      refresh = "R",
-      create_folder = "a",
-      tree_cut = "x",
-      tree_paste = "p",
-      collapse = "o",
-      delete = "d",
-      active = "s",
-      copy = "c",
-    },
+
+  -- Bookmark position calibration
+  calibrate = {
+    -- Auto adjust window position when opening buffer
+    auto_calibrate_cur_buf = true,
   },
-  -- do whatever you like by hooks
-  hooks = {
-    {
-      ---a sample hook that change the working directory when goto bookmark
-      ---@param bookmark Bookmarks.Bookmark
-      ---@param projects Bookmarks.Project[]
-      callback = function(bookmark, projects)
-        local project_path
-        for _, p in ipairs(projects) do
-          if p.name == bookmark.location.project_name then
-            project_path = p.path
-          end
+
+  -- Custom commands available in command picker
+  ---@type table<string, function>
+  commands = {
+    -- Example: Add warning bookmark
+    mark_warning = function()
+      vim.ui.input({ prompt = "[Warn Bookmark]" }, function(input)
+        if input then
+          local Service = require("bookmarks.domain.service")
+          Service.toggle_mark("⚠ " .. input)
+          require("bookmarks.sign").safe_refresh_signs()
         end
-        if project_path then
-          vim.cmd("cd " .. project_path)
-        end
-      end,
+      end)
+    end,
+
+    -- Example: Create list for current project
+    create_project_list = function()
+      local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+      local Service = require("bookmarks.domain.service")
+      local new_list = Service.create_list(project_name)
+      Service.set_active_list(new_list.id)
+      require("bookmarks.sign").safe_refresh_signs()
+    end,
+  },
+
+  ---@type { keymap: { [string]: string|string[] } } 
+  treeview = {
+    -- stylua: ignore start
+    keymap = {
+      quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
+      refresh = "R",                -- Reload and redraw the tree view
+      create_list = "a",            -- Create a new list under the current node
+      level_up = "u",               -- Navigate up one level in the tree hierarchy
+      set_root = ".",               -- Set current list as root of the tree view, also set as active list
+      set_active = "m",             -- Set current list as the active list for bookmarks
+      toggle = "o",                 -- Toggle list expansion or go to bookmark location
+      move_up = "<localleader>k",   -- Move current node up in the list
+      move_down = "<localleader>j", -- Move current node down in the list
+      delete = "D",                 -- Delete current node
+      rename = "r",                 -- Rename current node
+      goto = "g",                   -- Go to bookmark location in previous window
+      cut = "x",                    -- Cut node
+      copy = "c",                   -- Copy node
+      paste = "p",                  -- Paste node
+      show_info = "i",              -- Show node info
     },
+    -- stylua: ignore end
   },
 }
+
+---Get the database file path from config or fallback
+---@param db_dir? string Directory to store the database
+---@return string
+local function get_db_path(db_dir)
+  if not db_dir then
+    return vim.fn.stdpath("data") .. "/bookmarks.sqlite.db"
+  end
+
+  -- Validate/create directory
+  if vim.fn.isdirectory(db_dir) == 0 then
+    local ok = vim.fn.mkdir(db_dir, "p")
+    if ok == 0 then
+      error(string.format("Failed to create directory for database: %s", db_dir))
+    end
+  end
+
+  -- Combine directory with default database filename
+  return vim.fn.fnamemodify(db_dir .. "/bookmarks.sqlite.db", ":p")
+end
 
 ---@param user_config? Bookmarks.Config
 local setup = function(user_config)
@@ -72,13 +114,7 @@ local setup = function(user_config)
     or default_config
   vim.g.bookmarks_config = cfg
 
-  vim.notify(
-    [[*Breaking change comming:*
-if you don't want any breakding changes and avoid this warning, 
-please pin your version to `v1.4.2`.]],
-    vim.log.levels.WARN,
-    { title = "Bookmarks.nvim breaking change", icon = "" }
-  )
+  require("bookmarks.domain.repo").setup(get_db_path(cfg.db_dir))
   require("bookmarks.sign").setup(cfg.signs)
   require("bookmarks.auto-cmd").setup()
 end
