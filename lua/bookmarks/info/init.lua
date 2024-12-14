@@ -49,7 +49,7 @@ function M.get_info()
   }
 
   -- Active list section
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   table.insert(sections, "## Active List\n")
   table.insert(sections, node_to_tree_str(active_list))
 

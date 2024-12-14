@@ -69,7 +69,7 @@ end
 function M._refresh_signs(bookmarks)
   M.clean()
 
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
 
   bookmarks = bookmarks or Node.get_all_bookmarks(active_list)
   local buf_number = vim.api.nvim_get_current_buf()

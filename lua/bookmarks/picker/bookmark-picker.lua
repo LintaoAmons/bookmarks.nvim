@@ -72,7 +72,7 @@ function M.pick_bookmark(callback, opts)
 
           map("i", "<c-d>", function()
             Actions.delete(prompt_bufnr)
-            local active_list = Repo.get_active_list()
+            local active_list = Repo.ensure_and_get_active_list()
             start_picker(Node.get_all_bookmarks(active_list), active_list)
           end)
 
@@ -82,7 +82,7 @@ function M.pick_bookmark(callback, opts)
       :find()
   end
 
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   start_picker(Node.get_all_bookmarks(active_list), active_list)
 end
 
@@ -90,7 +90,7 @@ end
 ---@param opts? table
 function M.grep_bookmark(opts)
   opts = opts or {}
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   local bookmarks = Node.get_all_bookmarks(active_list)
 
   -- Get unique file paths from bookmarks
