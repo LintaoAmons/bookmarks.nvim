@@ -104,7 +104,7 @@ end
 function M.refresh(root)
   local lines = {}
   local lines_ctx = {}
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   local active_list_id = active_list and active_list.id or 0
 
   render_tree_recursive(root, lines, lines_ctx, 0, root.id, active_list_id)
@@ -120,7 +120,7 @@ function M.refresh(root)
   })
 
   -- Highlight active list
-  local active_list = require("bookmarks.domain.repo").get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   if active_list then
     Highlight.highlight_active_list(buf, active_list.id, lines_ctx)
   end

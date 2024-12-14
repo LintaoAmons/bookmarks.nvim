@@ -81,7 +81,7 @@ function M.toggle()
     previous_window = cur_window,
   }
 
-  local node = Repo.get_active_list()
+  local node = Repo.ensure_and_get_active_list()
   Render.refresh(node)
 end
 

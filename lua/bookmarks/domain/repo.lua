@@ -279,14 +279,34 @@ function M.set_active_list(list_id)
   M.update_node(node)
 end
 
--- Add function to get active list
+--
 ---@return Bookmarks.Node
-function M.get_active_list()
+function M.ensure_and_get_active_list()
   local active = DB.active_list:get()[1]
-  if not active then
-    return M.find_node(0) or error("Failed to fallback to root list when no active list exists")
+  local node
+
+  if active then
+    node = M.find_node(active.list_id)
   end
-  return M.find_node(active.list_id) or error("Failed to find active list by the id found in the active list table")
+
+  -- Fallback to root if no active list or active list not found
+  if not node then
+    node = M.find_node(0)
+    if not node then
+      error("Failed to fallback to root list")
+    end
+
+    -- Clear any existing active list
+    DB.active_list:remove()
+
+    -- Set new active list
+    DB.active_list:insert({
+      list_id = node.id,
+      updated_at = os.time(),
+    })
+  end
+
+  return node
 end
 
 ---find a node by location
@@ -304,7 +324,7 @@ function M.find_bookmark_by_location(location, opts)
     })
   else
     -- find in active list
-    local active_list = M.get_active_list()
+    local active_list = M.ensure_and_get_active_list()
     return Node.find_mark_by_location(active_list, location)
   end
 
@@ -362,7 +382,7 @@ end
 function M.find_bookmarks_by_path(path, list_id)
   -- If list_id not provided, use active list
   if not list_id then
-    local active_list = M.get_active_list()
+    local active_list = M.ensure_and_get_active_list()
     list_id = active_list.id
   end
 

@@ -13,7 +13,7 @@ function M.new_bookmark(bookmark, parent_list_id)
   if bookmark.type ~= "bookmark" then
     error("Node is not a bookmark")
   end
-  parent_list_id = parent_list_id or Repo.get_active_list().id
+  parent_list_id = parent_list_id or Repo.ensure_and_get_active_list().id
 
   local id = Repo.insert_node(bookmark, parent_list_id)
 
@@ -42,7 +42,7 @@ function M.toggle_mark(name, location, parent_list_id)
   end
 
   -- else create a new bookmark
-  parent_list_id = parent_list_id or Repo.get_active_list().id
+  parent_list_id = parent_list_id or Repo.ensure_and_get_active_list().id
   local bookmark = Node.new_bookmark(name)
 
   local id = Repo.insert_node(bookmark, parent_list_id)
@@ -138,7 +138,7 @@ end
 --- get all bookmarks of the active list
 ---@return Bookmarks.Node[]
 function M.get_all_bookmarks_of_active_list()
-  local active_list = Repo.get_active_list()
+  local active_list = Repo.ensure_and_get_active_list()
   return Node.get_all_bookmarks(active_list)
 end
 
