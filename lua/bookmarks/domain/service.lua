@@ -77,8 +77,6 @@ function M.create_list(name, parent_list_id, location)
   local id = Repo.insert_node(list, parent_list_id)
 
   M.set_active_list(id)
-  local new_bookmark = Node.new_bookmark("", location)
-  M.new_bookmark(new_bookmark, id)
   local created = Repo.find_node(id) or error("Failed to create list")
   Sign.safe_refresh_signs()
   -- return to normal mode
