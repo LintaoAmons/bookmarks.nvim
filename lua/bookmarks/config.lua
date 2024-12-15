@@ -83,6 +83,7 @@ local default_config = {
       copy = "c",                   -- Copy node
       paste = "p",                  -- Paste node
       show_info = "i",              -- Show node info
+      reverse = "t",                -- Reverse the order of nodes in the tree view
     },
     -- stylua: ignore end
   },

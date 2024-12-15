@@ -17,10 +17,15 @@ local M = {}
 
 ---Sort nodes by their order value
 ---@param nodes Bookmarks.Node[]
+---@param ascending boolean
 ---@return Bookmarks.Node[]
-local function sort_nodes_by_order_desc(nodes)
+local function sort_nodes_by_order(nodes, ascending)
   table.sort(nodes, function(a, b)
-    return (a.order or 0) > (b.order or 0)
+    if ascending then
+      return (a.order or 0) < (b.order or 0)
+    else
+      return (a.order or 0) > (b.order or 0)
+    end
   end)
   return nodes
 end
@@ -91,8 +96,9 @@ local function render_tree_recursive(node, lines, lines_ctx, deep, root_id, acti
 
   -- For list nodes, only render children if expanded
   if node.type == "list" and node.is_expanded then
-    -- Sort children before rendering
-    local sorted_children = sort_nodes_by_order_desc(node.children)
+    local tree_ctx = Context.get_ctx()
+    local ascending = tree_ctx.sort_ascending or false
+    local sorted_children = sort_nodes_by_order(node.children, ascending)
     for _, child in ipairs(sorted_children) do
       render_tree_recursive(child, lines, lines_ctx, deep + 1, root_id, active_list_id)
     end

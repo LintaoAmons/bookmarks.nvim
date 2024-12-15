@@ -528,4 +528,23 @@ function M.show_info()
   Info.show_bookmark_info(node)
 end
 
+--- reverse display order
+function M.reverse()
+  local ctx = Ctx.get_ctx()
+  
+  -- Toggle sort order
+  ctx.sort_ascending = not (ctx.sort_ascending or false)
+  vim.g.bookmark_tree_view_ctx = ctx
+  
+  -- Refresh the view
+  local root = Repo.find_node(ctx.lines_ctx.root_id)
+  if root then
+    Render.refresh(root)
+  end
+  
+  -- Notify user of sort order change
+  local order = ctx.sort_ascending and "ascending" or "descending"
+  vim.notify("Sort order: " .. order, vim.log.levels.INFO)
+end
+
 return M

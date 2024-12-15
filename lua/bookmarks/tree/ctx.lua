@@ -4,6 +4,7 @@
 ---@field previous_window integer previous window
 ---@field lines_ctx Bookmarks.LinesCtx
 ---@field store {node: Bookmarks.Node|nil, operation: "cut"|"copy"|nil} store for cut/copy operations
+---@field sort_ascending boolean
 
 local M = {}
 
