@@ -85,4 +85,10 @@ function M.toggle()
   Render.refresh(node)
 end
 
+---refresh the tree view with a new root node
+---@param root_id number
+function M.refresh(root_id)
+  Operate.refresh(root_id)
+end
+
 return M

@@ -1,6 +1,8 @@
 -- local Window = require("bookmarks.utils.window")
 local Service = require("bookmarks.domain.service")
 local Location = require("bookmarks.domain.location")
+local Sign = require("bookmarks.sign")
+local Tree = require("bookmarks.tree")
 -- local Node = require("bookmarks.node")
 
 local M = {}
@@ -30,7 +32,9 @@ end
 M.new_list = function()
   vim.ui.input({ prompt = "[Create new bookmark_list]" }, function(input)
     if input then
-      Service.create_list(input)
+      local new_list = Service.create_list(input)
+      Sign.safe_refresh_signs()
+      pcall(Tree.refresh, new_list.id)
     end
   end)
 end

@@ -206,8 +206,9 @@ function M.cut()
   Ctx.set_store(node, "cut")
   vim.notify(string.format("Cut node: %s", node.name), vim.log.levels.INFO)
 
-  -- Delete the node from current position
-  Service.delete_node(node.id)
+  -- Remove the node from current list
+  local parent_id = Repo.get_parent_id(node.id)
+  Service.remove_from_list(node.id, parent_id)
 
   -- Refresh the tree view
   local root = Repo.find_node(ctx.lines_ctx.root_id)
@@ -284,7 +285,7 @@ function M.paste()
   end
 
   -- Paste the node
-  Service.paste_node(ctx.store.node, parent_id, position)
+  Service.paste_node(ctx.store.node, parent_id, position, ctx.store.operation)
 
   -- Clear store if this was a cut operation
   if ctx.store.operation == "cut" then
@@ -500,9 +501,11 @@ function M.set_active()
 end
 
 ---Refresh tree view
-function M.refresh()
+---@param root_id number?
+function M.refresh(root_id)
   local ctx = Ctx.get_ctx().lines_ctx
-  local root = Repo.find_node(ctx.root_id)
+  root_id = root_id or ctx.root_id
+  local root = Repo.find_node(root_id)
   if not root then
     error(string.format("Failed to find root node with id: %d", ctx.root_id))
   end

@@ -199,6 +199,9 @@ function M.delete_node(node_id)
   DB.node_relationships:remove({ where = {
     child_id = node_id,
   } })
+  DB.node_relationships:remove({ where = {
+    parent_id = node_id,
+  } })
 
   -- Then delete the node itself
   DB.nodes:remove({ where = { id = node_id } })
@@ -420,7 +423,7 @@ end
 
 ---Get the parent ID of a node
 ---@param node_id number The ID of the node to find the parent for
----@return number? parent_id Returns the parent ID or nil if not found
+---@return number parent_id Returns the parent ID or nil if not found
 function M.get_parent_id(node_id)
   if node_id == 0 then
     return 0
@@ -431,7 +434,7 @@ function M.get_parent_id(node_id)
   })
 
   if not relationship then
-    return nil
+    error("Orphan Node, check your db for node id: " .. node_id)
   end
 
   return relationship.parent_id
@@ -493,6 +496,52 @@ function M.insert_node_at_position(node, parent_id, position)
   })
 
   return id
+end
+
+---Find and fix orphaned nodes by attaching them to the root node
+function M.rebind_orphan_node()
+  -- Get all nodes
+  local nodes = DB.nodes:get()
+
+  -- Filter out root node in memory
+  local non_root_nodes = {}
+  for _, node in ipairs(nodes) do
+    if node.id ~= 0 then
+      table.insert(non_root_nodes, node)
+    end
+  end
+
+  -- Get all relationships
+  local relationships = DB.node_relationships:get()
+  local has_parent = {}
+
+  -- Build lookup table of nodes with parents
+  for _, rel in ipairs(relationships) do
+    has_parent[rel.child_id] = true
+  end
+
+  -- Find orphaned nodes and attach them to root
+  for _, node in ipairs(non_root_nodes) do
+    if not has_parent[node.id] then
+      -- Get count of root's children for ordering
+      local root_children = DB.node_relationships:get({
+        where = { parent_id = 0 },
+      })
+
+      -- Create relationship with root
+      DB.node_relationships:insert({
+        parent_id = 0,
+        child_id = node.id,
+        created_at = os.time(),
+      })
+
+      -- Update node's order to be at the end
+      DB.nodes:update({
+        where = { id = node.id },
+        set = { node_order = #root_children },
+      })
+    end
+  end
 end
 
 return M

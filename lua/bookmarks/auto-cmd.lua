@@ -12,8 +12,10 @@ M.setup = function()
       if vim.g.bookmarks_config and vim.g.calibrate and vim.g.bookmarks_config.calibrate.auto_calibrate_cur_buf then
         require("bookmarks.calibrate").calibrate_current_window()
         require("bookmarks.sign").safe_refresh_signs()
+        pcall(require("bookmarks.tree.operate").refresh)
       else
         require("bookmarks.sign").safe_refresh_signs()
+        pcall(require("bookmarks.tree.operate").refresh)
       end
     end,
   })

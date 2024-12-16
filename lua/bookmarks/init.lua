@@ -5,6 +5,7 @@ local Node = require("bookmarks.domain.node")
 local Sign = require("bookmarks.sign")
 local Location = require("bookmarks.domain.location")
 local Commands = require("bookmarks.commands")
+local Tree = require("bookmarks.tree.operate")
 
 local M = {}
 
@@ -16,6 +17,7 @@ M.toggle_mark = function()
     if input then
       Service.toggle_mark(input)
       Sign.safe_refresh_signs()
+      pcall(Tree.refresh)
     end
   end)
 end
@@ -96,6 +98,10 @@ end
 
 M.toggle_treeview = function()
   require("bookmarks.tree").toggle()
+end
+
+M.rebind_orphan_node = function()
+  Repo.rebind_orphan_node()
 end
 
 return M

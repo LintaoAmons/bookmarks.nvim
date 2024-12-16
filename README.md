@@ -7,7 +7,6 @@
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
 
-
 <img width="1910" alt="image" src="https://github.com/user-attachments/assets/08806798-d87a-4191-b5d7-9259e50390c3" />
 - <a href="https://www.youtube.com/watch?v=RoyXQYauiLo">
 Function overview - Part 1
@@ -54,6 +53,7 @@ Check the default config in [config.lua](./lua/bookmarks/config.lua)
 | `BookmarksInfoCurrentBookmark` | Show current bookmark info                                                                                                          |
 | `BookmarksCommands`            | Find bookmark commands and trigger it                                                                                               |
 | `BookmarksTree`                | Browse bookmarks in tree view                                                                                                       |
+| `BookmarkRebindOrphanNode`     | Rebind orphaned nodes by attaching them to the root node                                                                            |
 
 ### Keymap
 

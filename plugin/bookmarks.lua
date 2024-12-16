@@ -57,3 +57,5 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command("BookmarksTree", bookmarks.toggle_treeview, { desc = "browse bookmarks in tree view" })
+
+vim.api.nvim_create_user_command("BookmarkRebindOrphanNode", bookmarks.rebind_orphan_node, { desc = "rebind the orphaned node to the root node" })

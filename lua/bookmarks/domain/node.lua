@@ -16,6 +16,9 @@ local Utils = require("bookmarks.utils")
 ---@field is_expanded boolean? # Only used if type is "list", if it's expanded in tree view
 ---@field order number? # used for sorting and displaying
 
+--- TODO: because we have this order field, node and list are many to one relationship
+--- TODO: we may want to change this to a many to many relationship in the future
+
 ---@class Bookmarks.NewNode
 ---@field id number?
 ---@field name string

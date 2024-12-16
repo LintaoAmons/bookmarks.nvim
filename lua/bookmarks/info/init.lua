@@ -95,7 +95,7 @@ function M.open()
   vim.api.nvim_win_set_option(popup.win, "cursorline", true)
 end
 
----Show all fields of the bookmark under the cursor
+---Show all fields of the bookmark
 ---@param node Bookmarks.Node?
 function M.show_bookmark_info(node)
   if not node then
@@ -118,14 +118,23 @@ function M.show_bookmark_info(node)
       string.format("- **Name**: %s\n", node.name),
       string.format("- **Type**: %s\n", node.type),
       string.format("- **Order**: %s\n", node.order),
-      string.format("- **Location**:\n"),
-      string.format("  - Path: `%s`\n", node.location.path),
-      string.format("  - Line: `%d`\n", node.location.line),
-      string.format("  - Column: `%d`\n", node.location.col),
       string.format("- **Content**: `%s`\n", node.content or ""),
       string.format("- **Git Hash**: `%s`\n", node.githash or ""),
       string.format("- **Created**: `%s`\n", os.date("%Y-%m-%d %H:%M:%S", node.created_at)),
     }
+
+    if node.location then
+      table.insert(sections, string.format("- **Location**:\n"))
+    end
+    if node.location and node.location.path then
+      table.insert(sections, string.format("  - Path: `%s`\n", node.location.path))
+    end
+    if node.location and node.location.path then
+      table.insert(sections, string.format("  - Line: `%d`\n", node.location.line))
+    end
+    if node.location and node.location.path then
+      table.insert(sections, string.format("  - Column: `%d`\n", node.location.col))
+    end
 
     if node.visited_at then
       table.insert(sections, string.format("- **Last Visited**: `%s`\n", os.date("%Y-%m-%d %H:%M:%S", node.visited_at)))

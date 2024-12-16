@@ -1,7 +1,8 @@
 local Node = require("bookmarks.domain.node")
 local Location = require("bookmarks.domain.location")
-local Sign = require("bookmarks.sign")
 local Repo = require("bookmarks.domain.repo")
+-- TODO: remove this dependency, fire domain events instead
+local Sign = require("bookmarks.sign")
 
 local M = {}
 
@@ -67,9 +68,8 @@ end
 --- Create a new list and set it as active
 ---@param name string # the name of the list
 ---@param parent_list_id number? # parent list ID, if nil, list will be added to root list
----@param location Bookmarks.Location? # mark the location when creating the list
 ---@return Bookmarks.Node # Returns the created list
-function M.create_list(name, parent_list_id, location)
+function M.create_list(name, parent_list_id)
   -- If no parent_list_id provided, use root list (id = 0)
   parent_list_id = parent_list_id or 0
 
@@ -178,6 +178,13 @@ function M.delete_node(id)
   Repo.delete_node(id)
 end
 
+--- Remove the node from its current list
+--- @param node_id number # node ID
+--- @param parent_id number # Parent node id
+function M.remove_from_list(node_id, parent_id)
+  Repo.remove_from_list(node_id, parent_id)
+end
+
 --- Export list as text to a buffer. useful when you want to provide context to AI
 --- @param list_id number # list ID
 function M.export_list_to_buffer(list_id) end
@@ -215,8 +222,31 @@ end
 ---@param node Bookmarks.Node The node to paste
 ---@param parent_id number The parent list ID
 ---@param position number The position to paste at
+---@param operation "cut"|"copy" The operation to perform
 ---@return Bookmarks.Node # Returns the pasted node
-function M.paste_node(node, parent_id, position)
+function M.paste_node(node, parent_id, position, operation)
+  if node.type == "list" and parent_id == node.id then
+    error("Cannot paste a list into itself")
+  end
+
+  if operation == "cut" then
+    -- Update orders of existing nodes in target list
+    local children = Repo.find_node(parent_id).children
+    for _, child in ipairs(children) do
+      if child.order >= position then
+        child.order = child.order + 1
+        Repo.update_node(child)
+      end
+    end
+
+    -- Add relationship to new parent
+    Repo.add_to_list(node.id, parent_id)
+
+    -- Update node's order
+    node.order = position
+    return Repo.update_node(node)
+  end
+
   -- Convert node to newNode format
   local newNode = {
     type = node.type,
