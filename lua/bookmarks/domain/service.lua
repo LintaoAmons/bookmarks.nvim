@@ -130,6 +130,7 @@ function M.goto_bookmark(bookmark_id, opts)
 
   -- Move cursor to the bookmarked position
   vim.api.nvim_win_set_cursor(0, { node.location.line, node.location.col })
+  vim.cmd("normal! zz")
   Sign.safe_refresh_signs()
 end
 
