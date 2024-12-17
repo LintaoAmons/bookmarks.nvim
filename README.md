@@ -13,7 +13,6 @@
 
 - [BookmarkTree function overview](https://youtu.be/TUCn1mqSI6Q)
 
-
 ## Install and Config
 
 ```lua
@@ -46,15 +45,15 @@ Check the default config in [config.lua](./lua/bookmarks/config.lua)
 | Command                        | Description                                                                                                                         |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `BookmarksMark`                | Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string |
-| `BookmarksDesc`                | Add description to the bookmark under cursor, if no bookmark, then mark it first                                                    |
 | `BookmarksGoto`                | Go to bookmark at current active BookmarkList                                                                                       |
+| `BookmarksDesc`                | Add description to the bookmark under cursor, if no bookmark, then mark it first                                                    |
+| `BookmarksTree`                | Browse bookmarks in tree view                                                                                                       |
+| `BookmarksCommands`            | Find bookmark commands and trigger it                                                                                               |
+| `BookmarksInfo`                | Overview plugin current status                                                                                                      |
+| `BookmarksInfoCurrentBookmark` | Show current bookmark info                                                                                                          |
 | `BookmarksGrep`                | Grep through the content of all bookmarked files                                                                                    |
 | `BookmarksLists`               | Pick a bookmark list                                                                                                                |
 | `BookmarksNewList`             | Create a new bookmark list                                                                                                          |
-| `BookmarksInfo`                | Overview plugin current status                                                                                                      |
-| `BookmarksInfoCurrentBookmark` | Show current bookmark info                                                                                                          |
-| `BookmarksCommands`            | Find bookmark commands and trigger it                                                                                               |
-| `BookmarksTree`                | Browse bookmarks in tree view                                                                                                       |
 | `BookmarkRebindOrphanNode`     | Rebind orphaned nodes by attaching them to the root node                                                                            |
 
 ### Keymap
