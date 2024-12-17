@@ -8,9 +8,11 @@
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
 
 <img width="1910" alt="image" src="https://github.com/user-attachments/assets/08806798-d87a-4191-b5d7-9259e50390c3" />
-- <a href="https://www.youtube.com/watch?v=RoyXQYauiLo">
-Function overview - Part 1
-</a>
+
+- [Basic function overview](https://www.youtube.com/watch?v=RoyXQYauiLo)
+
+- [BookmarkTree function overview](https://youtu.be/TUCn1mqSI6Q)
+
 
 ## Install and Config
 
