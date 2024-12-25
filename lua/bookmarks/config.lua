@@ -9,6 +9,12 @@ local default_config = {
   ---@type string?
   db_dir = nil, -- if nil, fallback to default `stdpath("data")`
 
+  -- Navigation configurations
+  navigation = {
+    -- Enable/disable wrap-around when navigating to next/previous bookmark
+    next_prev_wraparound = true,
+  },
+
   -- Bookmarks sign configurations
   signs = {
     -- Sign mark icon and color in the gutter
