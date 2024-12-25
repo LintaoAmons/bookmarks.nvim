@@ -1,6 +1,7 @@
 local Context = require("bookmarks.tree.ctx")
 local Repo = require("bookmarks.domain.repo")
 local Highlight = require("bookmarks.tree.render.highlight")
+local Location = require("bookmarks.domain.location")
 local INTENT = "  "
 local M = {}
 
@@ -37,7 +38,8 @@ end
 local function render_bookmark(node)
   local book_icon = "◉"
 
-  local name = node.name
+  local filename = Location.get_file_name(node.location)
+  local name = filename .. ": " .. node.name
   if node.name == "" then
     name = "[Untitled]"
   end
@@ -71,6 +73,9 @@ end
 ---@return string
 local function render_context(node, deep, active_list_id)
   if node.type == "bookmark" then
+    if vim.g.bookmarks_config.treeview.render_bookmark then
+      return string.rep(INTENT, deep) .. vim.g.bookmarks_config.treeview.render_bookmark(node)
+    end
     return string.rep(INTENT, deep) .. render_bookmark(node)
   else
     return string.rep(INTENT, deep) .. render_list(node, active_list_id)

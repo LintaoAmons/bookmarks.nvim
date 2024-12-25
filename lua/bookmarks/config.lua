@@ -65,6 +65,8 @@ local default_config = {
 
   ---@type { keymap: { [string]: string|string[] } } 
   treeview = {
+    ---@type fun(node: Bookmarks.Node): string | nil
+    render_bookmark = nil,
     -- stylua: ignore start
     keymap = {
       quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
