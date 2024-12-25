@@ -32,45 +32,21 @@ M.goto_bookmark = function()
 end
 
 M.goto_next_bookmark = function()
-  local active_list = Repo.get_active_list()
-  local bookmarks = Node.get_all_bookmarks(active_list)
-  local filepath = vim.fn.expand("%:p")
-  local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
-
-  local selected_bm
-  for _, bookmark in ipairs(bookmarks) do
-    if filepath == bookmark.location.path and bookmark.location.line > cur_lnr then
-      if not selected_bm or bookmark.location.line < selected_bm.location.line then
-        selected_bm = bookmark
-      end
+  Service.find_next_bookmark(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
     end
-  end
-
-  if selected_bm then
-    Service.goto_bookmark(selected_bm.id)
-    Sign.safe_refresh_signs()
-  end
+  end)
 end
 
 M.goto_prev_bookmark = function()
-  local active_list = Repo.get_active_list()
-  local bookmarks = Node.get_all_bookmarks(active_list)
-  local filepath = vim.fn.expand("%:p")
-  local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
-
-  local selected_bm
-  for _, bookmark in ipairs(bookmarks) do
-    if filepath == bookmark.location.path and bookmark.location.line < cur_lnr then
-      if not selected_bm or bookmark.location.line > selected_bm.location.line then
-        selected_bm = bookmark
-      end
+  Service.find_prev_bookmark(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
     end
-  end
-
-  if selected_bm then
-    Service.goto_bookmark(selected_bm.id)
-    Sign.safe_refresh_signs()
-  end
+  end)
 end
 
 M.grep_bookmarks = function()

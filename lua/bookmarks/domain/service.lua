@@ -134,6 +134,48 @@ function M.goto_bookmark(bookmark_id, opts)
   Sign.safe_refresh_signs()
 end
 
+--- finds the next bookmark in a given direction within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+---@param compare_fn
+---@param fail_msg
+local function find_closest_bookmark_in_order(callback, compare_fn, fail_msg)
+  local active_list = Repo.ensure_and_get_active_list()
+  local bookmarks = Node.get_all_bookmarks(active_list)
+  local filepath = vim.fn.expand("%:p")
+  local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
+
+  local selected_bm
+  for _, bookmark in ipairs(bookmarks) do
+    if filepath == bookmark.location.path and compare_fn(bookmark.location.line, cur_lnr) then
+      if not selected_bm or compare_fn(selected_bm.location.line, bookmark.location.line) then
+        selected_bm = bookmark
+      end
+    end
+  end
+
+  if selected_bm then
+    callback(selected_bm)
+  else
+    vim.notify(fail_msg, vim.log.levels.WARN)
+  end
+end
+
+--- finds the next bookmark in line number order within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+function M.find_next_bookmark(callback)
+  find_closest_bookmark_in_order(callback, function(selected_lnr, candidate_lnr)
+    return selected_lnr > candidate_lnr
+  end, "No next bookmark found within the active BookmarkList")
+end
+
+--- finds the previous bookmark in line number order within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+function M.find_prev_bookmark(callback)
+  find_closest_bookmark_in_order(callback, function(selected_lnr, candidate_lnr)
+    return selected_lnr < candidate_lnr
+  end, "No previous bookmark found within the active BookmarkList")
+end
+
 --- get all bookmarks of the active list
 ---@return Bookmarks.Node[]
 function M.get_all_bookmarks_of_active_list()
