@@ -32,6 +32,18 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command(
+  "BookmarksGotoNext",
+  bookmarks.goto_next_bookmark,
+  { desc = "Go to next bookmark in line number order within the current active BookmarkList" }
+)
+
+vim.api.nvim_create_user_command(
+  "BookmarksGotoPrev",
+  bookmarks.goto_prev_bookmark,
+  { desc = "Go to previous bookmark in line number order within the current active BookmarkList" }
+)
+
+vim.api.nvim_create_user_command(
   "BookmarksGrep",
   bookmarks.grep_bookmarks,
   { desc = "Grep through the content of all bookmarked files" }
