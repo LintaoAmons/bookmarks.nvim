@@ -40,12 +40,6 @@ local function register_local_shortcuts(buf)
   end
 end
 
-local function clean_tree_cache(buf)
-  vim.b[buf]._bm_context = nil
-  vim.b[buf]._bm_tree_cut = nil
-end
-
----Toggle the tree view
 ---Toggle the tree view
 function M.toggle()
   local cur_window = vim.api.nvim_get_current_win()

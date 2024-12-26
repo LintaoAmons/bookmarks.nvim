@@ -25,4 +25,11 @@ M.same_line = function(a, b)
   return a.line == b.line and a.path == b.path
 end
 
+---Get just the file name from a location
+---@param location Bookmarks.Location
+---@return string # the file name without path
+function M.get_file_name(location)
+  return vim.fn.fnamemodify(location.path, ":t")
+end
+
 return M
