@@ -134,6 +134,87 @@ function M.goto_bookmark(bookmark_id, opts)
   Sign.safe_refresh_signs()
 end
 
+local FindDirection = { FORWARD = 0, BACKWARD = 1 }
+
+--- finds the next bookmark in a given direction within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+---@param direction
+---@param fail_msg
+local function find_closest_bookmark_in_order(callback, direction, fail_msg)
+  local enable_wraparound = vim.g.bookmarks_config.navigation.next_prev_wraparound
+  local active_list = Repo.ensure_and_get_active_list()
+  local bookmarks = Node.get_all_bookmarks(active_list)
+  local filepath = vim.fn.expand("%:p")
+  local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
+  local file_bms = {}
+
+  for _, bookmark in ipairs(bookmarks) do
+    if filepath == bookmark.location.path then
+      table.insert(file_bms, bookmark)
+    end
+  end
+
+  if #file_bms == 0 then
+    vim.notify("No bookmarks available in this buffer", vim.log.levels.WARN)
+    return
+  end
+
+  -- sort in ascending line number order
+  table.sort(file_bms, function(lhs, rhs)
+    return lhs.location.line < rhs.location.line
+  end)
+  local min_bm = file_bms[1]
+  local max_bm = file_bms[#file_bms]
+
+  local selected_bm
+  if direction == FindDirection.FORWARD then
+    if enable_wraparound and cur_lnr >= max_bm.location.line then
+      selected_bm = min_bm
+    else
+      for _, bookmark in ipairs(file_bms) do
+        if bookmark.location.line > cur_lnr then
+          selected_bm = bookmark
+          break
+        end
+      end
+    end
+  elseif direction == FindDirection.BACKWARD then
+    if enable_wraparound and cur_lnr <= min_bm.location.line then
+      selected_bm = max_bm
+    else
+      for i = #file_bms, 1, -1 do
+        local bookmark = file_bms[i]
+        if bookmark.location.line < cur_lnr then
+          selected_bm = bookmark
+          break
+        end
+      end
+    end
+  else
+    error("Invalid direction, not a valid call to this function")
+  end
+
+  if selected_bm then
+    callback(selected_bm)
+  else
+    vim.notify(fail_msg, vim.log.levels.WARN)
+  end
+end
+
+--- finds the next bookmark in line number order within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+function M.find_next_bookmark(callback)
+  find_closest_bookmark_in_order(callback, FindDirection.FORWARD,
+    "No next bookmark found within the active BookmarkList")
+end
+
+--- finds the previous bookmark in line number order within the current active BookmarkList
+---@param callback fun(bookmark: Bookmarks.Node): nil
+function M.find_prev_bookmark(callback)
+  find_closest_bookmark_in_order(callback, FindDirection.BACKWARD,
+    "No previous bookmark found within the active BookmarkList")
+end
+
 --- get all bookmarks of the active list
 ---@return Bookmarks.Node[]
 function M.get_all_bookmarks_of_active_list()

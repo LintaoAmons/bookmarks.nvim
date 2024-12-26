@@ -31,6 +31,24 @@ M.goto_bookmark = function()
   end)
 end
 
+M.goto_next_bookmark = function()
+  Service.find_next_bookmark(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
+    end
+  end)
+end
+
+M.goto_prev_bookmark = function()
+  Service.find_prev_bookmark(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
+    end
+  end)
+end
+
 M.grep_bookmarks = function()
   require("bookmarks.picker").grep_bookmark()
 end
