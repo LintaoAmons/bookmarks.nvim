@@ -18,7 +18,8 @@ vim.g.bookmark_tree_view_ctx = nil
 local bookmarks = require("bookmarks")
 
 vim.api.nvim_create_user_command("BookmarksMark", bookmarks.toggle_mark, {
-  desc = "Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string",
+  desc =
+  "Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string",
 })
 
 vim.api.nvim_create_user_command("BookmarksDesc", bookmarks.attach_desc, {
@@ -44,6 +45,19 @@ vim.api.nvim_create_user_command(
 )
 
 vim.api.nvim_create_user_command(
+  "BookmarksGotoNextInList",
+  bookmarks.goto_next_list_bookmark,
+  { desc = "Go to next bookmark within the current active BookmarkList" }
+)
+
+vim.api.nvim_create_user_command(
+  "BookmarksGotoPrevInList",
+  bookmarks.goto_prev_list_bookmark,
+  { desc = "Go to previous bookmark within the current active BookmarkList" }
+)
+
+
+vim.api.nvim_create_user_command(
   "BookmarksGrep",
   bookmarks.grep_bookmarks,
   { desc = "Grep through the content of all bookmarked files" }
@@ -60,7 +74,8 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command("BookmarksInfo", bookmarks.info, { desc = "Show bookmark.nvim plugin info" })
 
 -- TODO: find a better way to do this
-vim.api.nvim_create_user_command("BookmarksInfoCurrentBookmark", bookmarks.bookmark_info, { desc = "Show bookmark.nvim plugin info" })
+vim.api.nvim_create_user_command("BookmarksInfoCurrentBookmark", bookmarks.bookmark_info,
+  { desc = "Show bookmark.nvim plugin info" })
 
 vim.api.nvim_create_user_command(
   "BookmarksCommands",
@@ -70,4 +85,5 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command("BookmarksTree", bookmarks.toggle_treeview, { desc = "browse bookmarks in tree view" })
 
-vim.api.nvim_create_user_command("BookmarkRebindOrphanNode", bookmarks.rebind_orphan_node, { desc = "rebind the orphaned node to the root node" })
+vim.api.nvim_create_user_command("BookmarkRebindOrphanNode", bookmarks.rebind_orphan_node,
+  { desc = "rebind the orphaned node to the root node" })
