@@ -8,7 +8,7 @@ local M = {}
 
 -- Working state context
 local ctx = {
-  -- Keep track of last visited ID traversal within a BookmarkList
+  -- Keep track of last visited ID within a BookmarkList for list traversal
   last_bm_id = -1,
 }
 
@@ -148,9 +148,7 @@ local FindDirection = { FORWARD = 0, BACKWARD = 1 }
 ---@param direction
 ---@param fail_msg
 local function find_bookmark_in_id_order(callback, bookmark_list, direction, fail_msg)
-  local enable_wraparound = vim.g.bookmarks_config.navigation.next_prev_wraparound
   local bookmarks = Node.get_all_bookmarks(bookmark_list)
-  local filepath = vim.fn.expand("%:p")
   local last_bm_id = ctx.last_bm_id
 
   if #bookmarks == 0 then
@@ -196,14 +194,13 @@ local function find_bookmark_in_id_order(callback, bookmark_list, direction, fai
   end
 end
 
-
 --- finds the bookmark in a given direction in 'line order' within a BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 ---@param bookmark_list
 ---@param direction
 ---@param fail_msg
 local function find_closest_bookmark_in_line_order(callback, bookmark_list, direction, fail_msg)
-  local enable_wraparound = vim.g.bookmarks_config.navigation.next_prev_wraparound
+  local enable_wraparound = vim.g.bookmarks_config.navigation.next_prev_wraparound_same_file
   local bookmarks = Node.get_all_bookmarks(bookmark_list)
   local filepath = vim.fn.expand("%:p")
   local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
@@ -266,14 +263,14 @@ end
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_next_bookmark_line_order(callback)
   find_closest_bookmark_in_line_order(callback, Repo.ensure_and_get_active_list(), FindDirection.FORWARD,
-    "No next bookmark found within the active BookmarkList in this buffer")
+    "No next bookmark found within the active BookmarkList in this file")
 end
 
 --- finds the previous bookmark in line number order within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_prev_bookmark_line_order(callback)
   find_closest_bookmark_in_line_order(callback, Repo.ensure_and_get_active_list(), FindDirection.BACKWARD,
-    "No previous bookmark found within the active BookmarkList in this buffer")
+    "No previous bookmark found within the active BookmarkList in this file")
 end
 
 --- finds the next bookmark in id order within the current active BookmarkList

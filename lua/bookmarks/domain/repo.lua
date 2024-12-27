@@ -196,16 +196,12 @@ end
 ---@param node_id number
 function M.delete_node(node_id)
   -- First delete all relationships
-  DB.node_relationships:remove({
-    where = {
-      child_id = node_id,
-    }
-  })
-  DB.node_relationships:remove({
-    where = {
-      parent_id = node_id,
-    }
-  })
+  DB.node_relationships:remove({ where = {
+    child_id = node_id,
+  } })
+  DB.node_relationships:remove({ where = {
+    parent_id = node_id,
+  } })
 
   -- Then delete the node itself
   DB.nodes:remove({ where = { id = node_id } })
