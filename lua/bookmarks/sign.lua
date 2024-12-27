@@ -76,7 +76,7 @@ function M._refresh_signs(bookmarks)
   for _, bookmark in ipairs(bookmarks) do
     local filepath = vim.fn.expand("%:p")
     if filepath == bookmark.location.path then
-      local desc = vim.g.bookmarks_config.signs.desc_format(bookmark.name)
+      local desc = vim.g.bookmarks_config.signs.desc_format(bookmark)
       pcall(M.place_sign, bookmark.location.line, buf_number, desc)
     end
   end
