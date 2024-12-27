@@ -6,12 +6,6 @@ local Sign = require("bookmarks.sign")
 
 local M = {}
 
--- Working state context
-local ctx = {
-  -- Keep track of last visited ID within a BookmarkList for list traversal
-  last_bm_id = -1,
-}
-
 --- Create a new bookmark
 ---@param bookmark Bookmarks.NewNode # the bookmark
 ---@param parent_list_id number? # parent list ID, if nil, bookmark will be added to current active list
@@ -142,52 +136,45 @@ end
 
 local FindDirection = { FORWARD = 0, BACKWARD = 1 }
 
---- finds the bookmark in a given direction in 'id order' within a BookmarkList
+--- finds the bookmark in a given direction by 'order id' within a BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
----@param bookmark_list
----@param direction
----@param fail_msg
+---@param bookmark_list Bookmarks.Node
+---@param direction number
+---@param fail_msg string
 local function find_bookmark_in_id_order(callback, bookmark_list, direction, fail_msg)
   local bookmarks = Node.get_all_bookmarks(bookmark_list)
-  local last_bm_id = ctx.last_bm_id
 
   if #bookmarks == 0 then
     vim.notify("No bookmarks available in this BookmarkList", vim.log.levels.WARN)
     return
   end
 
-  -- sort in ascending id order
+  -- sort in ascending by order id
   table.sort(bookmarks, function(lhs, rhs)
     return lhs.order < rhs.order
   end)
 
   -- find last visited bookmark in list
   local bm_idx
+  local running_max = 0
   for i, bookmark in ipairs(bookmarks) do
-    if bookmark.id == last_bm_id then
+    if bookmark.visited_at >= running_max then
       bm_idx = i
-      break
+      running_max = bookmark.visited_at
     end
   end
 
   local selected_bm
-  if not bm_idx then
-    -- if last visited bookmark doesn't exist,
-    -- go to first in list
-    selected_bm = bookmarks[1]
+  -- circular traverse
+  if direction == FindDirection.FORWARD then
+    selected_bm = bookmarks[(bm_idx + 1 - 1) % #bookmarks + 1]
+  elseif direction == FindDirection.BACKWARD then
+    selected_bm = bookmarks[(bm_idx - 1 - 1 + #bookmarks) % #bookmarks + 1]
   else
-    -- found last visited bookmark, circular traverse
-    if direction == FindDirection.FORWARD then
-      selected_bm = bookmarks[(bm_idx + 1 - 1) % #bookmarks + 1]
-    elseif direction == FindDirection.BACKWARD then
-      selected_bm = bookmarks[(bm_idx - 1 - 1 + #bookmarks) % #bookmarks + 1]
-    else
-      error("Invalid direction, not a valid call to this function")
-    end
+    error("Invalid direction, not a valid call to this function")
   end
 
   if selected_bm then
-    ctx.last_bm_id = selected_bm.id
     callback(selected_bm)
   else
     vim.notify(fail_msg, vim.log.levels.WARN)
@@ -196,9 +183,9 @@ end
 
 --- finds the bookmark in a given direction in 'line order' within a BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
----@param bookmark_list
----@param direction
----@param fail_msg
+---@param bookmark_list Bookmarks.Node
+---@param direction number
+---@param fail_msg string
 local function find_closest_bookmark_in_line_order(callback, bookmark_list, direction, fail_msg)
   local enable_wraparound = vim.g.bookmarks_config.navigation.next_prev_wraparound_same_file
   local bookmarks = Node.get_all_bookmarks(bookmark_list)
@@ -273,14 +260,14 @@ function M.find_prev_bookmark_line_order(callback)
     "No previous bookmark found within the active BookmarkList in this file")
 end
 
---- finds the next bookmark in id order within the current active BookmarkList
+--- finds the next bookmark by order id within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_next_bookmark_id_order(callback)
   find_bookmark_in_id_order(callback, Repo.ensure_and_get_active_list(), FindDirection.FORWARD,
     "No next bookmark found within the active BookmarkList")
 end
 
---- finds the previous bookmark in id order within the current active BookmarkList
+--- finds the previous bookmark by order id within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_prev_bookmark_id_order(callback)
   find_bookmark_in_id_order(callback, Repo.ensure_and_get_active_list(), FindDirection.BACKWARD,
@@ -347,7 +334,6 @@ function M.export_list_to_buffer(list_id) end
 --- @param list_id number # list ID
 function M.set_active_list(list_id)
   Repo.set_active_list(list_id)
-  ctx.last_bm_id = -1
 end
 
 --- Switch position of two bookmarks in the same list
