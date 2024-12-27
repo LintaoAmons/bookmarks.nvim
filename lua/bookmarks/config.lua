@@ -23,10 +23,9 @@ local default_config = {
       color = "red",
       line_bg = "#572626",
     },
-    -- TODO: change param to BookmarkNode
-    -- Format bookmark description text
-    desc_format = function(desc)
-      return desc
+    desc_format = function(bookmark)
+      ---@cast bookmark Bookmarks.Node
+      return bookmark.order .. ": " .. bookmark.name
     end,
   },
 
