@@ -48,6 +48,8 @@ Check the default config in [config.lua](./lua/bookmarks/config.lua)
 | `BookmarksGoto`                | Go to bookmark at current active BookmarkList                                                                                       |
 | `BookmarksGotoNext`            | Go to next bookmark in line number order within the current active BookmarkList                                                     |
 | `BookmarksGotoPrev`            | Go to previous bookmark in line number order within the current active BookmarkList                                                 |
+| `BookmarksGotoNextInList`      | Go to next bookmark by order id within the current active BookmarkList                                                              |
+| `BookmarksGotoPrevInList`      | Go to next bookmark by order id within the current active BookmarkList                                                              |
 | `BookmarksDesc`                | Add description to the bookmark under cursor, if no bookmark, then mark it first                                                    |
 | `BookmarksTree`                | Browse bookmarks in tree view                                                                                                       |
 | `BookmarksCommands`            | Find bookmark commands and trigger it                                                                                               |

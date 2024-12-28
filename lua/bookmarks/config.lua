@@ -11,8 +11,8 @@ local default_config = {
 
   -- Navigation configurations
   navigation = {
-    -- Enable/disable wrap-around when navigating to next/previous bookmark
-    next_prev_wraparound = true,
+    -- Enable/disable wrap-around when navigating to next/previous bookmark within the same file
+    next_prev_wraparound_same_file = true,
   },
 
   -- Bookmarks sign configurations

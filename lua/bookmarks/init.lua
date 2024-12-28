@@ -32,7 +32,7 @@ M.goto_bookmark = function()
 end
 
 M.goto_next_bookmark = function()
-  Service.find_next_bookmark(function(bookmark)
+  Service.find_next_bookmark_line_order(function(bookmark)
     if bookmark then
       Service.goto_bookmark(bookmark.id)
       Sign.safe_refresh_signs()
@@ -41,13 +41,32 @@ M.goto_next_bookmark = function()
 end
 
 M.goto_prev_bookmark = function()
-  Service.find_prev_bookmark(function(bookmark)
+  Service.find_prev_bookmark_line_order(function(bookmark)
     if bookmark then
       Service.goto_bookmark(bookmark.id)
       Sign.safe_refresh_signs()
     end
   end)
 end
+
+M.goto_next_list_bookmark = function()
+  Service.find_next_bookmark_id_order(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
+    end
+  end)
+end
+
+M.goto_prev_list_bookmark = function()
+  Service.find_prev_bookmark_id_order(function(bookmark)
+    if bookmark then
+      Service.goto_bookmark(bookmark.id)
+      Sign.safe_refresh_signs()
+    end
+  end)
+end
+
 
 M.grep_bookmarks = function()
   require("bookmarks.picker").grep_bookmark()
