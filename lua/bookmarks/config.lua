@@ -92,6 +92,8 @@ local default_config = {
       show_info = "i",              -- Show node info
       reverse = "t",                -- Reverse the order of nodes in the tree view
     },
+    -- Dimension of the window spawned for Treeview
+    window_split_dimension = 30,
     -- stylua: ignore end
   },
 }
