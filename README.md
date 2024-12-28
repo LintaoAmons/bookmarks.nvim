@@ -80,6 +80,31 @@ When using the bookmark picker (`:BookmarksGoto`), the following shortcuts are a
 | `<C-t>`  | Open selected bookmark in new tab               |
 | `<C-d>`  | Delete selected bookmark and refresh the picker |
 
+You can also use `Hydra` to make `navigation` easier
+
+```lua
+local Hydra = require('hydra')
+Hydra({
+  name = "Bookmarks",
+  mode = 'n',
+  body = '<leader>m',
+  hint = [[
+  Bookmark Navigation
+  
+  ^  _j_: Next in List     _J_: Next Bookmark
+  ^  _k_: Prev in List     _K_: Prev Bookmark
+  ^
+  ^ _<Esc>_: Exit
+  ]],
+  heads = {
+    { 'j', '<cmd>BookmarksGotoNextInList<cr>' },
+    { 'k', '<cmd>BookmarksGotoPrevInList<cr>' },
+    { 'J', '<cmd>BookmarksGotoNext<cr>' },
+    { 'K', '<cmd>BookmarksGotoPrev<cr>' },
+  },
+})
+```
+
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
