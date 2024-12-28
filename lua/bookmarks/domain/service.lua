@@ -143,6 +143,7 @@ local FindDirection = { FORWARD = 0, BACKWARD = 1 }
 ---@param fail_msg string
 local function find_bookmark_in_id_order(callback, bookmark_list, direction, fail_msg)
   local bookmarks = Node.get_all_bookmarks(bookmark_list)
+  local cur_lnr = vim.api.nvim_win_get_cursor(0)[1]
 
   if #bookmarks == 0 then
     vim.notify("No bookmarks available in this BookmarkList", vim.log.levels.WARN)
@@ -158,18 +159,24 @@ local function find_bookmark_in_id_order(callback, bookmark_list, direction, fai
   local bm_idx
   local running_max = 0
   for i, bookmark in ipairs(bookmarks) do
-    if bookmark.visited_at >= running_max then
+    if bookmark.visited_at > running_max then
       bm_idx = i
       running_max = bookmark.visited_at
+    elseif bookmark.visited_at == running_max and bookmark.location.line == cur_lnr then
+      -- if at least two bookmarks have same visited time, goto is being performed
+      -- too fast for time tracking to keep up
+      -- default to bookmark under cursor as last visited
+      bm_idx = i
+      break
     end
   end
 
   local selected_bm
   -- circular traverse
   if direction == FindDirection.FORWARD then
-    selected_bm = bookmarks[(bm_idx + 1 - 1) % #bookmarks + 1]
+    selected_bm = bookmarks[(bm_idx - 1 + 1) % #bookmarks + 1]
   elseif direction == FindDirection.BACKWARD then
-    selected_bm = bookmarks[(bm_idx - 1 - 1 + #bookmarks) % #bookmarks + 1]
+    selected_bm = bookmarks[(bm_idx - 1 - 1) % #bookmarks + 1]
   else
     error("Invalid direction, not a valid call to this function")
   end
