@@ -83,6 +83,7 @@ When using the bookmark picker (`:BookmarksGoto`), the following shortcuts are a
 You can also use `Hydra` to make `navigation` easier
 
 ```lua
+-- use `nvimtools/hydra.nvim`: https://github.com/anuvyklack/hydra.nvim/issues/104
 local Hydra = require('hydra')
 Hydra({
   name = "Bookmarks",
