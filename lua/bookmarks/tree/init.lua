@@ -66,7 +66,7 @@ function M.toggle()
 
   -- Create new tree view
   local buf = vim.api.nvim_create_buf(false, true)
-  local win = create_vsplit_with_width({ width = 30 })
+  local win = create_vsplit_with_width({ width = vim.g.bookmarks_config.treeview.window_split_dimension })
 
   register_local_shortcuts(buf)
   vim.g.bookmark_tree_view_ctx = {
