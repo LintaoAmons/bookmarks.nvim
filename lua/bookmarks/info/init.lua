@@ -1,6 +1,7 @@
 local Repo = require("bookmarks.domain.repo")
 local Window = require("bookmarks.utils.window")
 local Location = require("bookmarks.domain.location")
+local Backup = require("bookmarks.backup")
 
 local M = {}
 
@@ -44,6 +45,7 @@ end
 
 ---Get info of bookmarks
 function M.get_info()
+  local config = vim.g.bookmarks_config or {}
   local sections = {
     "# Bookmarks Info\n",
   }
@@ -60,11 +62,12 @@ function M.get_info()
   table.insert(sections, string.format("- Total Bookmarks: `%d`\n", #all_bookmarks))
   table.insert(sections, string.format("- Total Lists: `%d`\n", #all_lists))
   table.insert(sections, string.format("- Database Location: `%s`\n", Repo._DB.uri))
+  local backup_dir = Backup.get_backup_dir(config.backup.dir)
+  table.insert(sections, string.format("- Backup Location: `%s`\n", backup_dir))
 
   -- Configuration section
   table.insert(sections, "## Configuration\n")
   table.insert(sections, "```lua")
-  local config = vim.g.bookmarks_config or {}
   for key, value in pairs(config) do
     if type(value) ~= "function" then
       table.insert(sections, string.format("%s = %s", key, vim.inspect(value)))
