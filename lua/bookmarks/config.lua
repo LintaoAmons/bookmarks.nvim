@@ -8,6 +8,15 @@ local default_config = {
   --   2. Create `bookmarks.sqlite.db` inside this directory
   ---@type string?
   db_dir = nil, -- if nil, fallback to default `stdpath("data")`
+  backup = {
+    enabled = true,
+    -- Directory to store backup files
+    -- Default: vim.fn.stdpath("data").."/bookmarks.backup"
+    -- You can set a custom directory
+    ---@type string?
+    dir = nil,
+    delay = 5, -- Delay in minutes before nvim opened, no back will be created if nvim earlier than the actually backup time
+  },
 
   -- Navigation configurations
   navigation = {
@@ -127,6 +136,7 @@ local setup = function(user_config)
   require("bookmarks.domain.repo").setup(get_db_path(cfg.db_dir))
   require("bookmarks.sign").setup(cfg.signs)
   require("bookmarks.auto-cmd").setup()
+  require("bookmarks.backup").setup(cfg, get_db_path(cfg.db_dir))
 end
 
 return {
