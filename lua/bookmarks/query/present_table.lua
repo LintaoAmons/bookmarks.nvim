@@ -2,11 +2,11 @@ local api = vim.api
 
 ---@alias PageState "" | "plugins" | "help"
 
----@class PresentTable
+---@class PresentView
 ---@field win_id number|nil
 ---@field buf_id number|nil
 ---@field win_config table
----@field _state {page: PageState}
+---@field _state {page: PageState, query: Bookmarks.Query}
 ---@field _data string[]
 ---@field _help string[]
 ---@field _help_header string[]
@@ -26,6 +26,7 @@ local M = {
   },
   _state = {
     page = "", -- "plugins", "help"
+    query = {},
   },
   _data = {},
   _help = {
@@ -47,7 +48,7 @@ local M = {
   },
 }
 
----@return PresentTable
+---@return PresentView
 function M:new()
   local o = {}
   setmetatable(o, self)
@@ -234,7 +235,7 @@ local function table_concat(t1, t2)
   return result
 end
 
----@param self PresentTable
+---@param self PresentView
 ---@param contents string[]
 function M:_render(contents)
   api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
@@ -253,7 +254,7 @@ function M:render_data()
   vim.wo[self.win_id].cursorline = true
 end
 
----@param self PresentTable
+---@param self PresentView
 function M:render_help()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     return
@@ -266,7 +267,7 @@ function M:render_help()
   self:_render(contents)
 end
 
----@param self PresentTable
+---@param self PresentView
 function M:setup_keybindings()
   vim.keymap.set("n", "q", function()
     self:close()

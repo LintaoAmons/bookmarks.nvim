@@ -1,10 +1,6 @@
 local DB = require("sqlite.db")
 local Repo = require("bookmarks.domain.repo")
 
----@class Bookmarks.Query
----TODO: optional fields  of nodes table
-
----
 local M = {}
 
 --- execute a raw string query
