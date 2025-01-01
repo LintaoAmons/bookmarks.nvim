@@ -28,18 +28,10 @@ local M = {
   _data = {},
   _help = {
     "      Bookmark.nvim Help",
-    "",
-    "  This plugin lists all your plugins based on",
-    "  the last commit date so that you can easily",
-    "  identify plugins that are not actively",
-    "  maintained.",
+    " Explore your bookmarks database",
     "",
     "  Keybindings:",
     "",
-    "  * N: Sort plugins by Name (coming soon)",
-    "  * C: Sort plugins by Commit Date (coming soon)",
-    "  * j/k or <C-e>/<C-y>: Scroll up/down",
-    "  * <C-d>/<C-u>: Scroll up/down half page",
     "  * q: Close the window",
     "  * ?: Toggle help",
     "",
@@ -243,10 +235,7 @@ end
 ---@param self PresentTable
 ---@param contents string[]
 function M:_render(contents)
-  vim.bo[self.buf_id].modifiable = true
   api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
-  vim.bo[self.buf_id].modifiable = false
-  vim.bo[self.buf_id].modified = false
 end
 
 function M:render_data()
