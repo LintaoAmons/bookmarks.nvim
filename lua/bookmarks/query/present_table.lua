@@ -38,7 +38,8 @@ local api = vim.api
 ---@field _help_header string[] # Header for help section to render
 ---@field _before_data_sections string[][] # Before data sections to render
 ---@field _current_data string[] # Current data to render
----@field _after_data_section string[] # After data sections to render
+---@field _after_data_sections string[] # After data sections to render
+---@field _keys table # TODO: buffer local keybindings
 local M = {
   win_id = nil,
   buf_id = nil,
@@ -51,36 +52,28 @@ local M = {
     border = "rounded",
     title = "Bookmarks.nvim",
     title_pos = "center",
-    style = "minimal", -- Optional: "minimal", "underline", "double"
-  },
-  _state = {
-    page = "", -- "plugins", "help"
-  },
-  _current_data = {},
-  _help = {
-    "      Bookmark.nvim Help",
-    " Explore your bookmarks database",
-    "",
-    "  Keybindings:",
-    "",
-    "  * q: Close the window",
-    "  * ?: Toggle help",
-    "",
-    "  (More help coming soon...)",
+    style = "minimal",
   },
   _help_header = {
     "",
-    " This only shows loaded plugins ",
-    string.format("%-15s %-20s %s", "<q>: Close", "<?>: Toggle Help", "<C-u>/<C-d>: Half Page Up/Down"),
+    string.format("%-15s", "<q>: Close"),
     "",
   },
+  _before_data_sections = {},
+  _current_data = {},
+  _after_data_sections = {},
+  _keys = {}
 }
 
+---@param data? table[]
 ---@return PresentView
-function M:new()
+function M:new(data)
   local o = {}
   setmetatable(o, self)
   self.__index = self
+  if data then
+    self:set_data(data)
+  end
   return o
 end
 
@@ -217,7 +210,7 @@ local function format_table(data, opts)
 
     local header_line = table.concat(headers, " " .. opts.borders.column_separator .. " ")
     local separator_line =
-      table.concat(separators, string.rep(opts.borders.top_separator, #opts.borders.column_separator + 2))
+        table.concat(separators, string.rep(opts.borders.top_separator, #opts.borders.column_separator + 2))
 
     return {
       header_line,
@@ -281,60 +274,32 @@ function M:render_query()
   end
 end
 
-function M:render_data()
-  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
-    vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
-    return
-  end
-  self._state.page = "data"
-  local contents = table_concat(self._help_header, self._current_data)
-  self:_render(contents)
-  vim.wo[self.win_id].cursorline = true
+--- set _current_data by raw data
+---@param raw_data table[]
+function M:set_data(raw_data)
+  self._current_data = format_table(raw_data)
 end
 
----@param self PresentView
-function M:render_help()
-  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
-    return
-  end
-  if self._state.page == "help" then
-    return
-  end
-  self._state.page = "help"
-  local contents = table_concat(self._help_header, self._help)
-  self:_render(contents)
+--- add a new section to _before_data_sections
+---@param text string[]
+function M:add_before_data_section(text)
+  table.insert(self._before_data_sections, text)
 end
 
----@param self PresentView
 function M:setup_keybindings()
   vim.keymap.set("n", "q", function()
     self:close()
   end, { buffer = self.buf_id })
-  vim.keymap.set("n", "?", function()
-    if self._state.page ~= "help" then
-      self:render_help()
-    else
-      self:render_data()
-    end
-  end, { buffer = self.buf_id })
-end
-
----@param data table[]
----@param opts? {filetype?: string}
----@return nil
-function M:setup(data, opts)
-  opts = opts or {}
-  self:_layout(opts)
-  if #self._current_data == 0 then
-    self._current_data = format_table(data)
-  end
-  self._state.page = ""
-  self:setup_keybindings()
-  self:render_data()
 end
 
 ---Toggle open the present view window
-function M:toggle() end
+function M:toggle()
+  if self.win_id and api.nvim_win_is_valid(self.win_id) then
+    api.nvim_win_close(self.win_id, true)
+  else
+    self:_show()
+  end
+end
 
 function M:_show()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
@@ -346,13 +311,36 @@ function M:_show()
   end
 
   self:_center_window()
-  self:render_data()
+  self:render()
+end
+
+---@param arr string[][] The 2D array to flatten
+---@return string[] The flattened 1D array
+local function flatten_array(arr)
+  local result = {}
+  for _, inner_arr in ipairs(arr) do
+    for _, value in ipairs(inner_arr) do
+      table.insert(result, value)
+    end
+  end
+  return result
 end
 
 ---Render the present view based on the current _state
 function M:render()
-  -- update _current_data according to _state
-  ---@field _current_data string[]
+  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
+    vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
+    return
+  end
+  local before_data_contents = flatten_array(self._before_data_sections)
+  local after_data_contents = flatten_array(self._after_data_sections)
+  local contents = table_concat(
+    self._help_header,
+    before_data_contents)
+  contents = table_concat(contents, self._current_data)
+  contents = table_concat(contents, after_data_contents)
+  self:_render(contents)
+  vim.wo[self.win_id].cursorline = true
 end
 
 return M

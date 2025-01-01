@@ -12,8 +12,8 @@ M.display = function()
     return
   end
   local present = require("bookmarks.query.present_table")
-  local p = present:new()
-  p:setup(data)
+  local p = present:new(data)
+  p:toggle()
 end
 
 M.update_query = function ()
