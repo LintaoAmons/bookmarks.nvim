@@ -1,10 +1,12 @@
 local api = vim.api
 
+---@alias PageState "" | "plugins" | "help"
+
 ---@class PresentTable
 ---@field win_id number|nil
 ---@field buf_id number|nil
 ---@field win_config table
----@field _state table
+---@field _state {page: PageState}
 ---@field _data string[]
 ---@field _help string[]
 ---@field _help_header string[]
