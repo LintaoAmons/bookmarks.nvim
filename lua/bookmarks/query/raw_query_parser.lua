@@ -26,7 +26,7 @@ local function parse_condition_to_query(condition)
   end
 
   -- Parse condition into structured query
-  local column_name, value = condition:match("(%w+)%s*.*")
+  local column_name, value = condition:match("(%w+)%s*(.*)")
   if not column_name then
     vim.notify("Invalid condition format", vim.log.levels.WARN, { title = "bookmarks.nvim" })
     return nil
