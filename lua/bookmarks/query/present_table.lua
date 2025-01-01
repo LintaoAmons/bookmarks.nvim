@@ -1,15 +1,44 @@
 local api = vim.api
 
----@alias PageState "" | "plugins" | "help"
+---@alias PageState "" | "data" | "help"
 
+--- Present a table[] of data in a floating window
+--- table elements must be in same struct
+--- +------------------------------------------+
+--- |             Window Title                 |
+--- +------------------------------------------+
+--- |           _help_header[]                 |
+--- |     (Header for help section)            |
+--- +------------------------------------------+
+--- |       _before_data_sections[][]          |
+--- |  +------------------------------------+  |
+--- |  |     _before_data_section[]         |  |
+--- |  +------------------------------------+  |
+--- |  +------------------------------------+  |
+--- |  |     _before_data_section[]         |  |
+--- |  +------------------------------------+  |
+--- +------------------------------------------+
+--- |                                          |
+--- |          _current_data[]                 |
+--- |        (Main data section)               |
+--- |                                          |
+--- +------------------------------------------+
+--- |        _after_data_sections[][]          |
+--- |  +------------------------------------+  |
+--- |  |      _after_data_section[]         |  |
+--- |  +------------------------------------+  |
+--- |  +------------------------------------+  |
+--- |  |      _after_data_section[]         |  |
+--- |  +------------------------------------+  |
+--- +------------------------------------------+
 ---@class PresentView
 ---@field win_id number|nil
 ---@field buf_id number|nil
 ---@field win_config table
----@field _state {page: PageState, query: Bookmarks.Query}
----@field _data string[]
----@field _help string[]
----@field _help_header string[]
+---@field _help_header string[] # Header for help section to render
+---@field _before_data_sections string[][] # Before data sections to render
+---@field _current_data string[] # Current data to render
+---@field _after_data_section string[] # After data sections to render
 local M = {
   win_id = nil,
   buf_id = nil,
@@ -26,9 +55,8 @@ local M = {
   },
   _state = {
     page = "", -- "plugins", "help"
-    query = {},
   },
-  _data = {},
+  _current_data = {},
   _help = {
     "      Bookmark.nvim Help",
     " Explore your bookmarks database",
@@ -115,7 +143,9 @@ end
 ---@field key string
 ---@field type string
 
----@param data table[]
+--- Convert a table[] to a formatted string table
+--- elements of table[] must be in same struct
+---@param data table[] data rows, elements must be in same struct
 ---@param opts? FormatterOptions
 ---@return string[]
 local function format_table(data, opts)
@@ -224,6 +254,9 @@ local function format_table(data, opts)
   return formatted
 end
 
+---@param t1 string[]
+---@param t2 string[]
+---@return string[]
 local function table_concat(t1, t2)
   local result = {}
   for _, v in ipairs(t1) do
@@ -241,15 +274,20 @@ function M:_render(contents)
   api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
 end
 
+function M:render_query()
+  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
+    vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
+    return
+  end
+end
+
 function M:render_data()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
+    vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
     return
   end
-  if self._state.page == "plugins" then
-    return
-  end
-  self._state.page = "plugins"
-  local contents = table_concat(self._help_header, self._data)
+  self._state.page = "data"
+  local contents = table_concat(self._help_header, self._current_data)
   self:_render(contents)
   vim.wo[self.win_id].cursorline = true
 end
@@ -287,12 +325,34 @@ end
 function M:setup(data, opts)
   opts = opts or {}
   self:_layout(opts)
-  if #self._data == 0 then
-    self._data = format_table(data)
+  if #self._current_data == 0 then
+    self._current_data = format_table(data)
   end
   self._state.page = ""
   self:setup_keybindings()
   self:render_data()
+end
+
+---Toggle open the present view window
+function M:toggle() end
+
+function M:_show()
+  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
+    self.buf_id = api.nvim_create_buf(false, true)
+  end
+
+  if not self.win_id or not api.nvim_win_is_valid(self.win_id) then
+    self.win_id = api.nvim_open_win(self.buf_id, true, self.win_config)
+  end
+
+  self:_center_window()
+  self:render_data()
+end
+
+---Render the present view based on the current _state
+function M:render()
+  -- update _current_data according to _state
+  ---@field _current_data string[]
 end
 
 return M

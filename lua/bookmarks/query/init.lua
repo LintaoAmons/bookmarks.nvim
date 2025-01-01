@@ -1,5 +1,8 @@
 local M = {}
 
+---@type Bookmarks.Query
+vim.g.bookmarks_query = {}
+
 --- require("bookmarks.query").display()
 M.display = function()
   local query = require("bookmarks.query.query")
@@ -11,6 +14,14 @@ M.display = function()
   local present = require("bookmarks.query.present_table")
   local p = present:new()
   p:setup(data)
+end
+
+M.update_query = function ()
+  -- user input: update query
+  -- query data 
+  -- present data
+
+  
 end
 
 return M
