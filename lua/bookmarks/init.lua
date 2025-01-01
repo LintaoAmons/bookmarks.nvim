@@ -141,4 +141,8 @@ M.rebind_orphan_node = function()
   Repo.rebind_orphan_node()
 end
 
+M.query = function()
+  require("bookmarks.query").display()
+end
+
 return M
