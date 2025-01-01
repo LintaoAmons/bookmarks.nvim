@@ -2,10 +2,18 @@ local RawQueryParser = require("bookmarks.query.raw_query_parser")
 local Query = require("bookmarks.query.query")
 local M = {}
 
+---@class Bookmarks.QueryCtx
+local _cache = {
+  ---@type PresentView
+  view = nil,
+  ---@type Bookmarks.Query
+  query = {},
+}
+
 --- require("bookmarks.query").display()
 M.display = function()
-  if vim.g.bookmarks_query_ctx.view then
-    vim.g.bookmarks_query_ctx.view.view:toggle()
+  if _cache.view then
+    _cache.view:toggle()
     return
   end
 
@@ -21,16 +29,14 @@ M.init = function()
   end
   local present = require("bookmarks.query.present_table")
   local p = present:new(data, {
-    { modes = { "n", "v" }, keys = { "q" }, action = M.add_query_condition },
     { modes = { "n", "v" }, keys = { "<localleader>f" }, action = M.add_query_condition },
     { modes = { "n", "v" }, keys = { "<localleader>d" }, action = M.clear_query_condition },
   })
-  vim.print(p)
-  vim.g.bookmarks_query_ctx = {
+
+  _cache = {
     view = p,
     query = {},
   }
-  vim.print(vim.g.bookmarks_query_ctx)
   return p
 end
 
@@ -54,16 +60,19 @@ M.add_query_condition = function()
     end
 
     local query_condition = RawQueryParser.parse_condition_to_query(condition)
-    local ctx = vim.g.bookmarks_query_ctx
+    vim.print(query_condition)
+    local ctx = _cache
     local current_query = ctx.query
+    vim.print(current_query)
     if query_condition then
       current_query = vim.tbl_deep_extend("force", ctx.query, query_condition)
     end
-    vim.g.bookmarks_query_ctx = {
+    _cache = {
       view = ctx.view,
       query = current_query,
     }
 
+    vim.print(current_query)
     -- Get fresh data with structured query
     local data = Query.query(current_query)
 
@@ -73,8 +82,8 @@ M.add_query_condition = function()
     end
 
     -- Update view with new data
-    if vim.g.bookmarks_query_ctx.view then
-      local view = vim.g.bookmarks_query_ctx.view.view
+    if _cache.view then
+      local view = _cache.view
       view:set_data(data)
       view:add_before_data_section({ string.format("WHERE %s", condition) })
       view:render()
@@ -83,8 +92,8 @@ M.add_query_condition = function()
 end
 
 M.clear_query_condition = function()
-  local current = vim.g.bookmarks_query_ctx
-  vim.g.bookmarks_query_ctx.query = {
+  local current = _cache
+  _cache = {
     view = current.view,
     query = {},
   }

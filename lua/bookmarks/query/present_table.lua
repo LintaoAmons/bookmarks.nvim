@@ -45,7 +45,7 @@ local api = vim.api
 ---@field _current_data string[] # Current data to render
 ---@field _after_data_sections string[] # After data sections to render
 ---@field _keys table # TODO: buffer local keybindings
-local M = {
+local PresentView = {
   win_id = nil,
   buf_id = nil,
   win_config = {
@@ -69,19 +69,18 @@ local M = {
   _after_data_sections = {},
   _keys = {},
 }
+PresentView.__index = PresentView
 
 ---@param data? table[]
 ---@param keys? LocalKeys[]
 ---@return PresentView
-function M:new(data, keys)
+function PresentView:new(data, keys)
   local o = {}
-  setmetatable(o, self)
-  self.__index = self
   if data then
     self:set_data(data)
   end
   self._keys = keys or {}
-  return o
+  return setmetatable(o, self)
 end
 
 ---@param buf number
@@ -114,7 +113,7 @@ local function register_local_shortcuts(buf, keymap)
 end
 
 ---@param opts {filetype?: string}
-function M:_layout(opts)
+function PresentView:_layout(opts)
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     self.buf_id = api.nvim_create_buf(false, true)
     if opts.filetype then
@@ -128,7 +127,7 @@ function M:_layout(opts)
   -- self:_auto_resize()
 end
 
-function M:close()
+function PresentView:close()
   if self.buf_id and api.nvim_buf_is_valid(self.buf_id) then
     api.nvim_buf_delete(self.buf_id, { force = true })
   end
@@ -139,13 +138,13 @@ function M:close()
   self.win_id = nil
 end
 
-function M:_center_window()
+function PresentView:_center_window()
   self.win_config.row = math.floor((vim.o.lines - self.win_config.height) / 2)
   self.win_config.col = math.floor((vim.o.columns - self.win_config.width) / 2)
   api.nvim_win_set_config(self.win_id, self.win_config)
 end
 
-function M:_auto_resize()
+function PresentView:_auto_resize()
   api.nvim_create_autocmd({ "VimResized" }, {
     buffer = self.buf_id,
     callback = function()
@@ -299,22 +298,22 @@ end
 
 --- set _current_data by raw data
 ---@param raw_data table[]
-function M:set_data(raw_data)
+function PresentView:set_data(raw_data)
   self._current_data = format_table(raw_data)
 end
 
 --- add a new section to _before_data_sections
 ---@param text string[]
-function M:add_before_data_section(text)
+function PresentView:add_before_data_section(text)
   table.insert(self._before_data_sections, text)
 end
 
-function M:reset_before_data_sections()
+function PresentView:reset_before_data_sections()
   self._before_data_sections = {}
 end
 
 ---Toggle open the present view window
-function M:toggle()
+function PresentView:toggle()
   if self.win_id and api.nvim_win_is_valid(self.win_id) then
     api.nvim_win_close(self.win_id, true)
   else
@@ -322,7 +321,7 @@ function M:toggle()
   end
 end
 
-function M:_setup_win_buf()
+function PresentView:_setup_win_buf()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     self.buf_id = api.nvim_create_buf(false, true)
   end
@@ -347,7 +346,7 @@ local function flatten_array(arr)
 end
 
 ---Render the present view based on the current _state
-function M:render()
+function PresentView:render()
   self:_setup_win_buf()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
@@ -360,8 +359,7 @@ function M:render()
   contents = table_concat(contents, after_data_contents)
   api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
   vim.wo[self.win_id].cursorline = true
-  vim.print(self._before_data_sections)
   register_local_shortcuts(self.buf_id, self._keys)
 end
 
-return M
+return PresentView

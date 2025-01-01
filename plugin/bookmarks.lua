@@ -14,14 +14,6 @@ vim.g.loaded_bookmarks = 1
 vim.g.bookmarks_config = nil
 ---@type Bookmarks.TreeViewCtx
 vim.g.bookmark_tree_view_ctx = nil
----@class Bookmarks.QueryCtx
-vim.g.bookmarks_query_ctx = {
-  ---@type PresentView
-  view = nil,
-  ---@type Bookmarks.Query
-  query = {},
-}
-
 
 local bookmarks = require("bookmarks")
 
