@@ -101,7 +101,6 @@ function M:close()
   end
   self.buf_id = nil
   self.win_id = nil
-  self._state.page = ""
 end
 
 function M:_center_window()
@@ -261,19 +260,6 @@ local function table_concat(t1, t2)
   return result
 end
 
----@param self PresentView
----@param contents string[]
-function M:_render(contents)
-  api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
-end
-
-function M:render_query()
-  if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
-    vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
-    return
-  end
-end
-
 --- set _current_data by raw data
 ---@param raw_data table[]
 function M:set_data(raw_data)
@@ -297,11 +283,11 @@ function M:toggle()
   if self.win_id and api.nvim_win_is_valid(self.win_id) then
     api.nvim_win_close(self.win_id, true)
   else
-    self:_show()
+    self:render()
   end
 end
 
-function M:_show()
+function M:_setup_win_buf()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     self.buf_id = api.nvim_create_buf(false, true)
   end
@@ -311,7 +297,6 @@ function M:_show()
   end
 
   self:_center_window()
-  self:render()
 end
 
 ---@param arr string[][] The 2D array to flatten
@@ -328,6 +313,7 @@ end
 
 ---Render the present view based on the current _state
 function M:render()
+  self:_setup_win_buf()
   if not self.buf_id or not api.nvim_buf_is_valid(self.buf_id) then
     vim.notify("PresentView: Buffer is not valid", vim.log.levels.ERROR, { title = "Bookmarks.nvim" })
     return
@@ -339,8 +325,9 @@ function M:render()
     before_data_contents)
   contents = table_concat(contents, self._current_data)
   contents = table_concat(contents, after_data_contents)
-  self:_render(contents)
+  api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
   vim.wo[self.win_id].cursorline = true
+  self:setup_keybindings()
 end
 
 return M
