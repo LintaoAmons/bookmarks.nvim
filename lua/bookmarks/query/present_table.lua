@@ -2,6 +2,11 @@ local api = vim.api
 
 ---@alias PageState "" | "data" | "help"
 
+---@class LocalKeys
+---@field modes string[]
+---@field keys string[]
+---@field action string|function
+
 --- Present a table[] of data in a floating window
 --- table elements must be in same struct
 --- +------------------------------------------+
@@ -62,19 +67,50 @@ local M = {
   _before_data_sections = {},
   _current_data = {},
   _after_data_sections = {},
-  _keys = {}
+  _keys = {},
 }
 
 ---@param data? table[]
+---@param keys? LocalKeys[]
 ---@return PresentView
-function M:new(data)
+function M:new(data, keys)
   local o = {}
   setmetatable(o, self)
   self.__index = self
   if data then
     self:set_data(data)
   end
+  self._keys = keys or {}
   return o
+end
+
+---@param buf number
+---@param keymap LocalKeys[]
+local function register_local_shortcuts(buf, keymap)
+  -- Validate buffer exists
+  if not vim.api.nvim_buf_is_valid(buf) then
+    vim.notify("Invalid buffer id: " .. buf, vim.log.levels.ERROR)
+    return
+  end
+
+  for _, mapping in ipairs(keymap) do
+    -- Validate required fields
+    if not mapping.modes or not mapping.keys or not mapping.action then
+      vim.notify("Invalid keymap structure", vim.log.levels.ERROR)
+      return
+    end
+
+    for _, mode in ipairs(mapping.modes) do
+      for _, key in ipairs(mapping.keys) do
+        vim.keymap.set(mode, key, mapping.action, {
+          buffer = buf,
+          desc = "Keymap for mode: " .. mode,
+          nowait = true,
+          silent = true,
+        })
+      end
+    end
+  end
 end
 
 ---@param opts {filetype?: string}
@@ -209,13 +245,14 @@ local function format_table(data, opts)
 
     local header_line = table.concat(headers, " " .. opts.borders.column_separator .. " ")
     local separator_line =
-        table.concat(separators, string.rep(opts.borders.top_separator, #opts.borders.column_separator + 2))
+      table.concat(separators, string.rep(opts.borders.top_separator, #opts.borders.column_separator + 2))
 
     return {
       header_line,
       separator_line,
     }
   end
+
   ---@param item table
   ---@param columns InferredColumn[]
   ---@return string
@@ -272,10 +309,8 @@ function M:add_before_data_section(text)
   table.insert(self._before_data_sections, text)
 end
 
-function M:setup_keybindings()
-  vim.keymap.set("n", "q", function()
-    self:close()
-  end, { buffer = self.buf_id })
+function M:reset_before_data_sections()
+  self._before_data_sections = {}
 end
 
 ---Toggle open the present view window
@@ -320,14 +355,13 @@ function M:render()
   end
   local before_data_contents = flatten_array(self._before_data_sections)
   local after_data_contents = flatten_array(self._after_data_sections)
-  local contents = table_concat(
-    self._help_header,
-    before_data_contents)
+  local contents = table_concat(self._help_header, before_data_contents)
   contents = table_concat(contents, self._current_data)
   contents = table_concat(contents, after_data_contents)
   api.nvim_buf_set_lines(self.buf_id, 0, -1, false, contents)
   vim.wo[self.win_id].cursorline = true
-  self:setup_keybindings()
+  vim.print(self._before_data_sections)
+  register_local_shortcuts(self.buf_id, self._keys)
 end
 
 return M
