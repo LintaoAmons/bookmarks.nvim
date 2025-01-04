@@ -53,28 +53,34 @@ M.new_list_from_result = function()
     return
   end
 
-  -- Create new list and get its ID
-  local new_list = Service.create_list("New List", 0)
+  vim.ui.input({ prompt = "Enter list name: " }, function(name)
+    if not name or name == "" then
+      -- Create new list and get its ID
+      local new_list = Service.create_list(name, 0)
 
-  -- For each bookmark in the cached data
-  for _, bookmark in ipairs(data) do
-    local new_bookmark = Mapper.BookmarkFromDbRow(bookmark)
-    local new_node = Node.new_from_bookmark(new_bookmark)
+      -- For each bookmark in the cached data
+      for _, bookmark in ipairs(data) do
+        local new_bookmark = Mapper.BookmarkFromDbRow(bookmark)
+        local new_node = Node.new_from_bookmark(new_bookmark)
 
-    -- Insert the new bookmark under the new list
-    Service.new_bookmark(new_node, new_list.id)
-  end
+        -- Insert the new bookmark under the new list
+        Service.new_bookmark(new_node, new_list.id)
+      end
 
-  vim.notify(
-    string.format("Created new list with %d bookmarks", #data),
-    vim.log.levels.INFO,
-    { title = "bookmarks.nvim" }
-  )
+      vim.notify(
+        string.format("Created new list with %d bookmarks", #data),
+        vim.log.levels.INFO,
+        { title = "bookmarks.nvim" }
+      )
+    end
+  end)
 end
 
 M.clear_query_condition = function()
-  State._cache.query = {}
+  State.reset_query()
   State._cache.view:reset_before_data_sections()
+  local data = Query.query(State._cache.query)
+  State._cache.view:set_data(data)
   State._cache.view:render()
 end
 

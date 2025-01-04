@@ -3,7 +3,7 @@ local M = {}
 ---convert a database row to a bookmark node
 ---@param row table
 ---@return Bookmarks.Node
-M.BookmarkFromDbRow = function(row)
+M.row_to_node = function(row)
   local node = {
     id = row.id,
     type = row.type,
@@ -15,6 +15,7 @@ M.BookmarkFromDbRow = function(row)
     visited_at = row.visited_at,
     is_expanded = row.is_expanded == 1,
     order = row.node_order,
+    children = {},
   }
 
   if row.location_path then

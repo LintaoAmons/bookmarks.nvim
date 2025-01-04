@@ -15,9 +15,10 @@ end
 --- require("bookmarks.query").display()
 ---init a new present view
 M.init = function()
-  local data = Query.query({})
+  State.reset()
+  local data = Query.query(State._cache.query)
   if type(data) ~= "table" then
-    vim.notify("No data found", vim.log.levels.WARN, { title = "bookmarks.nvim" })
+    vim.notify("No bookmarks found", vim.log.levels.WARN, { title = "bookmarks.nvim" })
     return
   end
   local present = require("bookmarks.query.present_table")

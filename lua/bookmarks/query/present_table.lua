@@ -61,7 +61,9 @@ local PresentView = {
   },
   _help_header = {
     "",
-    string.format("%-15s", "<q>: Close"),
+    "<localleader>f: Add filter condition",
+    "<localleader>d: reset filter condition",
+    "<localleader>a: new list from result",
     "",
   },
   _before_data_sections = {},
