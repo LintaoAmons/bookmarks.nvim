@@ -75,11 +75,12 @@ PresentView.__index = PresentView
 
 ---@param data? table[]
 ---@param keys? LocalKeys[]
+---@param opts? FormatterOptions
 ---@return PresentView
-function PresentView:new(data, keys)
+function PresentView:new(data, keys, opts)
   local o = {}
   if data then
-    self:set_data(data)
+    self:set_data(data, opts)
   end
   self._keys = keys or {}
   return setmetatable(o, self)
@@ -165,6 +166,7 @@ end
 ---@field truncate_marker string
 ---@field default_width? number
 ---@field max_width? number
+---@field columns_order? string[] # List of column keys in desired order
 
 ---@class InferredColumn
 ---@field name string
@@ -193,6 +195,7 @@ local function format_table(data, opts)
     truncate_marker = "…",
     default_width = 20,
     max_width = 50,
+    columns_order = {},
   }
   opts = vim.tbl_deep_extend("force", default_opts, opts)
 
@@ -207,7 +210,9 @@ local function format_table(data, opts)
   local function infer_columns(sample)
     local columns = {}
     local seen = {}
+    local ordered_columns = {}
 
+    -- First, collect all valid columns
     for key, value in pairs(sample) do
       if not seen[key] and type(key) == "string" then
         seen[key] = true
@@ -220,16 +225,34 @@ local function format_table(data, opts)
             type = val_type,
             width = math.min(opts.max_width or 50, math.max(#key, opts.default_width or 20)),
           }
-          table.insert(columns, col)
+          columns[key] = col
         end
       end
     end
 
-    -- Sort columns alphabetically
-    table.sort(columns, function(a, b)
+    -- Handle columns specified in columns_order first
+    for _, key in ipairs(opts.columns_order) do
+      if columns[key] then
+        table.insert(ordered_columns, columns[key])
+        columns[key] = nil
+      end
+    end
+
+    -- Add remaining columns alphabetically
+    local remaining = {}
+    for _, col in pairs(columns) do
+      table.insert(remaining, col)
+    end
+    table.sort(remaining, function(a, b)
       return a.key < b.key
     end)
-    return columns
+
+    -- Combine ordered and remaining columns
+    for _, col in ipairs(remaining) do
+      table.insert(ordered_columns, col)
+    end
+
+    return ordered_columns
   end
 
   ---@param columns InferredColumn[]
@@ -300,8 +323,9 @@ end
 
 --- set _current_data by raw data
 ---@param raw_data table[]
-function PresentView:set_data(raw_data)
-  self._current_data = format_table(raw_data)
+---@param opts? FormatterOptions
+function PresentView:set_data(raw_data, opts)
+  self._current_data = format_table(raw_data, opts)
 end
 
 --- add a new section to _before_data_sections

@@ -26,6 +26,20 @@ M.init = function()
     { modes = { "n", "v" }, keys = { "<localleader>f" }, action = Actions.add_query_condition },
     { modes = { "n", "v" }, keys = { "<localleader>d" }, action = Actions.clear_query_condition },
     { modes = { "n", "v" }, keys = { "<localleader>a" }, action = Actions.new_list_from_result },
+  }, {
+    columns_order = {
+      "name",
+      "description",
+      "content",
+      "location_path",
+      "location_line",
+      "location_col",
+      "githash",
+      "node_order",
+      "is_expanded",
+      "created_at",
+      "visited_at",
+    },
   })
 
   State._cache = {

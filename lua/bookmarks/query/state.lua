@@ -1,5 +1,7 @@
 local M = {}
 
+local DEFAULT_QUERY = { type = "bookmark" }
+
 ---@class Bookmarks.QueryCtx
 M._cache = {
   ---@type PresentView
@@ -12,12 +14,12 @@ M._cache = {
 
 M.reset = function()
   M._cache.view = nil
-  M._cache.query = {type = "bookmark"}
+  M._cache.query = DEFAULT_QUERY
   M._cache.data = {}
 end
 
 M.reset_query = function()
-  M._cache.query = {type = "bookmark"}
+  M._cache.query = DEFAULT_QUERY
 end
 
 return M

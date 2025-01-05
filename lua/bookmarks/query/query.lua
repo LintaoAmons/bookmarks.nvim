@@ -89,7 +89,22 @@ M.query = function(filter)
   end
 
   -- Construct query
-  local query = "SELECT * FROM nodes"
+  local query = [[
+  SELECT 
+    id,
+    name,
+    description,
+    content,
+    location_path,
+    location_line,
+    location_col,
+    githash,
+    node_order,
+    is_expanded,
+    created_at,
+    visited_at
+  FROM nodes
+]]
   if #conditions > 0 then
     query = query .. " WHERE " .. table.concat(conditions, " AND ")
   end
