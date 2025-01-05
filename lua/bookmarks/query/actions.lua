@@ -60,8 +60,8 @@ M.new_list_from_result = function()
 
       -- For each bookmark in the cached data
       for _, bookmark in ipairs(data) do
-        local new_bookmark = Mapper.BookmarkFromDbRow(bookmark)
-        local new_node = Node.new_from_bookmark(new_bookmark)
+        local new_bookmark = Mapper.row_to_node(bookmark)
+        local new_node = Node.new_from_node(new_bookmark)
 
         -- Insert the new bookmark under the new list
         Service.new_bookmark(new_node, new_list.id)
