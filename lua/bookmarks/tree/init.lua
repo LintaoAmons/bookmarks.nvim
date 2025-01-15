@@ -66,6 +66,8 @@ function M.toggle()
 
   -- Create new tree view
   local buf = vim.api.nvim_create_buf(false, true)
+  -- Set the filetype for the buffer using the newer API
+  vim.bo[buf].filetype = 'BookmarksTree'
   local win = create_vsplit_with_width({ width = vim.g.bookmarks_config.treeview.window_split_dimension })
 
   register_local_shortcuts(buf)
