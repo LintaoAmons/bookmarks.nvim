@@ -7,6 +7,13 @@ local api = vim.api
 ---@field keys string[]
 ---@field action string|function
 
+---@class FormatterOptions
+---@field borders BorderConfig
+---@field truncate_marker string
+---@field default_width? number
+---@field max_width? number
+---@field columns_order? string[] # List of column keys in desired order
+
 --- Present a table[] of data in a floating window
 --- table elements must be in same struct
 --- +------------------------------------------+
@@ -45,6 +52,7 @@ local api = vim.api
 ---@field _current_data string[] # Current data to render
 ---@field _after_data_sections string[] # After data sections to render
 ---@field _keys table # TODO: buffer local keybindings
+---@field _data_format_opts FormatterOptions
 local PresentView = {
   win_id = nil,
   buf_id = nil,
@@ -70,6 +78,7 @@ local PresentView = {
   _current_data = {},
   _after_data_sections = {},
   _keys = {},
+  _data_format_opts = {},
 }
 PresentView.__index = PresentView
 
@@ -160,13 +169,6 @@ end
 ---@field top_separator string
 ---@field column_separator string
 ---@field cross_separator string
-
----@class FormatterOptions
----@field borders BorderConfig
----@field truncate_marker string
----@field default_width? number
----@field max_width? number
----@field columns_order? string[] # List of column keys in desired order
 
 ---@class InferredColumn
 ---@field name string
@@ -325,7 +327,8 @@ end
 ---@param raw_data table[]
 ---@param opts? FormatterOptions
 function PresentView:set_data(raw_data, opts)
-  self._current_data = format_table(raw_data, opts)
+  self._data_format_opts = vim.tbl_deep_extend("force", self._data_format_opts, opts or {})
+  self._current_data = format_table(raw_data, self._data_format_opts)
 end
 
 --- add a new section to _before_data_sections

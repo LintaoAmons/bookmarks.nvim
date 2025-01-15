@@ -1,5 +1,6 @@
 -- local Window = require("bookmarks.utils.window")
 local Service = require("bookmarks.domain.service")
+local Node = require("bookmarks.domain.node")
 local Location = require("bookmarks.domain.location")
 local Sign = require("bookmarks.sign")
 local Tree = require("bookmarks.tree")
@@ -37,6 +38,19 @@ M.new_list = function()
       pcall(Tree.refresh, new_list.id)
     end
   end)
+end
+
+M.current_file_bookmarks_to_new_list = function()
+  local filepath = Location.get_current_location().path
+  local bookmarks = Service.find_bookmarks_of_file(filepath)
+
+  local new_list = Service.create_list(vim.fn.fnamemodify(filepath, ":t"))
+  for _, bookmark in pairs(bookmarks) do
+    local new_node = Node.new_from_node(bookmark)
+    Service.new_bookmark(new_node, new_list.id)
+  end
+  Sign.safe_refresh_signs()
+  pcall(Tree.refresh, new_list.id)
 end
 
 -- M.attach_desc = function()

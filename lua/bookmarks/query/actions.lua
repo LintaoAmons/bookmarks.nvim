@@ -53,6 +53,7 @@ M.new_list_from_result = function()
     return
   end
 
+  vim.notify("start", vim.log.levels.WARN, { title = "bookmarks.nvim" })
   vim.ui.input({ prompt = "Enter list name: " }, function(name)
     if not name or name == "" then
       -- Create new list and get its ID
@@ -63,9 +64,11 @@ M.new_list_from_result = function()
         local new_bookmark = Mapper.row_to_node(bookmark)
         local new_node = Node.new_from_node(new_bookmark)
 
+        vim.print(new_node)
         -- Insert the new bookmark under the new list
         Service.new_bookmark(new_node, new_list.id)
       end
+      vim.notify("end", vim.log.levels.WARN, { title = "bookmarks.nvim" })
 
       vim.notify(
         string.format("Created new list with %d bookmarks", #data),
