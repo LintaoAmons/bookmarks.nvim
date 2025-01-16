@@ -65,6 +65,23 @@ function M.find_bookmark_by_location(location)
   return Repo.find_bookmark_by_location(location)
 end
 
+--- Find bookmarks of current file
+--- @param filepath  string
+--- @return Bookmarks.Node[]
+function M.find_bookmarks_of_file(filepath)
+  local filepath = filepath or Location.get_current_location().path
+  local bookmarks = Repo.get_all_bookmarks()
+  local file_bms = {}
+
+  for _, bookmark in ipairs(bookmarks) do
+    if filepath == bookmark.location.path then
+      table.insert(file_bms, bookmark)
+    end
+  end
+
+  return file_bms
+end
+
 --- Create a new list and set it as active
 ---@param name string # the name of the list
 ---@param parent_list_id number? # parent list ID, if nil, list will be added to root list
@@ -256,29 +273,45 @@ end
 --- finds the next bookmark in line number order within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_next_bookmark_line_order(callback)
-  find_closest_bookmark_in_line_order(callback, Repo.ensure_and_get_active_list(), FindDirection.FORWARD,
-    "No next bookmark found within the active BookmarkList in this file")
+  find_closest_bookmark_in_line_order(
+    callback,
+    Repo.ensure_and_get_active_list(),
+    FindDirection.FORWARD,
+    "No next bookmark found within the active BookmarkList in this file"
+  )
 end
 
 --- finds the previous bookmark in line number order within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_prev_bookmark_line_order(callback)
-  find_closest_bookmark_in_line_order(callback, Repo.ensure_and_get_active_list(), FindDirection.BACKWARD,
-    "No previous bookmark found within the active BookmarkList in this file")
+  find_closest_bookmark_in_line_order(
+    callback,
+    Repo.ensure_and_get_active_list(),
+    FindDirection.BACKWARD,
+    "No previous bookmark found within the active BookmarkList in this file"
+  )
 end
 
 --- finds the next bookmark by order id within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_next_bookmark_id_order(callback)
-  find_bookmark_in_id_order(callback, Repo.ensure_and_get_active_list(), FindDirection.FORWARD,
-    "No next bookmark found within the active BookmarkList")
+  find_bookmark_in_id_order(
+    callback,
+    Repo.ensure_and_get_active_list(),
+    FindDirection.FORWARD,
+    "No next bookmark found within the active BookmarkList"
+  )
 end
 
 --- finds the previous bookmark by order id within the current active BookmarkList
 ---@param callback fun(bookmark: Bookmarks.Node): nil
 function M.find_prev_bookmark_id_order(callback)
-  find_bookmark_in_id_order(callback, Repo.ensure_and_get_active_list(), FindDirection.BACKWARD,
-    "No previous bookmark found within the active BookmarkList")
+  find_bookmark_in_id_order(
+    callback,
+    Repo.ensure_and_get_active_list(),
+    FindDirection.BACKWARD,
+    "No previous bookmark found within the active BookmarkList"
+  )
 end
 
 --- get all bookmarks of the active list
@@ -301,7 +334,8 @@ function M.add_to_list(node_id, parent_list_id) end
 --- copy a bookmark to a list
 ---@param bookmark_id number # bookmark ID
 ---@param list_id number # list ID
-function M.copy_bookmark_to_list(bookmark_id, list_id) end
+function M.copy_bookmark_to_list(bookmark_id, list_id) 
+end
 
 --- move a bookmark to a list
 ---@param bookmark_id number # bookmark ID

@@ -105,6 +105,14 @@ local default_config = {
     window_split_dimension = 30,
     -- stylua: ignore end
   },
+
+  query = {
+    -- Stylua: ignore start
+    -- TOOD: allow user to customize keymap
+    keymap = {
+    },
+    -- stylua: ignore end
+  },
 }
 
 ---Get the database file path from config or fallback

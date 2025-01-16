@@ -52,6 +52,25 @@ function M.new_bookmark(name, location)
   }
 end
 
+---Create a new bookmark node from a bookmark
+---@param node Bookmarks.Node
+---@return Bookmarks.NewNode
+function M.new_from_node(node)
+  local time = os.time()
+  return {
+    name = node.name,
+    type = node.type,
+    description = node.description,
+    children = node.children,
+    location = node.location,
+    content = node.content,
+    githash = node.githash,
+    created_at = time,
+    visited_at = time,
+    is_expanded = node.is_expanded,
+  }
+end
+
 ---Create a new list node
 ---@param name string
 ---@return Bookmarks.NewNode
