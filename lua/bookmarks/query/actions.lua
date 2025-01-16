@@ -48,34 +48,37 @@ end
 
 M.new_list_from_result = function()
   local data = State._cache.data
-  if type(data) ~= "table" then
-    vim.notify("No data found with given condition", vim.log.levels.WARN, { title = "bookmarks.nvim" })
+  if type(data) ~= "table" or #data == 0 then
+    vim.notify("No data available to create list from", vim.log.levels.WARN, { title = "bookmarks.nvim" })
     return
   end
 
-  vim.notify("start", vim.log.levels.WARN, { title = "bookmarks.nvim" })
   vim.ui.input({ prompt = "Enter list name: " }, function(name)
     if not name or name == "" then
-      -- Create new list and get its ID
-      local new_list = Service.create_list(name, 0)
-
-      -- For each bookmark in the cached data
-      for _, bookmark in ipairs(data) do
-        local new_bookmark = Mapper.row_to_node(bookmark)
-        local new_node = Node.new_from_node(new_bookmark)
-
-        vim.print(new_node)
-        -- Insert the new bookmark under the new list
-        Service.new_bookmark(new_node, new_list.id)
-      end
-      vim.notify("end", vim.log.levels.WARN, { title = "bookmarks.nvim" })
-
-      vim.notify(
-        string.format("Created new list with %d bookmarks", #data),
-        vim.log.levels.INFO,
-        { title = "bookmarks.nvim" }
-      )
+      vim.notify("List name cannot be empty", vim.log.levels.WARN, { title = "bookmarks.nvim" })
+      return
     end
+
+    -- Create new list and get its ID
+    local new_list = Service.create_list(name, 0)
+    if not new_list then
+      vim.notify("Failed to create new list", vim.log.levels.ERROR, { title = "bookmarks.nvim" })
+      return
+    end
+
+    -- For each bookmark in the cached data
+    for _, bookmark in ipairs(data) do
+      local new_bookmark = Mapper.row_to_node(bookmark)
+      local new_node = Node.new_from_node(new_bookmark)
+      -- Insert the new bookmark under the new list
+      Service.new_bookmark(new_node, new_list.id)
+    end
+
+    vim.notify(
+      string.format("Created new list '%s' with %d bookmarks", name, #data),
+      vim.log.levels.INFO,
+      { title = "bookmarks.nvim" }
+    )
   end)
 end
 

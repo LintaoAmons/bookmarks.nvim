@@ -25,7 +25,7 @@ M.init = function()
   local p = present:new(data, {
     { modes = { "n", "v" }, keys = { "<localleader>f" }, action = Actions.add_query_condition },
     { modes = { "n", "v" }, keys = { "<localleader>d" }, action = Actions.clear_query_condition },
-    { modes = { "n", "v" }, keys = { "<localleader>a" }, action = Actions.new_list_from_result },
+    -- { modes = { "n", "v" }, keys = { "<localleader>a" }, action = Actions.new_list_from_result },
   }, {
     max_width = 100,
     columns_order = {

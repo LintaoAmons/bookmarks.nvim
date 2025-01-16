@@ -53,6 +53,24 @@ M.current_file_bookmarks_to_new_list = function()
   pcall(Tree.refresh, new_list.id)
 end
 
+M.delete_mark_of_current_file = function()
+  local filepath = Location.get_current_location().path
+  if not filepath then
+    vim.notify("No file path found", vim.log.levels.ERROR)
+    return
+  end
+
+  local query_api = require("bookmarks.query.query")
+  local success = query_api.eval(string.format("DELETE FROM nodes WHERE location_path = '%s'", filepath))
+
+  if success then
+    vim.notify(string.format("Deleted marks from %s", vim.fn.fnamemodify(filepath, ":t")), vim.log.levels.INFO)
+  else
+    vim.notify("Failed to delete marks", vim.log.levels.ERROR)
+  end
+  Sign.safe_refresh_signs()
+end
+
 -- M.attach_desc = function()
 --   local bookmark = Service.find_bookmark_by_location() or Node.new_bookmark("")
 --   local popup = Window.new_popup_window()

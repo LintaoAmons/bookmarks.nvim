@@ -71,7 +71,6 @@ local PresentView = {
     "",
     "<localleader>f: Add filter condition",
     "<localleader>d: reset filter condition",
-    "<localleader>a: new list from result",
     "",
   },
   _before_data_sections = {},

@@ -5,10 +5,10 @@ local M = {}
 
 --- execute a raw string query
 --- e.g.
---- require("bookmarks.query.api").query("select * from nodes")
+--- require("bookmarks.query.query").query("select * from nodes")
 ---@param query string
 ---@return table|boolean
-M.query_raw = function(query)
+M.eval = function(query)
   local db = DB:open(Repo._DB.uri)
   return db:eval(query)
 end
