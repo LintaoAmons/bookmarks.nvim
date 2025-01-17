@@ -1,6 +1,7 @@
 local Render = require("bookmarks.tree.render")
 local Repo = require("bookmarks.domain.repo")
 local Operate = require("bookmarks.tree.operate")
+local Highlight = require("bookmarks.tree.render.highlight")
 
 local M = {}
 
@@ -40,8 +41,14 @@ local function register_local_shortcuts(buf)
   end
 end
 
+local function setup_highlights()
+  Highlight.setup_highlights()
+end
+
 ---Toggle the tree view
 function M.toggle()
+  setup_highlights()
+
   local cur_window = vim.api.nvim_get_current_win()
   local ctx = vim.g.bookmark_tree_view_ctx
 
@@ -67,7 +74,7 @@ function M.toggle()
   -- Create new tree view
   local buf = vim.api.nvim_create_buf(false, true)
   -- Set the filetype for the buffer using the newer API
-  vim.bo[buf].filetype = 'BookmarksTree'
+  vim.bo[buf].filetype = "BookmarksTree"
   local win = create_vsplit_with_width({ width = vim.g.bookmarks_config.treeview.window_split_dimension })
 
   register_local_shortcuts(buf)

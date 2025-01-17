@@ -77,10 +77,28 @@ local default_config = {
     end,
   },
 
-  ---@type { keymap: { [string]: string|string[] } } 
+  ---@type { keymap: { [string]: string|string[] } }
   treeview = {
     ---@type fun(node: Bookmarks.Node): string | nil
-    render_bookmark = nil,
+    render_bookmark = function(node)
+      -- Use different icons to indicate presence of description
+      local icon = (node.description and #node.description > 0) and "●" or "○"  -- Filled/Empty dot
+
+      local filename = require("bookmarks.domain.location").get_file_name(node.location)
+      local name = node.name .. ": " .. filename
+      if node.name == "" then
+        name = "[Untitled]"
+      end
+
+      return icon .. " " .. name
+    end,
+    highlights = {
+      active_list = {
+        bg = "#2C323C",
+        fg = "#ffffff",
+        bold = true,
+      },
+    },
     -- stylua: ignore start
     keymap = {
       quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
@@ -109,8 +127,7 @@ local default_config = {
   query = {
     -- Stylua: ignore start
     -- TOOD: allow user to customize keymap
-    keymap = {
-    },
+    keymap = {},
     -- stylua: ignore end
   },
 }

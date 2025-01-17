@@ -5,9 +5,12 @@ local ns_id = api.nvim_create_namespace("bookmarks_active_list")
 local M = {}
 
 function M.setup_highlights()
+  local config = vim.g.bookmarks_config.treeview.highlights.active_list
   api.nvim_set_hl(0, ACTIVE_LIST_HL_GROUP, {
-    bg = "#2C323C",
-    default = true,
+    bg = config.bg,
+    fg = config.fg,
+    bold = config.bold,
+    default = false, -- Allow overrides
   })
 end
 
@@ -17,17 +20,16 @@ end
 
 function M.set_active_highlight(bufnr, line)
   M.clear_active_highlight(bufnr)
-  api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
-    line_hl_group = ACTIVE_LIST_HL_GROUP,
-    priority = 10,
-  })
+  api.nvim_buf_add_highlight(bufnr, ns_id, ACTIVE_LIST_HL_GROUP, line - 1, 0, -1)
 end
 
--- Main function to highlight active list
 function M.highlight_active_list(bufnr, active_list_id, lines_ctx)
+  if not api.nvim_buf_is_valid(bufnr) then
+    return
+  end
+
   M.clear_active_highlight(bufnr)
 
-  -- Find the line number for the active list
   for line_num, ctx in ipairs(lines_ctx) do
     if ctx.id == active_list_id then
       M.set_active_highlight(bufnr, line_num)
