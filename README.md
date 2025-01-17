@@ -7,7 +7,7 @@
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
 
-<img width="1910" alt="image" src="https://github.com/user-attachments/assets/08806798-d87a-4191-b5d7-9259e50390c3" />
+![bookmarks nvim](https://github.com/user-attachments/assets/dd8ed4d0-8f36-4f32-b066-0594ef218df0)
 
 - [Basic function overview](https://www.youtube.com/watch?v=RoyXQYauiLo)
 
