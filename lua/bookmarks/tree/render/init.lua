@@ -38,8 +38,7 @@ end
 local function render_bookmark(node)
   local book_icon = "◉"
 
-  local filename = Location.get_file_name(node.location)
-  local name = filename .. ": " .. node.name
+  local name = node.name
   if node.name == "" then
     name = "[Untitled]"
   end
@@ -130,11 +129,12 @@ function M.refresh(root)
     root_id = root.id,
   })
 
-  -- Highlight active list
-  local active_list = Repo.ensure_and_get_active_list()
-  if active_list then
-    Highlight.highlight_active_list(buf, active_list.id, lines_ctx)
-  end
+  -- Apply highlight in next tick to ensure buffer is ready
+  vim.schedule(function()
+    if active_list then
+      Highlight.highlight_active_list(buf, active_list.id, lines_ctx)
+    end
+  end)
 end
 
 return M
