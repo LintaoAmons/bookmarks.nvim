@@ -143,6 +143,14 @@ keymap = {
 | `BookmarksCommands`        | Find bookmark commands and trigger it                    |
 | `BookmarkRebindOrphanNode` | Rebind orphaned nodes by attaching them to the root node |
 
+and you can bind the commands to a shortcut or create a custom command out of it.
+
+```lua
+vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").delete_mark_of_current_file() end, { desc = "Booksmark Clear Line" })
+-- or
+vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function() require("bookmarks.commands").delete_mark_of_current_file() end, {})
+```
+
 ### Keymap
 
 This plugin doesn't provide any default keybinding. I recommend you to have these keybindings.
