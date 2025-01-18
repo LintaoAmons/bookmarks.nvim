@@ -169,7 +169,9 @@ vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find 
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
+
 Goto [help-wanted issues](https://github.com/LintaoAmons/bookmarks.nvim/issues?q=state:open%20label:%22help%20wanted%22) to check the task you can help with.
+
 Most of them should have some hints about how we want to impl it.
 
 - Plugin Structure:
@@ -184,3 +186,5 @@ Most of them should have some hints about how we want to impl it.
 - [cd-project.nvim](https://github.com/LintaoAmons/cd-project.nvim)
 - [bookmarks.nvim](https://github.com/LintaoAmons/bookmarks.nvim)
 - [context-menu.nvim](https://github.com/LintaoAmons/context-menu.nvim)
+
+<a href="https://www.buymeacoffee.com/lintaoamond" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
