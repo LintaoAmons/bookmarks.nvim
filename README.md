@@ -146,10 +146,15 @@ keymap = {
 and you can bind the commands to a shortcut or create a custom command out of it.
 
 ```lua
+vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").name_of_the_command_function() end, { desc = "Booksmark Clear Line" })
+e.g.
 vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").delete_mark_of_current_file() end, { desc = "Booksmark Clear Line" })
 -- or
 vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function() require("bookmarks.commands").delete_mark_of_current_file() end, {})
 ```
+Change the `name_of_the_command_function` to the one you want to use, you can find all the names goes alone with the plugin in [https://github.com/LintaoAmons/bookmarks.nvim/blob/better-treeview-visual/lua/bookmarks/commands/init.lua](https://github.com/LintaoAmons/bookmarks.nvim/blob/main/lua/bookmarks/commands/init.lua)
+
+And you can also extend the plugin by creating your own custom commands.
 
 ### Keymap
 
