@@ -147,7 +147,7 @@ and you can bind the commands to a shortcut or create a custom command out of it
 
 ```lua
 vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").name_of_the_command_function() end, { desc = "Booksmark Clear Line" })
-e.g.
+-- e.g.
 vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").delete_mark_of_current_file() end, { desc = "Booksmark Clear Line" })
 -- or
 vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function() require("bookmarks.commands").delete_mark_of_current_file() end, {})
