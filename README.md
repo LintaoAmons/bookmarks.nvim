@@ -169,8 +169,10 @@ vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find 
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
+Goto [help-wanted issues](https://github.com/LintaoAmons/bookmarks.nvim/issues?q=state:open%20label:%22help%20wanted%22) to check the task you can help with.
+Most of them should have some hints about how we want to impl it.
 
-- How to get started:
+- Plugin Structure:
   1. `plugin/bookmarks.lua` the entry point of the plugin
   2. `lua/bookmarks/domain` where the main objects/concepts live
 
