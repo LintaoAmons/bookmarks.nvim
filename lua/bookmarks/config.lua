@@ -99,6 +99,7 @@ local default_config = {
         bold = true,
       },
     },
+    active_list_icon = "󰮔 ",
     -- stylua: ignore start
     keymap = {
       quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window

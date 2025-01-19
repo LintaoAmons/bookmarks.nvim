@@ -50,8 +50,9 @@ end
 ---@param active_list_id number
 ---@return string
 local function render_list(node, active_list_id)
+  local icon = vim.g.bookmarks_config.treeview.active_list_icon or "󰮔 "
   local fold_icon = node.is_expanded and "▾" or "▸"
-  local active_indicator = (active_list_id and active_list_id == node.id) and "󰮔 " or ""
+  local active_indicator = (active_list_id and active_list_id == node.id) and icon or ""
   return fold_icon .. " " .. active_indicator .. node.name
 end
 
