@@ -46,11 +46,8 @@ local default_config = {
     ---@type: string | fun(bookmarks: Bookmarks.Node[]): nil
     sort_by = "last_visited",
     -- telescope entry display generation logic
-    ---@type: fun(bookmark: Bookmarks.Node): string
-    entry_display = function(bookmark)
-      local path = vim.fn.pathshorten(bookmark.location.path)
-      return string.format("%s [%s]", bookmark.name, path)
-    end,
+    ---@type: nil | fun(bookmark: Bookmarks.Node, bookmarks: Bookmarks.Node[]): string
+    entry_display = nil,
   },
 
   -- Bookmark position calibration

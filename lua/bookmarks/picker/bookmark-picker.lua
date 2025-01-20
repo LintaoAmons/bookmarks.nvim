@@ -17,6 +17,54 @@ local action_set = require("telescope.actions.set")
 
 local M = {}
 
+local function format_entry(bookmark, bookmarks)
+  -- Calculate widths from all bookmarks
+  local max_name = 15 -- minimum width
+  local max_filename = 20 -- minimum width
+  local max_filepath = 20 -- minimum width
+
+  for _, bm in ipairs(bookmarks) do
+    max_name = math.max(max_name, #bm.name)
+    local filename = vim.fn.fnamemodify(bm.location.path, ":t")
+    local path = vim.fn.pathshorten(bm.location.path)
+    max_filename = math.max(max_filename, #filename)
+    max_filepath = math.max(max_filepath, #path)
+  end
+
+  -- Apply maximum constraints
+  max_name = math.min(max_name, 30)
+  max_filename = math.min(max_filename, 30)
+  max_filepath = math.min(max_filepath, 40)
+
+  -- Format current bookmark entry
+  local name = bookmark.name
+  local filename = vim.fn.fnamemodify(bookmark.location.path, ":t")
+  local path = vim.fn.pathshorten(bookmark.location.path)
+
+  -- Pad or truncate name
+  if #name > max_name then
+    name = name:sub(1, max_name - 2) .. ".."
+  else
+    name = name .. string.rep(" ", max_name - #name)
+  end
+
+  -- Pad or truncate filename
+  if #filename > max_filename then
+    filename = filename:sub(1, max_filename - 2) .. ".."
+  else
+    filename = filename .. string.rep(" ", max_filename - #filename)
+  end
+
+  -- Pad or truncate path
+  if #path > max_filepath then
+    path = path:sub(1, max_filepath - 2) .. ".."
+  else
+    path = path .. string.rep(" ", max_filepath - #path)
+  end
+
+  return string.format("%s │ %s │ %s", name, filename, path)
+end
+
 ---Pick a *bookmark* then call the callback function against it
 ---e.g.
 ---:lua require("bookmarks.picker").pick_bookmark(function(bookmark) vim.print(bookmark.name) end)
@@ -33,11 +81,8 @@ function M.pick_bookmark(callback, opts)
           results = _bookmarks,
           ---@param bookmark Bookmarks.Node
           entry_maker = function(bookmark)
-            local entry_display = vim.g.bookmarks_config.picker.entry_display
-              or function(node)
-                return node.name
-              end
-            local display = entry_display(bookmark)
+            local entry_display = vim.g.bookmarks_config.picker.entry_display or format_entry
+            local display = entry_display(bookmark, _bookmarks)
             return {
               value = bookmark,
               display = display,
