@@ -87,8 +87,7 @@ function M.setup(config, db_path)
     -- 5, -- For testing
     0,
     vim.schedule_wrap(function()
-      local backup_path = create_backup(db_path, backup_dir)
-      vim.notify("Bookmarks backup created: " .. backup_path, vim.log.levels.INFO, { title = "Bookmarks.nvim" })
+      create_backup(db_path, backup_dir)
       timer:close()
     end)
   )
