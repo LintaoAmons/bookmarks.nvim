@@ -33,7 +33,11 @@ function M.pick_bookmark(callback, opts)
           results = _bookmarks,
           ---@param bookmark Bookmarks.Node
           entry_maker = function(bookmark)
-            local display = bookmark.name .. " " .. bookmark.location.path
+            local entry_display = vim.g.bookmarks_config.picker.entry_display
+              or function(node)
+                return node.name
+              end
+            local display = entry_display(bookmark)
             return {
               value = bookmark,
               display = display,

@@ -43,8 +43,14 @@ local default_config = {
     -- Sort logic for bookmark list
     -- Built-in options: "last_visited", "created_date"
     -- Or provide custom sort function
-    ---@type: string | fun(bookmarks: Bookmarks.Bookmark[]): nil
+    ---@type: string | fun(bookmarks: Bookmarks.Node[]): nil
     sort_by = "last_visited",
+    -- telescope entry display generation logic
+    ---@type: fun(bookmark: Bookmarks.Node): string
+    entry_display = function(bookmark)
+      local path = vim.fn.pathshorten(bookmark.location.path)
+      return string.format("%s [%s]", bookmark.name, path)
+    end,
   },
 
   -- Bookmark position calibration
@@ -82,7 +88,7 @@ local default_config = {
     ---@type fun(node: Bookmarks.Node): string | nil
     render_bookmark = function(node)
       -- Use different icons to indicate presence of description
-      local icon = (node.description and #node.description > 0) and "●" or "○"  -- Filled/Empty dot
+      local icon = (node.description and #node.description > 0) and "●" or "○" -- Filled/Empty dot
 
       local filename = require("bookmarks.domain.location").get_file_name(node.location)
       local name = node.name .. ": " .. filename
