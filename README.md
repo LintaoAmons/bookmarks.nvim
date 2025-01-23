@@ -9,6 +9,8 @@
 
 ![bookmarks nvim](https://github.com/user-attachments/assets/dd8ed4d0-8f36-4f32-b066-0594ef218df0)
 
+- More usecases can be found at https://oatnil.top/bookmarks/usecases
+
 - [Basic function overview](https://www.youtube.com/watch?v=RoyXQYauiLo)
 
 - [BookmarkTree function overview](https://youtu.be/TUCn1mqSI6Q)
@@ -42,14 +44,10 @@ Check the default config in [config.lua](./lua/bookmarks/config.lua)
 
 ### Basic Bookmark Operations
 
-| Command            | Description                                                                                                                         |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `BookmarksMark`    | Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string |
-| `BookmarksNewList` | Create a new bookmark list                                                                                                          |
-| `BookmarksDesc`    | Add description to the bookmark under cursor, if no bookmark, then mark it first                                                    |
-| `BookmarksGoto`    | Go to bookmark at current active BookmarkList with telescope                                                                        |
-| `BookmarksLists`   | Pick a bookmark list with telescope                                                                                                 |
-| `BookmarksGrep`            | Grep through the content of all bookmarked files         |
+| Command         | Description                                                                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `BookmarksMark` | Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string |
+| `BookmarksGoto` | Go to bookmark at current active BookmarkList with telescope                                                                        |
 
 > [!NOTE]
 > Those Telescope shortcuts are also available
@@ -61,6 +59,38 @@ Check the default config in [config.lua](./lua/bookmarks/config.lua)
 | `<C-v>`  | Open selected bookmark in vertical split   | -                                |
 | `<C-t>`  | Open selected bookmark in new tab          | -                                |
 | `<C-d>`  | Delete selected bookmark                   | Delete selected list             |
+
+### Treeview
+
+| Command         | Description                   |
+| --------------- | ----------------------------- |
+| `BookmarksTree` | Browse bookmarks in tree view |
+
+> [!NOTE]
+> There are quite a lot operations in treeview, which you can config it in the way you like.
+
+```lua
+-- default keybindings in the treeview buffer
+keymap = {
+  quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
+  refresh = "R",                -- Reload and redraw the tree view
+  create_list = "a",            -- Create a new list under the current node
+  level_up = "u",               -- Navigate up one level in the tree hierarchy
+  set_root = ".",               -- Set current list as root of the tree view, also set as active list
+  set_active = "m",             -- Set current list as the active list for bookmarks
+  toggle = "o",                 -- Toggle list expansion or go to bookmark location
+  move_up = "<localleader>k",   -- Move current node up in the list
+  move_down = "<localleader>j", -- Move current node down in the list
+  delete = "D",                 -- Delete current node
+  rename = "r",                 -- Rename current node
+  goto = "g",                   -- Go to bookmark location in previous window
+  cut = "x",                    -- Cut node
+  copy = "c",                   -- Copy node
+  paste = "p",                  -- Paste node
+  show_info = "i",              -- Show node info
+  reverse = "t",                -- Reverse the order of nodes in the tree view
+}
+```
 
 ### Quick Navigation
 
@@ -97,37 +127,14 @@ Hydra({
 })
 ```
 
-### Treeview
+### More commands
 
-| Command         | Description                   |
-| --------------- | ----------------------------- |
-| `BookmarksTree` | Browse bookmarks in tree view |
-
-> [!NOTE]
-> There are quite a lot operations in treeview, which you can config it in the way you like.
-
-```lua
--- default keybindings in the treeview buffer
-keymap = {
-  quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
-  refresh = "R",                -- Reload and redraw the tree view
-  create_list = "a",            -- Create a new list under the current node
-  level_up = "u",               -- Navigate up one level in the tree hierarchy
-  set_root = ".",               -- Set current list as root of the tree view, also set as active list
-  set_active = "m",             -- Set current list as the active list for bookmarks
-  toggle = "o",                 -- Toggle list expansion or go to bookmark location
-  move_up = "<localleader>k",   -- Move current node up in the list
-  move_down = "<localleader>j", -- Move current node down in the list
-  delete = "D",                 -- Delete current node
-  rename = "r",                 -- Rename current node
-  goto = "g",                   -- Go to bookmark location in previous window
-  cut = "x",                    -- Cut node
-  copy = "c",                   -- Copy node
-  paste = "p",                  -- Paste node
-  show_info = "i",              -- Show node info
-  reverse = "t",                -- Reverse the order of nodes in the tree view
-}
-```
+| Command            | Description                                                                       |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `BookmarksNewList` | Create a new bookmark list, but I normally use `BookmarksTree` to create new list |
+| `BookmarksDesc`    | Add description to the bookmark under cursor, if no bookmark, then mark it first  |
+| `BookmarksLists`   | Pick a bookmark list with telescope                                               |
+| `BookmarksGrep`    | Grep through the content of all bookmarked files                                  |
 
 ### Viewing and Information
 
@@ -152,6 +159,7 @@ vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").dele
 -- or
 vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function() require("bookmarks.commands").delete_mark_of_current_file() end, {})
 ```
+
 Change the `name_of_the_command_function` to the one you want to use, you can find all the names goes alone with the plugin in [https://github.com/LintaoAmons/bookmarks.nvim/blob/better-treeview-visual/lua/bookmarks/commands/init.lua](https://github.com/LintaoAmons/bookmarks.nvim/blob/main/lua/bookmarks/commands/init.lua)
 
 And you can also extend the plugin by creating your own custom commands.
