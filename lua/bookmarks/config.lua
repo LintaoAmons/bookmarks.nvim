@@ -134,6 +134,10 @@ local default_config = {
     keymap = {},
     -- stylua: ignore end
   },
+
+  codecompanion = {
+    enabled = false,
+  },
 }
 
 ---Get the database file path from config or fallback
@@ -166,6 +170,7 @@ local setup = function(user_config)
   require("bookmarks.sign").setup(cfg.signs)
   require("bookmarks.auto-cmd").setup()
   require("bookmarks.backup").setup(cfg, get_db_path(cfg.db_dir))
+  require("bookmarks.codecompanion").setup()
 end
 
 return {
