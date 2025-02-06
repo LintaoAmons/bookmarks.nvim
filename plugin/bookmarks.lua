@@ -21,6 +21,10 @@ vim.api.nvim_create_user_command("BookmarksMark", bookmarks.toggle_mark, {
   desc = "Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string",
 })
 
+vim.api.nvim_create_user_command("BookmarksQuickMark", bookmarks.toggle_quick_mark, {
+  desc = "Toggle bookmark for the current line into active BookmarkList (no name).",
+})
+
 vim.api.nvim_create_user_command("BookmarksDesc", bookmarks.attach_desc, {
   desc = "Add description to the bookmark under cursor, if no bookmark, then mark it first",
 })
