@@ -56,6 +56,8 @@ return {
 
 Check the default config in [config.lua](./lua/bookmarks/config.lua)
 
+> For Windows users, if you meet sqlite dependency issues, please ref to https://github.com/LintaoAmons/bookmarks.nvim/issues/73, and try if it can fix your problem
+
 ## Usage
 
 ### Basic Bookmark Operations
