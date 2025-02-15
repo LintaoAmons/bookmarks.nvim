@@ -369,6 +369,8 @@ function M.delete()
   -- Delete the node
   Service.delete_node(node.id)
 
+  vim.notify("Bookmark deleted", vim.log.levels.INFO)
+
   -- Refresh the tree view
   local root = Repo.find_node(ctx.lines_ctx.root_id)
   if root then
