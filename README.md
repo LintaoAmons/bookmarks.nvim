@@ -182,6 +182,14 @@ vim.keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to boo
 vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
 ```
 
+## Advanced Usage
+
+In this section, we will cover some advanced usage of the bookmarks.nvim plugin.
+
+Mostly, how users can customise the plugin to fits their needs programmatically.
+
+Check the [ADVANCED_USAGE.md](./ADVANCED_USAGE.md) for more details.
+
 ## CONTRIBUTING
 
 Don't hesitate to ask me anything about the codebase if you want to contribute.
