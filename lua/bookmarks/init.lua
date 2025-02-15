@@ -11,24 +11,15 @@ local M = {}
 
 M.setup = require("bookmarks.config").setup
 
----@param input string
-local function toggle_mark(input)
-  Service.toggle_mark(input)
-  Sign.safe_refresh_signs()
-  pcall(Tree.refresh)
-end
-
 M.toggle_mark = function()
   local b = Service.find_bookmark_by_location()
   vim.ui.input({ prompt = "[Bookmarks Toggle]", default = b and b.name or "" }, function(input)
     if input then
-      toggle_mark(input)
+      Service.toggle_mark(input)
+      Sign.safe_refresh_signs()
+      pcall(Tree.refresh)
     end
   end)
-end
-
-M.toggle_quick_mark = function()
-  toggle_mark("")
 end
 
 M.goto_bookmark = function()
