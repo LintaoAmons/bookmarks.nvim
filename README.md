@@ -56,6 +56,8 @@ return {
 
 Check the default config in [config.lua](./lua/bookmarks/config.lua)
 
+> For Windows users, if you meet sqlite dependency issues, please ref to https://github.com/LintaoAmons/bookmarks.nvim/issues/73, and try if it can fix your problem
+
 ## Usage
 
 ### Basic Bookmark Operations
@@ -179,6 +181,14 @@ vim.keymap.set({ "n", "v" }, "mm", "<cmd>BookmarksMark<cr>", { desc = "Mark curr
 vim.keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark at current active BookmarkList" })
 vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
 ```
+
+## Advanced Usage
+
+In this section, we will cover some advanced usage of the bookmarks.nvim plugin.
+
+Mostly, how users can customise the plugin to fits their needs programmatically.
+
+Check the [ADVANCED_USAGE.md](./ADVANCED_USAGE.md) for more details.
 
 ## CONTRIBUTING
 
