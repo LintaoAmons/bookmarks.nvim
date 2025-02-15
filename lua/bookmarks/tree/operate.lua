@@ -22,11 +22,15 @@ function M.create_list()
     error(string.format("Failed to find node with id: %d", line_ctx.id))
   end
 
-  -- Get parent node
-  local parent_id = Repo.get_parent_id(current_node.id)
-
-  if not parent_id then
-    error(string.format("Failed to get parent id of %s", current_node.id))
+  -- Determine parent_id based on current node type
+  local parent_id
+  if current_node.type == "list" then
+    parent_id = current_node.id
+  else
+    parent_id = Repo.get_parent_id(current_node.id)
+    if not parent_id then
+      error(string.format("Failed to get parent id of %s", current_node.id))
+    end
   end
 
   -- Get user input for new list name
@@ -130,9 +134,9 @@ function M.rename()
   end
 
   -- Get user input for new name
-  vim.ui.input({ 
+  vim.ui.input({
     prompt = "Enter new name: ",
-    default = node.name
+    default = node.name,
   }, function(input)
     if not input then
       return
@@ -268,7 +272,7 @@ function M.paste()
     parent_id = target_node.id
     -- Get children count for the target list
     local children = target_node.children or {}
-    position = #children  -- Put at the end of the list
+    position = #children -- Put at the end of the list
   else
     -- If target is not a list, paste at target's position in parent list
     parent_id = Repo.get_parent_id(target_node.id)
@@ -534,17 +538,17 @@ end
 --- reverse display order
 function M.reverse()
   local ctx = Ctx.get_ctx()
-  
+
   -- Toggle sort order
   ctx.sort_ascending = not (ctx.sort_ascending or false)
   vim.g.bookmark_tree_view_ctx = ctx
-  
+
   -- Refresh the view
   local root = Repo.find_node(ctx.lines_ctx.root_id)
   if root then
     Render.refresh(root)
   end
-  
+
   -- Notify user of sort order change
   local order = ctx.sort_ascending and "ascending" or "descending"
   vim.notify("Sort order: " .. order, vim.log.levels.INFO)
