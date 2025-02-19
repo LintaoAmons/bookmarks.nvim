@@ -556,4 +556,70 @@ function M.reverse()
   vim.notify("Sort order: " .. order, vim.log.levels.INFO)
 end
 
+--- Add cursor-located list to quickfix list
+function M.add_to_quickfix()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    vim.notify("No valid line context found", vim.log.levels.WARN)
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node then
+    vim.notify("No valid node found", vim.log.levels.WARN)
+    return
+  end
+
+  -- If it's a bookmark, get its parent list
+  local list_node
+  if node.type ~= "list" then
+    local parent_id = Repo.get_parent_id(node.id)
+    if not parent_id then
+      vim.notify("No parent list found", vim.log.levels.WARN)
+      return
+    end
+    list_node = Repo.find_node(parent_id)
+  else
+    list_node = node
+  end
+
+  if not list_node or list_node.type ~= "list" then
+    vim.notify("No valid list found", vim.log.levels.WARN)
+    return
+  end
+
+  -- Collect all bookmarks in the list
+  local qf_items = {}
+  for _, child in ipairs(list_node.children or {}) do
+    if child.type == "bookmark" then
+      table.insert(qf_items, {
+        filename = child.location.path,
+        lnum = child.location.line,
+        col = child.location.col,
+        text = child.name or "[Unnamed Bookmark]",
+      })
+    end
+  end
+
+  -- Set the quickfix list
+  vim.fn.setqflist(qf_items, "r")
+
+  -- Open the quickfix list
+  -- If previous window exists and is valid, set it as target
+  if ctx.previous_window and vim.api.nvim_win_is_valid(ctx.previous_window) then
+    vim.api.nvim_set_current_win(ctx.previous_window)
+  end
+  vim.cmd("copen")
+
+  vim.notify(
+    string.format("Added %d bookmarks from '%s' to quickfix list", #qf_items, list_node.name),
+    vim.log.levels.INFO
+  )
+end
+
 return M

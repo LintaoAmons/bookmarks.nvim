@@ -4,7 +4,20 @@ In this section, we will cover some advanced usage of the bookmarks.nvim plugin.
 
 Mostly, how users can customise the plugin to fits their needs programmatically.
 
+## Ask Avante with Active List as Context
+
+> how this works: add items in the active list to the quickfix list, then ask avante with quickfix list as context
+
+```lua
+function ask_avante_with_active_list()
+	require("bookmarks.domain.service").active_list_to_qf()
+	require("avante.api").ask()
+	require("avante").get().file_selector:add_quickfix_files()
+end
+```
+
 ## Quick Mark
+
 > @obszczymucha https://github.com/LintaoAmons/bookmarks.nvim/pull/75
 
 ```lua
@@ -25,6 +38,7 @@ vim.api.nvim_create_user_command("BookmarksQuickMark", bookmarks.toggle_quick_ma
 ```
 
 ## Automaticalyy switching Active List based on repository
+
 > Thx: @fantasygiveup https://github.com/LintaoAmons/bookmarks.nvim/issues/26
 
 ```lua
@@ -67,4 +81,3 @@ end
 
 return M
 ```
-

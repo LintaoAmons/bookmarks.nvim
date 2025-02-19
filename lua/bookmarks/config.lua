@@ -116,12 +116,13 @@ local default_config = {
       move_down = "<localleader>j", -- Move current node down in the list
       delete = "D",                 -- Delete current node
       rename = "r",                 -- Rename current node
-      goto = "g",                   -- Go to bookmark location in previous window
+      goto = "<localleader>g",      -- Go to bookmark location in previous window
       cut = "x",                    -- Cut node
       copy = "c",                   -- Copy node
       paste = "p",                  -- Paste node
       show_info = "i",              -- Show node info
       reverse = "t",                -- Reverse the order of nodes in the tree view
+      add_to_quickfix = "<localleader>q", -- Add cursor-located list to quickfix list
     },
     -- Dimension of the window spawned for Treeview
     window_split_dimension = 30,
