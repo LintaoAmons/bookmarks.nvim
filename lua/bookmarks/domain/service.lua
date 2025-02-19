@@ -459,12 +459,17 @@ function M.active_list_to_qf()
   local qf_items = {}
   for _, child in ipairs(list_node.children or {}) do
     if child.type == "bookmark" then
-      table.insert(qf_items, {
-        filename = child.location.path,
-        lnum = child.location.line,
-        col = child.location.col,
-        text = child.name or "[Unnamed Bookmark]",
-      })
+      -- Check if file exists and is readable
+      if vim.fn.filereadable(child.location.path) == 1 then
+        table.insert(qf_items, {
+          filename = child.location.path,
+          lnum = child.location.line,
+          col = child.location.col,
+          text = child.name or "[Unnamed Bookmark]",
+        })
+      else
+        vim.notify(string.format("Skipping invalid file path: %s", child.location.path), vim.log.levels.WARN)
+      end
     end
   end
 
