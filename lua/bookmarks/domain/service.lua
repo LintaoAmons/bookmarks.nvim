@@ -334,8 +334,7 @@ function M.add_to_list(node_id, parent_list_id) end
 --- copy a bookmark to a list
 ---@param bookmark_id number # bookmark ID
 ---@param list_id number # list ID
-function M.copy_bookmark_to_list(bookmark_id, list_id) 
-end
+function M.copy_bookmark_to_list(bookmark_id, list_id) end
 
 --- move a bookmark to a list
 ---@param bookmark_id number # bookmark ID
@@ -453,6 +452,23 @@ function M.paste_node(node, parent_id, position, operation)
 
   local id = Repo.insert_node_at_position(newNode, parent_id, position)
   return Repo.find_node(id) or error("Failed to paste node")
+end
+
+function M.active_list_to_qf()
+  local list_node = Repo.ensure_and_get_active_list()
+  local qf_items = {}
+  for _, child in ipairs(list_node.children or {}) do
+    if child.type == "bookmark" then
+      table.insert(qf_items, {
+        filename = child.location.path,
+        lnum = child.location.line,
+        col = child.location.col,
+        text = child.name or "[Unnamed Bookmark]",
+      })
+    end
+  end
+
+  vim.fn.setqflist(qf_items, "r")
 end
 
 return M
