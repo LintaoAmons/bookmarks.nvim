@@ -118,7 +118,7 @@ end
 
 --- goto bookmark's location
 ---@param bookmark_id number # bookmark ID
----@param opts? {cmd?: "e" | "tabnew" | "split" | "vsplit"}
+---@param opts? {cmd?: "e" | "tabnew" | "split" | "vsplit" | "float"}
 function M.goto_bookmark(bookmark_id, opts)
   opts = opts or {}
 
@@ -139,10 +139,34 @@ function M.goto_bookmark(bookmark_id, opts)
   node.visited_at = os.time()
   Repo.update_node(node)
 
-  -- Open the file if it's not the current buffer
+  -- Handle floating window case
   local cmd = opts.cmd or "edit"
-  if node.location.path ~= vim.fn.expand("%:p") then
-    vim.cmd(cmd .. vim.fn.fnameescape(node.location.path))
+  if opts.cmd == "float" then
+    local buf = vim.api.nvim_create_buf(false, false)
+    vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+
+    -- Calculate window size and position
+    local width = math.min(160, vim.o.columns - 4)
+    local height = math.min(40, vim.o.lines - 4)
+    local row = math.floor((vim.o.lines - height) / 2)
+    local col = math.floor((vim.o.columns - width) / 2)
+
+    local win = vim.api.nvim_open_win(buf, true, {
+      relative = "editor",
+      width = width,
+      height = height,
+      row = row,
+      col = col,
+      style = "minimal",
+      border = "rounded",
+    })
+
+    -- Load the file content
+    vim.cmd("edit " .. vim.fn.fnameescape(node.location.path))
+  else
+    if node.location.path ~= vim.fn.expand("%:p") then
+      vim.cmd(cmd .. " " .. vim.fn.fnameescape(node.location.path))
+    end
   end
 
   -- Move cursor to the bookmarked position
@@ -334,8 +358,7 @@ function M.add_to_list(node_id, parent_list_id) end
 --- copy a bookmark to a list
 ---@param bookmark_id number # bookmark ID
 ---@param list_id number # list ID
-function M.copy_bookmark_to_list(bookmark_id, list_id) 
-end
+function M.copy_bookmark_to_list(bookmark_id, list_id) end
 
 --- move a bookmark to a list
 ---@param bookmark_id number # bookmark ID

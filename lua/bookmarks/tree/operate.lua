@@ -556,4 +556,25 @@ function M.reverse()
   vim.notify("Sort order: " .. order, vim.log.levels.INFO)
 end
 
+--- Preview bookmark in a floating window
+function M.preview()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node or node.type ~= "bookmark" then
+    return
+  end
+
+  -- Load file content
+  Service.goto_bookmark(node.id, { cmd = "float" })
+end
+
 return M
