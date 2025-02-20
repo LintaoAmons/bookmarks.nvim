@@ -122,6 +122,7 @@ local default_config = {
       paste = "p",                  -- Paste node
       show_info = "i",              -- Show node info
       reverse = "t",                -- Reverse the order of nodes in the tree view
+      preview = "P",                -- or any other key you prefer
     },
     -- Dimension of the window spawned for Treeview
     window_split_dimension = 30,
