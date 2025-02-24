@@ -46,7 +46,7 @@ return {
     {"stevearc/dressing.nvim"} -- optional: better UI
   },
   config = function()
-    local opts = {} -- go to the following link to see all the options in the deafult config file
+    local opts = {} -- check the "./lua/bookmarks/default-config.lua" file for all the options
     require("bookmarks").setup(opts) -- you must call setup to init sqlite db
   end,
 }
@@ -54,7 +54,7 @@ return {
 -- run :BookmarksInfo to see the running status of the plugin
 ```
 
-Check the default config in [config.lua](./lua/bookmarks/config.lua)
+> check the [config.lua](./lua/bookmarks/default-config.lua) file for all the options
 
 > For Windows users, if you meet sqlite dependency issues, please ref to https://github.com/LintaoAmons/bookmarks.nvim/issues/73, and try if it can fix your problem
 

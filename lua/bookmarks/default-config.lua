@@ -54,6 +54,7 @@ return {
   calibrate = {
     -- Auto adjust window position when opening buffer
     auto_calibrate_cur_buf = true,
+    show_calibrate_logs = true,
   },
 
   -- Custom commands available in command picker

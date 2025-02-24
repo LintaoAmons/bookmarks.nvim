@@ -14,10 +14,14 @@ function M.calibrate_current_window()
   end
 
   local changed_count = 0
+  local logs = {}
   for _, bookmark in ipairs(bookmarks) do
     local ret = Bookmark.calibrate(bookmark)
     if ret.changed then
       changed_count = changed_count + 1
+    end
+    if ret.has_msg then
+      table.insert(logs, ret.msg)
     end
   end
 
@@ -25,8 +29,17 @@ function M.calibrate_current_window()
     return
   end
 
-  vim.print("Calibrated " .. changed_count .. " bookmarks in current buffer")
-  -- TODO: bulk update
+  if
+    vim.g.bookmarks_config
+    and vim.g.bookmarks_config.calibrate
+    and vim.g.bookmarks_config.calibrate.show_calibrate_result
+  then
+    vim.print("Calibrated " .. changed_count .. " bookmarks in current buffer")
+    if #logs > 0 then
+      vim.print(table.concat(logs, "\n"))
+    end
+  end
+
   for _, b in pairs(bookmarks) do
     Repo.update_node(b)
   end
