@@ -478,4 +478,52 @@ function M.paste_node(node, parent_id, position, operation)
   return Repo.find_node(id) or error("Failed to paste node")
 end
 
+--- Mark a file by creating a bookmark for it
+--- @param filepath string # the file path to mark
+--- @param parent_list_id number? # optional parent list ID
+--- @return Bookmarks.Node # Returns the created bookmark
+function M.markfile(filepath, parent_list_id)
+  local location = {
+    path = filepath,
+    line = 1,
+    col = 0,
+  }
+  local name = Location.get_file_name(location)
+  local bookmark = {
+    type = "bookmark",
+    name = name,
+    description = "",
+    content = "",
+    location = location,
+    created_at = os.time(),
+    visited_at = os.time(),
+    children = {},
+    order = 0,
+  }
+  parent_list_id = parent_list_id or Repo.ensure_and_get_active_list().id
+
+  local id = Repo.insert_node(bookmark, parent_list_id)
+  return Repo.find_node(id) or error("Failed to create bookmark")
+end
+
+--- Use Snacks file picker to select multiple files and mark them
+function M.mark_selected_files()
+  -- Create a new list for the selected files
+  local new_list = M.create_list("Selected Files")
+
+  -- Set the new list as the current active list
+  M.set_active_list(new_list.id)
+
+  Snacks.picker({
+    source = "files",
+    confirm = function(picker)
+      local selected_files = picker:selected()
+      for _, item in ipairs(selected_files) do
+        M.markfile(item.file, new_list.id)
+      end
+      picker:close()
+    end,
+  })
+end
+
 return M
