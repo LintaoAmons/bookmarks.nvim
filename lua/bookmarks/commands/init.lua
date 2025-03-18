@@ -75,4 +75,8 @@ M.mix_active_bookmark = function()
   require("bookmarks.mix").mix_active_list({ open = true, notify = true })
 end
 
+M.mark_selected_files = function ()
+  require("bookmarks.domain.service").mark_selected_files()
+end
+
 return M
