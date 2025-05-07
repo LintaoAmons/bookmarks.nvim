@@ -154,7 +154,7 @@ function M.rename()
 end
 
 --- goto the bookmark, open the bookmark in the previous window
-function M.goto()
+M["goto"] = function()
   local line_no = vim.api.nvim_win_get_cursor(0)[1]
   local ctx = Ctx.get_ctx()
 
