@@ -117,7 +117,7 @@ return {
       move_down = "<localleader>j", -- Move current node down in the list
       delete = "D",                 -- Delete current node
       rename = "r",                 -- Rename current node
-      goto = "g",                   -- Go to bookmark location in previous window
+      ["goto"] = "g",               -- Go to bookmark location in previous window
       cut = "x",                    -- Cut node
       copy = "c",                   -- Copy node
       paste = "p",                  -- Paste node
