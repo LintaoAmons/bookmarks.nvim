@@ -141,6 +141,40 @@ M.rebind_orphan_node = function()
   Repo.rebind_orphan_node()
 end
 
+M.link_bookmark = function()
+  local bookmark = Service.find_bookmark_by_location()
+  if not bookmark then
+    vim.notify("No bookmark found at current location", vim.log.levels.ERROR)
+    return
+  end
+  Picker.pick_bookmark(function(target_bookmark)
+    if target_bookmark and target_bookmark.id ~= bookmark.id then
+      Service.link_bookmarks(bookmark.id, target_bookmark.id)
+    elseif target_bookmark then
+      vim.notify("Cannot link a bookmark to itself", vim.log.levels.ERROR)
+    end
+  end, { prompt = "Select bookmark to link to" })
+end
+
+M.view_linked_bookmarks = function()
+  local bookmark = Service.find_bookmark_by_location()
+  if not bookmark then
+    vim.notify("No bookmark found at current location", vim.log.levels.ERROR)
+    return
+  end
+  local linked_bookmarks = Service.get_linked_bookmarks(bookmark.id)
+  if #linked_bookmarks == 0 then
+    vim.notify("No linked bookmarks found", vim.log.levels.INFO)
+    return
+  end
+  Picker.pick_bookmark(function(selected)
+    if selected then
+      Service.goto_bookmark(selected.id)
+      Sign.safe_refresh_signs()
+    end
+  end, { prompt = "Linked Bookmarks for " .. bookmark.name, bookmarks = linked_bookmarks })
+end
+
 M.query = function()
   require("bookmarks.query").display()
 end

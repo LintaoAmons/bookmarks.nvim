@@ -37,13 +37,14 @@ end
 ---@return string
 local function render_bookmark(node)
   local book_icon = "◉"
+  local linked_icon = #node.linked_bookmarks > 0 and "🔗" or ""
 
   local name = node.name
   if node.name == "" then
     name = "[Untitled]"
   end
 
-  return book_icon .. " " .. name
+  return book_icon .. " " .. name .. " " .. linked_icon
 end
 
 ---@param node Bookmarks.Node
