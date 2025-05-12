@@ -75,8 +75,23 @@ M.mix_active_bookmark = function()
   require("bookmarks.mix").mix_active_list({ open = true, notify = true })
 end
 
-M.mark_selected_files = function ()
+M.mark_selected_files = function()
   require("bookmarks.domain.service").mark_selected_files()
+end
+
+M.link_bookmark = function()
+  local bookmark = Service.find_bookmark_by_location()
+  if not bookmark then
+    vim.notify("No bookmark found at current location", vim.log.levels.ERROR)
+    return
+  end
+  require("bookmarks.picker").pick_bookmark(function(target_bookmark)
+    if target_bookmark and target_bookmark.id ~= bookmark.id then
+      Service.link_bookmarks(bookmark.id, target_bookmark.id)
+    elseif target_bookmark then
+      vim.notify("Cannot link a bookmark to itself", vim.log.levels.ERROR)
+    end
+  end, { prompt = "Select bookmark to link to" })
 end
 
 return M

@@ -38,6 +38,13 @@ local active_list_tbl = tbl("active_list", {
   updated_at = { "integer", required = true },
 })
 
+local bookmark_links_tbl = tbl("bookmark_links", {
+  id = true,
+  bookmark_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
+  linked_bookmark_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
+  created_at = { "integer", required = true },
+})
+
 ---@class BookmarksDB: sqlite_db
 ---@field uri string
 ---@field nodes sqlite_tbl
@@ -54,6 +61,7 @@ function M.setup(db_dir)
     nodes = nodes_tbl,
     node_relationships = node_relationships_tbl,
     active_list = active_list_tbl,
+    bookmark_links = bookmark_links_tbl,
   })
   M._DB = DB
 
