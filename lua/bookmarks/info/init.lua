@@ -2,6 +2,7 @@ local Repo = require("bookmarks.domain.repo")
 local Window = require("bookmarks.utils.window")
 local Location = require("bookmarks.domain.location")
 local Backup = require("bookmarks.backup")
+local Service = require("bookmarks.domain.service")
 
 local M = {}
 
@@ -104,10 +105,10 @@ function M.show_bookmark_info(node)
   if not node then
     -- Get current location and find bookmark
     local location = Location.get_current_location()
-    node = Repo.find_node_by_location(location)
+    node = Repo.find_bookmark_by_location(location)
 
     if not node then
-      vim.notify("No node found at cursor position", vim.log.levels.WARN)
+      vim.notify("No bookmark found at cursor position", vim.log.levels.WARN)
       return
     end
   end
@@ -116,7 +117,7 @@ function M.show_bookmark_info(node)
   if node.id ~= 0 then
     -- Format node information
     local sections = {
-      "# node Details\n",
+      "# Node Details\n",
       string.format("- **ID**: `%d`\n", node.id),
       string.format("- **Name**: %s\n", node.name),
       string.format("- **Type**: %s\n", node.type),
@@ -141,6 +142,30 @@ function M.show_bookmark_info(node)
 
     if node.visited_at then
       table.insert(sections, string.format("- **Last Visited**: `%s`\n", os.date("%Y-%m-%d %H:%M:%S", node.visited_at)))
+    end
+
+    -- Add linked bookmarks information (outgoing links)
+    if node.type == "bookmark" then
+      local linked_out = Service.get_linked_out_bookmarks(node.id)
+      table.insert(sections, "\n## Linked Bookmarks (Outgoing)\n")
+      if #linked_out > 0 then
+        for i, linked in ipairs(linked_out) do
+          table.insert(sections, string.format("- %d. %s (%s:%d)\n", i, linked.name, vim.fn.fnamemodify(linked.location.path, ":t"), linked.location.line))
+        end
+      else
+        table.insert(sections, "- None\n")
+      end
+      
+      -- Add incoming links information
+      local linked_in = Service.get_linked_in_bookmarks(node.id)
+      table.insert(sections, "\n## Linked Bookmarks (Incoming)\n")
+      if #linked_in > 0 then
+        for i, linked in ipairs(linked_in) do
+          table.insert(sections, string.format("- %d. %s (%s:%d)\n", i, linked.name, vim.fn.fnamemodify(linked.location.path, ":t"), linked.location.line))
+        end
+      else
+        table.insert(sections, "- None\n")
+      end
     end
 
     if node.description then

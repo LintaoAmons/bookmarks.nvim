@@ -38,11 +38,19 @@ local active_list_tbl = tbl("active_list", {
   updated_at = { "integer", required = true },
 })
 
+local bookmark_links_tbl = tbl("bookmark_links", {
+  id = true,
+  bookmark_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
+  linked_bookmark_id = { type = "integer", reference = "nodes.id", on_delete = "cascade" },
+  created_at = { "integer", required = true },
+})
+
 ---@class BookmarksDB: sqlite_db
 ---@field uri string
 ---@field nodes sqlite_tbl
 ---@field node_relationships sqlite_tbl
 ---@field active_list sqlite_tbl
+---@field bookmark_links sqlite_tbl
 local DB
 M._DB = DB
 
@@ -54,6 +62,7 @@ function M.setup(db_dir)
     nodes = nodes_tbl,
     node_relationships = node_relationships_tbl,
     active_list = active_list_tbl,
+    bookmark_links = bookmark_links_tbl,
   })
   M._DB = DB
 
@@ -113,6 +122,7 @@ local function db_row_to_node(row)
     is_expanded = row.is_expanded == 1,
     order = row.node_order,
     children = {},
+    linked_bookmarks = {},
   }
 
   if row.location_path then
@@ -129,6 +139,12 @@ local function db_row_to_node(row)
     if child then
       table.insert(node.children, db_row_to_node(child))
     end
+  end
+
+  -- Add linked bookmarks
+  local links = DB.bookmark_links:get({ where = { bookmark_id = node.id } })
+  for _, link in ipairs(links) do
+    table.insert(node.linked_bookmarks, link.linked_bookmark_id)
   end
 
   return node
@@ -542,6 +558,70 @@ function M.rebind_orphan_node()
       })
     end
   end
+end
+
+---Link two bookmarks
+---@param bookmark_id number
+---@param linked_bookmark_id number
+function M.link_bookmarks(bookmark_id, linked_bookmark_id)
+  -- Prevent linking a bookmark to itself
+  if bookmark_id == linked_bookmark_id then
+    return
+  end
+
+  -- Check if link already exists
+  local existing = DB.bookmark_links:where({
+    bookmark_id = bookmark_id,
+    linked_bookmark_id = linked_bookmark_id,
+  })
+
+  if not existing then
+    DB.bookmark_links:insert({
+      bookmark_id = bookmark_id,
+      linked_bookmark_id = linked_bookmark_id,
+      created_at = os.time(),
+    })
+  end
+end
+
+---Unlink two bookmarks
+---@param bookmark_id number
+---@param linked_bookmark_id number
+function M.unlink_bookmarks(bookmark_id, linked_bookmark_id)
+  DB.bookmark_links:remove({
+    where = {
+      bookmark_id = bookmark_id,
+      linked_bookmark_id = linked_bookmark_id,
+    },
+  })
+end
+
+---Get outgoing linked bookmark IDs for a given bookmark
+---@param bookmark_id number
+---@return number[]
+function M.get_linked_out_bookmarks(bookmark_id)
+  local links = DB.bookmark_links:get({
+    where = { bookmark_id = bookmark_id },
+  })
+  local linked_ids = {}
+  for _, link in ipairs(links) do
+    table.insert(linked_ids, link.linked_bookmark_id)
+  end
+  return linked_ids
+end
+
+---Get incomming linked bookmark IDs for a given bookmark
+---@param bookmark_id number
+---@return number[]
+function M.get_linked_in_bookmarks(bookmark_id)
+  local links = DB.bookmark_links:get({
+    where = { linked_bookmark_id = bookmark_id },
+  })
+  local linked_ids = {}
+  for _, link in ipairs(links) do
+    table.insert(linked_ids, link.bookmark_id)
+  end
+  return linked_ids
 end
 
 return M

@@ -423,6 +423,72 @@ function M.switch_position(b1, b2)
   Repo.update_node(b2)
 end
 
+---Link a bookmark to another bookmark
+---@param bookmark_id number
+---@param target_bookmark_id number
+---@return boolean
+function M.link_bookmarks(bookmark_id, target_bookmark_id)
+  local bookmark = Repo.find_node(bookmark_id)
+  local target = Repo.find_node(target_bookmark_id)
+  if not bookmark or not target then
+    vim.notify("One or both bookmarks not found", vim.log.levels.ERROR)
+    return false
+  end
+  if bookmark.type ~= "bookmark" or target.type ~= "bookmark" then
+    vim.notify("Only bookmarks can be linked", vim.log.levels.ERROR)
+    return false
+  end
+  Repo.link_bookmarks(bookmark_id, target_bookmark_id)
+  vim.notify("Bookmarks linked successfully", vim.log.levels.INFO)
+  return true
+end
+
+---Unlink a bookmark from another bookmark
+---@param bookmark_id number
+---@param target_bookmark_id number
+---@return boolean
+function M.unlink_bookmarks(bookmark_id, target_bookmark_id)
+  local bookmark = Repo.find_node(bookmark_id)
+  local target = Repo.find_node(target_bookmark_id)
+  if not bookmark or not target then
+    vim.notify("One or both bookmarks not found", vim.log.levels.ERROR)
+    return false
+  end
+  Repo.unlink_bookmarks(bookmark_id, target_bookmark_id)
+  vim.notify("Bookmarks unlinked successfully", vim.log.levels.INFO)
+  return true
+end
+
+---Get linked bookmarks for a given bookmark (outgoing links)
+---@param bookmark_id number
+---@return Bookmarks.Node[]
+function M.get_linked_out_bookmarks(bookmark_id)
+  local linked_ids = Repo.get_linked_out_bookmarks(bookmark_id)
+  local linked_bookmarks = {}
+  for _, id in ipairs(linked_ids) do
+    local bookmark = Repo.find_node(id)
+    if bookmark then
+      table.insert(linked_bookmarks, bookmark)
+    end
+  end
+  return linked_bookmarks
+end
+
+---Get bookmarks that link to the given bookmark (incoming links)
+---@param bookmark_id number
+---@return Bookmarks.Node[]
+function M.get_linked_in_bookmarks(bookmark_id)
+  local linking_ids = Repo.get_linked_in_bookmarks(bookmark_id)
+  local linking_bookmarks = {}
+  for _, id in ipairs(linking_ids) do
+    local bookmark = Repo.find_node(id)
+    if bookmark then
+      table.insert(linking_bookmarks, bookmark)
+    end
+  end
+  return linking_bookmarks
+end
+
 ---Paste a node at a specific position
 ---@param node Bookmarks.Node The node to paste
 ---@param parent_id number The parent list ID
