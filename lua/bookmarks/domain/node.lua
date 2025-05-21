@@ -15,6 +15,7 @@ local Utils = require("bookmarks.utils")
 ---@field visited_at number?
 ---@field is_expanded boolean? # Only used if type is "list", if it's expanded in tree view
 ---@field order number? # used for sorting and displaying
+---@field linked_bookmarks number[]? # Array of IDs of linked bookmarks
 
 --- TODO: because we have this order field, node and list are many to one relationship
 --- TODO: we may want to change this to a many to many relationship in the future
@@ -31,6 +32,7 @@ local Utils = require("bookmarks.utils")
 ---@field created_at number
 ---@field visited_at number?
 ---@field is_expanded boolean? # Only used if type is "list", if it's expanded in tree view
+---@field linked_bookmarks number[]? # Array of IDs of linked bookmarks
 
 ---Create a new bookmark node
 ---@param name string -- the name of the bookmark
@@ -49,6 +51,7 @@ function M.new_bookmark(name, location)
     visited_at = time,
     children = {},
     order = 0,
+    linked_bookmarks = {},
   }
 end
 
@@ -68,6 +71,7 @@ function M.new_from_node(node)
     created_at = time,
     visited_at = time,
     is_expanded = node.is_expanded,
+    linked_bookmarks = node.linked_bookmarks or {},
   }
 end
 

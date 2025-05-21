@@ -168,9 +168,12 @@ Hydra({
 | ------------------ | --------------------------------------------------------------------------------- |
 | `BookmarksDesc`    | Add description to the bookmark under cursor, if no bookmark, then mark it first  |
 | `BookmarksGrep`    | Grep through the content of all bookmarked files                                  |
-| `BookmarksInfo`                | Overview plugin current status |
-| `BookmarksInfoCurrentBookmark` | Show current bookmark info     |
-| `BookmarkRebindOrphanNode` | Rebind orphaned nodes by attaching them to the root node |
+| `BookmarksInfo`    | Overview plugin current status                                                    |
+| `BookmarksInfoCurrentBookmark` | Show current bookmark info                                            |
+| `BookmarkRebindOrphanNode` | Rebind orphaned nodes by attaching them to the root node          |
+| `BookmarksLink`    | Link bookmarks to create associations between them (see [docs/link_bookmarks.md](./docs/link_bookmarks.md)) |
+| `BookmarksViewLinked` | View bookmarks linked to the current one (see [docs/link_bookmarks.md](./docs/link_bookmarks.md)) |
+| `BookmarksMarkAndLink` | Mark current line and link to an existing bookmark (see [docs/link_bookmarks.md](./docs/link_bookmarks.md)) |
 
 ### Keymap
 

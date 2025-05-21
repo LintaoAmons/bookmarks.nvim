@@ -69,7 +69,7 @@ end
 ---e.g.
 ---:lua require("bookmarks.picker").pick_bookmark(function(bookmark) vim.print(bookmark.name) end)
 ---@param callback fun(bookmark: Bookmarks.Node): nil
----@param opts? {prompt?: string}
+---@param opts? {prompt?: string, bookmarks?: Bookmarks.Node[]}
 function M.pick_bookmark(callback, opts)
   opts = opts or {}
 
@@ -131,8 +131,12 @@ function M.pick_bookmark(callback, opts)
       :find()
   end
 
-  local active_list = Repo.ensure_and_get_active_list()
-  start_picker(Node.get_all_bookmarks(active_list), active_list)
+  if opts.bookmarks then
+    start_picker(opts.bookmarks, { name = "Custom Selection" })
+  else
+    local active_list = Repo.ensure_and_get_active_list()
+    start_picker(Node.get_all_bookmarks(active_list), active_list)
+  end
 end
 
 ---Grep through the content of all bookmarked files
