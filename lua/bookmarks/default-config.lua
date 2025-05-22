@@ -91,6 +91,7 @@ return {
       local filename = require("bookmarks.domain.location").get_file_name(node.location)
       local name = node.name .. ": " .. filename
       if node.name == "" then
+        -- TODO: if no name, then use the first few char of the content, if also don't have content, then fallback to [Untitled]
         name = "[Untitled]"
       end
 
@@ -123,7 +124,10 @@ return {
       paste = "p",                  -- Paste node
       show_info = "i",              -- Show node info
       reverse = "t",                -- Reverse the order of nodes in the tree view
-      preview = "P",                -- or any other key you prefer
+      preview = "P",
+      add_to_aider = "+",
+      add_to_aider_read_only = "=",
+      drop_from_aider = "-",
     },
     -- Dimension of the window spawned for Treeview
     window_split_dimension = 30,
