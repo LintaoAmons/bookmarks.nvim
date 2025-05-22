@@ -39,11 +39,12 @@ return {
   "LintaoAmons/bookmarks.nvim",
   -- pin the plugin at specific version for stability
   -- backup your bookmark sqlite db when there are breaking changes
-  tag = "v2.10.0",
+  tag = "v2.11.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
     {"nvim-telescope/telescope.nvim"},
-    {"stevearc/dressing.nvim"} -- optional: better UI
+    {"stevearc/dressing.nvim"}, -- optional: better UI
+    {"LintaoAmons/nvim-aider"} -- optional: for Aider integration
   },
   config = function()
     local opts = {} -- check the "./lua/bookmarks/default-config.lua" file for all the options
@@ -124,6 +125,9 @@ keymap = {
   paste = "p",                  -- Paste node
   show_info = "i",              -- Show node info
   reverse = "t",                -- Reverse the order of nodes in the tree view
+  add_to_aider = "+",           -- Add bookmarked files to Aider
+  add_to_aider_read_only = "=", -- Add bookmarked files to Aider as read-only
+  drop_from_aider = "-",        -- Drop bookmarked files from Aider
 }
 ```
 

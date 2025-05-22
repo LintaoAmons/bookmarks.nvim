@@ -537,6 +537,69 @@ function M.show_info()
   Info.show_bookmark_info(node)
 end
 
+--- Add bookmarked files to Aider from the current node
+function M.add_to_aider()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node then
+    return
+  end
+
+  -- Call the Aider integration to add files
+  require("bookmarks.integrate.aider").add(node)
+end
+
+--- Add bookmarked files to Aider as read-only from the current node
+function M.add_to_aider_read_only()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node then
+    return
+  end
+
+  -- Call the Aider integration to add files as read-only
+  require("bookmarks.integrate.aider").add(node, { read_only = true })
+end
+
+--- Drop bookmarked files from Aider for the current node
+function M.drop_from_aider()
+  local line_no = vim.api.nvim_win_get_cursor(0)[1]
+  local ctx = Ctx.get_ctx()
+
+  -- Get line context for the current line
+  local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
+  if not line_ctx then
+    return
+  end
+
+  -- Find the node
+  local node = Repo.find_node(line_ctx.id)
+  if not node then
+    return
+  end
+
+  -- Call the Aider integration to drop files
+  require("bookmarks.integrate.aider").drop(node)
+end
+
 --- reverse display order
 function M.reverse()
   local ctx = Ctx.get_ctx()
