@@ -39,7 +39,7 @@ return {
   "LintaoAmons/bookmarks.nvim",
   -- pin the plugin at specific version for stability
   -- backup your bookmark sqlite db when there are breaking changes
-  tag = "v2.11.0",
+  tag = "2.11.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
     {"nvim-telescope/telescope.nvim"},
