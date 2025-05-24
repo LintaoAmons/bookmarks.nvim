@@ -42,9 +42,9 @@ return {
   tag = "2.11.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
-    {"nvim-telescope/telescope.nvim"},
+    {"nvim-telescope/telescope.nvim"},  -- currently has only telescopes supported, but PRs for other pickers are welcome 
     {"stevearc/dressing.nvim"}, -- optional: better UI
-    {"LintaoAmons/nvim-aider"} -- optional: for Aider integration
+    {"GeorgesAlkhouri/nvim-aider"} -- optional: for Aider integration
   },
   config = function()
     local opts = {} -- check the "./lua/bookmarks/default-config.lua" file for all the options
