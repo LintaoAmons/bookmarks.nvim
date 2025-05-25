@@ -18,25 +18,28 @@ local function create_vsplit_with_width(opts)
 end
 
 local function register_local_shortcuts(buf)
-  local keymap = vim.g.bookmarks_config.treeview.keymap
-  if vim.g.bookmarks_config.treeview and vim.g.bookmarks_config.treeview.keymap then
-    keymap = vim.g.bookmarks_config.treeview.keymap
-  end
+  local keymap = vim.g.bookmarks_config.treeview.keymap or {}
 
-  local options = {
+  local default_options = {
     noremap = true,
     silent = true,
-    nowait = true,
     buffer = buf,
   }
 
-  for action, keys in pairs(keymap) do
-    if type(keys) == "string" then
-      pcall(vim.keymap.set, { "v", "n" }, keys, Operate[action], options)
-    elseif type(keys) == "table" then
-      for _, k in ipairs(keys) do
-        pcall(vim.keymap.set, { "v", "n" }, k, Operate[action], options)
-      end
+  -- Register all keymaps
+  for key, mapping in pairs(keymap) do
+    local action = mapping.action
+    local opts = vim.tbl_extend("force", default_options, {
+      nowait = mapping.nowait or false,
+      desc = mapping.desc or ("BookmarksTree: " .. key),
+    })
+    
+    if type(action) == "string" then
+      -- Predefined action from Operate module
+      pcall(vim.keymap.set, { "n" }, key, Operate[action], opts)
+    elseif type(action) == "function" then
+      -- Custom function provided by user
+      pcall(vim.keymap.set, { "n" }, key, action, opts)
     end
   end
 end
