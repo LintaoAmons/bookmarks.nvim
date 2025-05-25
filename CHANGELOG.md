@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-05-25
+
+### Added
+- Enhanced tree view keymap configuration with support for custom actions.
+- Updated keymap structure to use a more descriptive and flexible format with action descriptions.
+- Changed dependency for Aider integration to use `GeorgesAlkhouri/nvim-aider`.
+
+### Changed
+- **Breaking Change**: Tree view keymap configuration format has changed. Users need to update their custom keymaps to the new format as shown in the default configuration.
+
+### Fixed
+- Improved error handling and notifications for keymap setup in tree view.
+
 ## [2.11.0] - 2025-05-22
 
 ### Added
