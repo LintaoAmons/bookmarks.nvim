@@ -1,4 +1,3 @@
----@class Bookmarks.Config
 return {
   -- Directory to store the database file
   -- Default: vim.fn.stdpath("data")
@@ -196,15 +195,10 @@ return {
       },
       -- Example of a custom mapping
       ["<C-o>"] = {
-        action = function()
-          local ctx = require("bookmarks.tree.ctx").get_ctx()
-          local line_no = vim.api.nvim_win_get_cursor(0)[1]
-          local line_ctx = ctx.lines_ctx.lines_ctx[line_no]
-          if line_ctx then
-            local node = require("bookmarks.domain.repo").find_node(line_ctx.id)
-            if node and node.location then
-              vim.fn.jobstart({ "open", node.location.path }, { detach = true })
-            end
+        ---@type Bookmarks.KeymapCustomAction
+        action = function(node, info)
+          if info.type == 'bookmark' then
+            vim.system({'open', info.dirname}, { text = true })
           end
         end,
         desc = "Open the current node with system default software",
