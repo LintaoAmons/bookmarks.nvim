@@ -39,7 +39,7 @@ return {
   "LintaoAmons/bookmarks.nvim",
   -- pin the plugin at specific version for stability
   -- backup your bookmark sqlite db when there are breaking changes
-  tag = "2.11.0",
+  tag = "3.0.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
     {"nvim-telescope/telescope.nvim"},  -- currently has only telescopes supported, but PRs for other pickers are welcome 
@@ -55,9 +55,9 @@ return {
 -- run :BookmarksInfo to see the running status of the plugin
 ```
 
-> check the [config.lua](./lua/bookmarks/default-config.lua) file for all the options
+> Check the [default-config.lua](./lua/bookmarks/default-config.lua) file for all the configuration options.
 
-> For Windows users, if you meet sqlite dependency issues, please ref to https://github.com/LintaoAmons/bookmarks.nvim/issues/73, and try if it can fix your problem
+> For Windows users, if you encounter sqlite dependency issues, please refer to https://github.com/LintaoAmons/bookmarks.nvim/issues/73 for potential solutions.
 
 ## Usage
 
@@ -106,28 +106,27 @@ And you can also extend the plugin by creating your own custom commands and put 
 > There are quite a lot operations in treeview, which you can config it in the way you like.
 
 ```lua
--- default keybindings in the treeview buffer
+-- Default keybindings in the treeview buffer with the new format
 keymap = {
-  quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
-  refresh = "R",                -- Reload and redraw the tree view
-  create_list = "a",            -- Create a new list under the current node
-  level_up = "u",               -- Navigate up one level in the tree hierarchy
-  set_root = ".",               -- Set current list as root of the tree view, also set as active list
-  set_active = "m",             -- Set current list as the active list for bookmarks
-  toggle = "o",                 -- Toggle list expansion or go to bookmark location
-  move_up = "<localleader>k",   -- Move current node up in the list
-  move_down = "<localleader>j", -- Move current node down in the list
-  delete = "D",                 -- Delete current node
-  rename = "r",                 -- Rename current node
-  goto = "g",                   -- Go to bookmark location in previous window
-  cut = "x",                    -- Cut node
-  copy = "c",                   -- Copy node
-  paste = "p",                  -- Paste node
-  show_info = "i",              -- Show node info
-  reverse = "t",                -- Reverse the order of nodes in the tree view
-  add_to_aider = "+",           -- Add bookmarked files to Aider
-  add_to_aider_read_only = "=", -- Add bookmarked files to Aider as read-only
-  drop_from_aider = "-",        -- Drop bookmarked files from Aider
+  ["q"] = {
+    action = "quit",
+    desc = "Close the tree view window"
+  },
+  -- ... See more in the default-config.lua
+  ["+"] = {
+    action = "add_to_aider",
+    desc = "Add to Aider"
+  },
+  -- Example of a custom mapping
+  ["<C-o>"] = {
+    ---@type Bookmarks.KeymapCustomAction
+    action = function(node, info)
+      if info.type == 'bookmark' then
+        vim.system({'open', info.dirname}, { text = true })
+      end
+    end,
+    desc = "Open the current node with system default software",
+  },
 }
 ```
 
@@ -188,11 +187,9 @@ vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find 
 
 ## Advanced Usage
 
-In this section, we will cover some advanced usage of the bookmarks.nvim plugin.
+In this section, we will cover advanced usage of the bookmarks.nvim plugin, focusing on customization and programmatic interaction.
 
-Mostly, how users can customise the plugin to fits their needs programmatically.
-
-Check the [ADVANCED_USAGE.md](./ADVANCED_USAGE.md) for more details.
+Check the [ADVANCED_USAGE.md](./ADVANCED_USAGE.md) for more detailed information on advanced configurations and usage.
 
 ## CONTRIBUTING
 
