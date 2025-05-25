@@ -1,4 +1,3 @@
----@class Bookmarks.Config
 return {
   -- Directory to store the database file
   -- Default: vim.fn.stdpath("data")
@@ -81,7 +80,6 @@ return {
     end,
   },
 
-  ---@type { keymap: { [string]: string|string[] } }
   treeview = {
     ---@type fun(node: Bookmarks.Node): string | nil
     render_bookmark = function(node)
@@ -107,27 +105,104 @@ return {
     active_list_icon = "󰮔 ",
     -- stylua: ignore start
     keymap = {
-      quit = { "q", "<ESC>" },      -- Close the tree view window and return to previous window
-      refresh = "R",                -- Reload and redraw the tree view
-      create_list = "a",            -- Create a new list under the current node
-      level_up = "u",               -- Navigate up one level in the tree hierarchy
-      set_root = ".",               -- Set current list as root of the tree view, also set as active list
-      set_active = "m",             -- Set current list as the active list for bookmarks
-      toggle = "o",                 -- Toggle list expansion or go to bookmark location
-      move_up = "<localleader>k",   -- Move current node up in the list
-      move_down = "<localleader>j", -- Move current node down in the list
-      delete = "D",                 -- Delete current node
-      rename = "r",                 -- Rename current node
-      ["goto"] = "g",               -- Go to bookmark location in previous window
-      cut = "x",                    -- Cut node
-      copy = "c",                   -- Copy node
-      paste = "p",                  -- Paste node
-      show_info = "i",              -- Show node info
-      reverse = "t",                -- Reverse the order of nodes in the tree view
-      preview = "P",
-      add_to_aider = "+",
-      add_to_aider_read_only = "=",
-      drop_from_aider = "-",
+      ["q"] = {
+        action = "quit",
+        desc = "Close the tree view window"
+      },
+      ["<ESC>"] = {
+        action = "quit",
+        desc = "Close the tree view window"
+      },
+      ["R"] = {
+        action = "refresh",
+        desc = "Reload and redraw the tree view"
+      },
+      ["a"] = {
+        action = "create_list",
+        desc = "Create a new list under the current node"
+      },
+      ["u"] = {
+        action = "level_up",
+        desc = "Navigate up one level in the tree hierarchy"
+      },
+      ["."] = {
+        action = "set_root",
+        desc = "Set current list as root of the tree view, also set as active list"
+      },
+      ["m"] = {
+        action = "set_active",
+        desc = "Set current list as the active list for bookmarks"
+      },
+      ["o"] = {
+        action = "toggle",
+        desc = "Toggle list expansion or go to bookmark location"
+      },
+      ["<localleader>k"] = {
+        action = "move_up",
+        desc = "Move current node up in the list"
+      },
+      ["<localleader>j"] = {
+        action = "move_down",
+        desc = "Move current node down in the list"
+      },
+      ["D"] = {
+        action = "delete",
+        desc = "Delete current node"
+      },
+      ["r"] = {
+        action = "rename",
+        desc = "Rename current node"
+      },
+      ["g"] = {
+        action = "goto",
+        desc = "Go to bookmark location in previous window"
+      },
+      ["x"] = {
+        action = "cut",
+        desc = "Cut node"
+      },
+      ["c"] = {
+        action = "copy",
+        desc = "Copy node"
+      },
+      ["p"] = {
+        action = "paste",
+        desc = "Paste node"
+      },
+      ["i"] = {
+        action = "show_info",
+        desc = "Show node info"
+      },
+      ["t"] = {
+        action = "reverse",
+        desc = "Reverse the order of nodes in the tree view"
+      },
+      ["P"] = {
+        action = "preview",
+        desc = "Preview bookmark content"
+      },
+      ["+"] = {
+        action = "add_to_aider",
+        desc = "Add to Aider"
+      },
+      ["="] = {
+        action = "add_to_aider_read_only",
+        desc = "Add to Aider as read-only"
+      },
+      ["-"] = {
+        action = "drop_from_aider",
+        desc = "Drop from Aider"
+      },
+      -- Example of a custom mapping
+      ["<C-o>"] = {
+        ---@type Bookmarks.KeymapCustomAction
+        action = function(node, info)
+          if info.type == 'bookmark' then
+            vim.system({'open', info.dirname}, { text = true })
+          end
+        end,
+        desc = "Open the current node with system default software",
+      },
     },
     -- Dimension of the window spawned for Treeview
     window_split_dimension = 30,
