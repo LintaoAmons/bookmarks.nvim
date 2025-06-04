@@ -118,9 +118,14 @@ end
 
 --- goto bookmark's location
 ---@param bookmark_id number # bookmark ID
----@param opts? {cmd?: "e" | "tabnew" | "split" | "vsplit" | "float"}
+---@param opts? {cmd?: "e" | "tabnew" | "split" | "vsplit" | "float", keep_cursor?: boolean}
+---@return integer? float_win_id if a float window was created/managed, otherwise nil
 function M.goto_bookmark(bookmark_id, opts)
   opts = opts or {}
+  local float_win_id_to_return = nil
+
+  local original_win = vim.api.nvim_get_current_win()
+  local original_cursor = vim.api.nvim_win_get_cursor(original_win)
 
   local node = Repo.find_node(bookmark_id)
   if not node then
@@ -160,6 +165,7 @@ function M.goto_bookmark(bookmark_id, opts)
       style = "minimal",
       border = "rounded",
     })
+    float_win_id_to_return = win
 
     -- Load the file content
     vim.cmd("edit " .. vim.fn.fnameescape(node.location.path))
@@ -173,6 +179,12 @@ function M.goto_bookmark(bookmark_id, opts)
   vim.api.nvim_win_set_cursor(0, { node.location.line, node.location.col })
   vim.cmd("normal! zz")
   Sign.safe_refresh_signs()
+
+  if opts.keep_cursor then
+    vim.api.nvim_set_current_win(original_win)
+    vim.api.nvim_win_set_cursor(original_win, original_cursor)
+  end
+  return float_win_id_to_return
 end
 
 local FindDirection = { FORWARD = 0, BACKWARD = 1 }
@@ -590,6 +602,50 @@ function M.mark_selected_files()
       picker:close()
     end,
   })
+end
+
+--- Marks the current location into a special list.
+---@param special_list_name string The name of the special list to use or create.
+function M.mark_the_location_into_a_spetial_list(special_list_name)
+  local special_list_id
+
+  -- Try to find the special list
+  local lists = Repo.find_lists()
+  for _, list_node in ipairs(lists) do
+    if list_node.name == special_list_name then
+      special_list_id = list_node.id
+      break
+    end
+  end
+
+  -- If not found, create it under the root (ID 0)
+  if not special_list_id then
+    local new_list_data = Node.new_list(special_list_name)
+    special_list_id = Repo.insert_node(new_list_data, 0) -- 0 is the root list ID
+    if not special_list_id then
+      vim.notify("Failed to create special list: " .. special_list_name, vim.log.levels.ERROR)
+      return
+    end
+  end
+
+  local current_loc = Location.get_current_location()
+  if not current_loc.path or current_loc.path == "" then
+    vim.notify("Cannot mark location: current buffer has no name.", vim.log.levels.WARN)
+    return
+  end
+
+  local bookmark_name = string.format("%s:%d", Location.get_file_name(current_loc), current_loc.line)
+  local new_bookmark_data = Node.new_bookmark(bookmark_name, current_loc)
+
+  local new_bookmark_id = Repo.insert_node(new_bookmark_data, special_list_id)
+
+  if new_bookmark_id then
+    vim.notify(string.format("Marked location to '%s' list: %s", special_list_name, bookmark_name), vim.log.levels.INFO)
+    return special_list_id, new_bookmark_id
+  else
+    vim.notify("Failed to mark location to special list.", vim.log.levels.ERROR)
+    return nil, nil
+  end
 end
 
 return M

@@ -5,6 +5,7 @@
 ---@field lines_ctx Bookmarks.LinesCtx
 ---@field store {node: Bookmarks.Node|nil, operation: "cut"|"copy"|nil} store for cut/copy operations
 ---@field sort_ascending boolean
+---@field preview_win_info { win_id: integer, bookmark_id: number }? store for preview window
 
 local M = {}
 
@@ -45,6 +46,24 @@ function M.get_ctx()
   return vim.g.bookmark_tree_view_ctx
 end
 
+---Sets preview window info in tree view context
+---@param win_id integer
+---@param bookmark_id number
+function M.set_preview_win_info(win_id, bookmark_id)
+  local ctx = vim.g.bookmark_tree_view_ctx or {}
+  ctx.preview_win_info = {
+    win_id = win_id,
+    bookmark_id = bookmark_id,
+  }
+  vim.g.bookmark_tree_view_ctx = ctx
+end
+
+---@return { win_id: integer, bookmark_id: number }?
+function M.get_preview_win_info()
+  local ctx = vim.g.bookmark_tree_view_ctx or {}
+  return ctx.preview_win_info
+end
+
 ---Sets store in tree view context
 ---@param node Bookmarks.Node
 ---@param operation "cut"|"copy"
@@ -59,6 +78,13 @@ end
 
 function M.clear()
   vim.g.bookmark_tree_view_ctx = nil
+end
+
+---Clears preview window info in tree view context
+function M.clear_preview_win_info()
+  local ctx = vim.g.bookmark_tree_view_ctx or {}
+  ctx.preview_win_info = nil
+  vim.g.bookmark_tree_view_ctx = ctx
 end
 
 return M

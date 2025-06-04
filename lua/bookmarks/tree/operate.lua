@@ -636,8 +636,33 @@ function M.preview()
     return
   end
 
-  -- Load file content
-  Service.goto_bookmark(node.id, { cmd = "float" })
+  local existing_preview_info = Ctx.get_preview_win_info()
+
+  -- If there's an existing, valid preview window
+  if existing_preview_info and vim.api.nvim_win_is_valid(existing_preview_info.win_id) then
+    -- And if we are trying to preview a *different* node
+    if existing_preview_info.bookmark_id ~= node.id then
+      -- Close the old preview window
+      vim.api.nvim_win_close(existing_preview_info.win_id, true)
+      -- The preview_win_info will be updated or cleared below.
+    else
+      -- We are trying to preview the *same* node, and its window is already open and valid.
+      -- So, just focus it and do nothing else.
+      vim.api.nvim_set_current_win(existing_preview_info.win_id)
+      return
+    end
+  end
+
+  -- Load file content for the new preview (or if the old one was closed)
+  local float_win_id = Service.goto_bookmark(node.id, { cmd = "float", keep_cursor = true })
+
+  if float_win_id then
+    Ctx.set_preview_win_info(float_win_id, node.id)
+  else
+    -- If creating/managing the float window failed (e.g., node has no location, or other error in goto_bookmark for float)
+    -- ensure any potentially stale preview info (e.g. from a previously closed window) is cleared.
+    Ctx.clear_preview_win_info()
+  end
 end
 
 return M

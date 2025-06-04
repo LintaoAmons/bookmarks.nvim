@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2025-06-04
+
+### Added
+- New API `mark_the_location_into_a_spetial_list` to programmatically mark locations into a specified list (e.g., for LSP jumps).
+- Option `keep_cursor` for the `goto_bookmark` service. When enabled, the cursor returns to its original window after a bookmark action, improving usability for tree view previews.
+
+### Changed
+- Tree view preview will now focus an existing preview window if it's already displaying the same bookmark, instead of opening a new one.
+- Tree view preview will close any previously open preview window when a different bookmark is previewed.
+
+### Fixed
+- Ensured `special_list_id` is correctly used when refreshing the tree after `mark_the_location_into_a_spetial_list` to focus the relevant list.
+
+## [3.0.0] - 2025-05-25
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

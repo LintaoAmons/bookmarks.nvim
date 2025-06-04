@@ -1,3 +1,31 @@
+# v3.1.0 Release Notes
+
+## Key Enhancements
+
+### Improved Tree View Preview
+- **Smarter Preview Windows**: The tree view preview (shortcut `P` or `preview` action) is now more intelligent.
+    - If you preview a bookmark that's already open in a preview window, Neovim will simply focus that existing window.
+    - When you preview a new bookmark, any previously open preview window for a different bookmark will be automatically closed. This keeps your workspace tidy.
+- **Cursor Stability**: When previewing a bookmark from the tree view, the cursor will remain in the tree view. This provides a smoother experience, especially when quickly browsing through multiple bookmarks.
+
+### New API for Programmatic Bookmarking
+- Introduced `mark_the_location_into_a_spetial_list(list_name)` API. This allows other plugins or custom configurations to programmatically add bookmarks to a designated list.
+For example, you can now easily create a "LSP Jumps" list that automatically records locations from `gd` (go to definition) actions.
+
+```lua
+-- Example usage in your Neovim config:
+vim.keymap.set("n", "gd", function()
+  -- Ensure the API function is available
+  pcall(require("bookmarks.api").mark_the_location_into_a_spetial_list, "LSP Jumps")
+  vim.lsp.buf.definition()
+end, { desc = "Go to Definition and mark location" })
+```
+
+## Upgrading
+This release builds upon v3.0.0 and should not introduce breaking changes to existing configurations unless directly interacting with the modified preview or goto_bookmark internals.
+
+---
+
 # v3.0.0 Release Notes
 
 ## Major Changes
