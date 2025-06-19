@@ -1,3 +1,35 @@
+# v3.2.0 Release Notes
+
+## Key Enhancements
+
+### Neo-tree Integration
+- **Bookmark from File Explorer**: Seamlessly mark files or entire directories for bookmarking directly from the Neo-tree file explorer. This integration streamlines the process of adding bookmarks while navigating your project.
+- **Customizable Keymap**: A new section in `ADVANCED_USAGE.md` provides an example of how to add a custom keymap to your Neo-tree configuration to trigger the bookmarking action. This allows for flexible integration into your existing workflow.
+- **Recursive Directory Marking**: When a directory is selected in Neo-tree, the example integration will recursively find and mark all files within that directory.
+
+```lua
+-- Example Neo-tree mapping (see ADVANCED_USAGE.md for full context):
+-- In your neo-tree opts.window.mappings:
+-- ["<leader>bm"] = {
+--   function(state)
+--     local node = state.tree:get_node()
+--     -- ... logic to get files from node ...
+--     local files_to_mark = get_all_files_from_node(node) -- (helper function)
+--     local bookmarks_api = require("bookmarks.api")
+--     for _, file_path in ipairs(files_to_mark) do
+--       bookmarks_api.markfile(file_path)
+--     end
+--     vim.notify("Bookmarked file(s) from Neo-tree.", vim.log.levels.INFO)
+--   end,
+--   desc = "Bookmark file/directory from Neo-tree",
+-- }
+```
+
+## Upgrading
+This release adds new integration capabilities and should not introduce breaking changes to existing configurations unless you have custom integrations that might conflict with the new `markfile` usage from Neo-tree.
+
+---
+
 # v3.1.0 Release Notes
 
 ## Key Enhancements

@@ -558,7 +558,7 @@ end
 
 --- Mark a file by creating a bookmark for it
 --- @param filepath string # the file path to mark
---- @param parent_list_id number? # optional parent list ID
+--- @param parent_list_id number? # optional, parent list ID, if not present, then use current active_list id
 --- @return Bookmarks.Node # Returns the created bookmark
 function M.markfile(filepath, parent_list_id)
   local location = {

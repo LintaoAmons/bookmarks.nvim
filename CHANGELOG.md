@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0] - 2025-06-20
+
+### Added
+- Neo-tree integration: Added the ability to mark files or all files within a directory directly from Neo-tree using a custom keymap. See `ADVANCED_USAGE.md` for an example configuration.
+
 ## [3.1.0] - 2025-06-04
 
 ### Added

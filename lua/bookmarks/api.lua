@@ -16,4 +16,6 @@ function M.mark_the_location_into_a_spetial_list(special_list_name)
   end
 end
 
+M.markfile = Service.markfile
+
 return M
