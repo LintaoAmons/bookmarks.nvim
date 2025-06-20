@@ -38,8 +38,8 @@
 return {
   "LintaoAmons/bookmarks.nvim",
   -- pin the plugin at specific version for stability
-  -- backup your bookmark sqlite db when there are breaking changes
-  tag = "3.1.0",
+  -- backup your bookmark sqlite db when there are breaking changes (major version change)
+  tag = "3.2.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
     {"nvim-telescope/telescope.nvim"},  -- currently has only telescopes supported, but PRs for other pickers are welcome 
