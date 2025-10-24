@@ -1,3 +1,49 @@
+# v4.0.0 Release Notes
+
+## Breaking Changes
+
+### Backup Disabled by Default
+- **Action Required**: Automatic backups are now **disabled by default** (`backup.enabled = false`).
+- **Migration**: If you rely on automatic backups, you must explicitly enable them in your configuration:
+
+```lua
+require("bookmarks").setup({
+  backup = {
+    enabled = true,
+  },
+})
+```
+
+**Rationale**: Disabling backups by default reduces unnecessary I/O operations and disk usage for users who don't need this feature. Users who want backup protection can easily opt-in.
+
+## Key Enhancements
+
+### Improved Type System and Developer Experience
+- **Comprehensive Type Definitions**: Added detailed type annotations for all configuration sections including Backup, Navigation, Signs, Picker, TreeView, and Hooks.
+- **Better LSP Support**: Enhanced autocomplete and inline documentation for all config fields, making configuration easier and more discoverable.
+- **Type Safety**: Added return type annotations and centralized type definitions for improved type checking.
+
+### Configuration Improvements
+- **Example Hooks**: Added example hook functions in default config to demonstrate custom hook usage (e.g., `open_bookmark_tree`).
+- **Cleaner Defaults**: Streamlined default configuration by using `nil` for render functions to explicitly use default implementations.
+
+### Tree View Updates
+- **Updated Rendering**: Bookmark tree now displays order numbers instead of generic icons, matching the format used in bookmark descriptions.
+- **Consistent UI**: Unified bookmark display format across different views.
+
+### Code Quality
+- **Modern API Usage**: Replaced deprecated `vim.api.nvim_err_writeln` with `vim.notify` for better error handling.
+- **Removed Duplication**: Centralized type definitions to eliminate duplicate declarations.
+
+## Upgrading from v3.x
+This is a major version release with breaking changes:
+
+1. **Check your backup needs**: If you rely on automatic backups, add `backup.enabled = true` to your config
+2. **Type system improvements**: The enhanced type system should provide better autocomplete without requiring config changes
+3. **Tree view rendering**: Visual changes to bookmark display (order numbers instead of icons) are automatic
+
+---
+
 # v3.3.0 Release Notes
 
 ## Key Enhancements

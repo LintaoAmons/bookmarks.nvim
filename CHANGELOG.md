@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2025-01-24
+
+### Breaking Changes
+- **Backup disabled by default**: Changed `backup.enabled` from `true` to `false`. Users who need automatic backups must explicitly enable them in their configuration.
+
+### Added
+- Comprehensive type definitions for all configuration sections (Backup, Navigation, Signs, Picker, TreeView, Hooks, etc.)
+- Detailed field documentation for better LSP support and autocomplete
+- Type aliases for keymap actions and custom actions
+- Return type annotations for improved type safety
+- Example hook functions in default config demonstrating custom hooks usage (e.g., `open_bookmark_tree`)
+
+### Changed
+- Updated bookmark tree rendering to display order numbers instead of "◉" icon, matching desc_format function
+- Streamlined default config by setting render_bookmark to nil to explicitly use default implementation
+- Replaced deprecated `vim.api.nvim_err_writeln` with `vim.notify` for modern error handling
+- Centralized type definitions to eliminate duplication (e.g., Bookmarks.KeymapCustomAction)
+
+### Improved
+- Developer experience with better autocomplete, type checking, and inline documentation
+- Code organization by removing duplicate type definitions
+- Reduced unnecessary I/O operations by making backups opt-in
+
 ## [3.3.0] - 2025-01-XX
 
 ### Added
