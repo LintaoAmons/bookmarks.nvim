@@ -140,23 +140,16 @@ return {
       Service.set_active_list(new_list.id)
       require("bookmarks.sign").safe_refresh_signs()
     end,
+
+    -- Example: Open BookmarksTree
+    open_bookmark_tree = function()
+      vim.cmd[[BookmarksTree]]
+    end,
   },
 
   treeview = {
     ---@type fun(node: Bookmarks.Node): string | nil
-    render_bookmark = function(node)
-      -- Use different icons to indicate presence of description
-      local icon = (node.description and #node.description > 0) and "●" or "○" -- Filled/Empty dot
-
-      local filename = require("bookmarks.domain.location").get_file_name(node.location)
-      local name = node.name .. ": " .. filename
-      if node.name == "" then
-        -- TODO: if no name, then use the first few char of the content, if also don't have content, then fallback to [Untitled]
-        name = "[Untitled]"
-      end
-
-      return icon .. " " .. name
-    end,
+    render_bookmark = nil,
     highlights = {
       active_list = {
         bg = "#2C323C",
