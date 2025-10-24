@@ -1,5 +1,5 @@
 if vim.fn.has("nvim-0.7.0") == 0 then
-  vim.api.nvim_err_writeln("bookmarks.nvim requires at least nvim-0.7")
+  vim.notify("bookmarks.nvim requires at least nvim-0.7", vim.log.levels.ERROR)
   return
 end
 

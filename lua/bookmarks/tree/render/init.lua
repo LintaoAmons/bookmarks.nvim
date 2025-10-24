@@ -36,7 +36,7 @@ end
 ---@param node Bookmarks.Node
 ---@return string
 local function render_bookmark(node)
-  local book_icon = "◉"
+  local order_prefix = (node.order or 0) .. ": "
   local linked_icon = #node.linked_bookmarks > 0 and "🔗" or ""
 
   local name = node.name
@@ -44,7 +44,7 @@ local function render_bookmark(node)
     name = "[Untitled]"
   end
 
-  return book_icon .. " " .. name .. " " .. linked_icon
+  return order_prefix .. name .. " " .. linked_icon
 end
 
 ---@param node Bookmarks.Node

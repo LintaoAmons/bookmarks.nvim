@@ -21,6 +21,7 @@ local function get_db_path(db_dir)
 end
 
 ---@param user_config? Bookmarks.Config
+---@return nil
 local setup = function(user_config)
   local cfg = vim.tbl_deep_extend("force", vim.g.bookmarks_config or default_config, user_config or {})
     or default_config

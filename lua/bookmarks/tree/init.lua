@@ -22,8 +22,6 @@ end
 ---@field path string
 ---@field dirname string
 
----@alias Bookmarks.KeymapCustomAction fun(node: Bookmarks.Node, info: Bookmarks.ActionNodeInfo): nil
-
 --- buildNodeInfo out of node
 ---@param node Bookmarks.Node
 ---@return Bookmarks.ActionNodeInfo
