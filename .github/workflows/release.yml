@@ -1,0 +1,74 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'RELEASE_NOTES.md'
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version and release notes
+        id: extract
+        run: |
+          # Extract version from RELEASE_NOTES.md (e.g., "# v4.0.0 Release Notes")
+          VERSION=$(grep -m 1 '^# v[0-9]' RELEASE_NOTES.md | sed 's/# v\([0-9.]*\).*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+          # Extract release notes for this version
+          # Get everything between the first "# v" and the next "---" separator
+          NOTES=$(awk '/^# v[0-9]/{flag=1; next} /^---$/{flag=0} flag' RELEASE_NOTES.md)
+
+          # Save to file to preserve formatting
+          echo "$NOTES" > release_notes.md
+
+          echo "Extracted version: $VERSION"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "${{ steps.extract.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.extract.outputs.tag }} already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.extract.outputs.tag }} does not exist"
+          fi
+
+      - name: Create tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.extract.outputs.tag }}" -m "Release ${{ steps.extract.outputs.tag }}"
+          git push origin "${{ steps.extract.outputs.tag }}"
+
+      - name: Create GitHub Release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.extract.outputs.tag }}
+          name: Release ${{ steps.extract.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip release creation
+        if: steps.check_tag.outputs.exists == 'true'
+        run: |
+          echo "Release ${{ steps.extract.outputs.tag }} already exists, skipping creation"
