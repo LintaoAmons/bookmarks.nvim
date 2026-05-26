@@ -21,6 +21,9 @@ function M.pick_bookmark_list(callback, opts)
     Snacks.picker({
       title = opts.prompt or "Bookmark Lists",
       items = items,
+      format = "text",
+      preview = "none",
+      layout = { preview = false },
       confirm = function(picker, item)
         picker:close()
         if item then

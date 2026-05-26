@@ -19,6 +19,9 @@ function M.pick_commands(opts)
   Snacks.picker({
     title = opts.prompt or "Bookmarks Commands",
     items = commands,
+    format = "text",
+    preview = "none",
+    layout = { preview = false },
     confirm = function(picker, item)
       picker:close()
       if item then

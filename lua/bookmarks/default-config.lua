@@ -123,10 +123,11 @@ return {
   },
 
   -- Custom commands available in command picker
+  -- These are merged with built-in commands and shown in BookmarksCommands picker
   ---@type table<string, function>
   commands = {
     -- Example: Add warning bookmark
-    mark_warning = function()
+    ["Mark warning"] = function()
       vim.ui.input({ prompt = "[Warn Bookmark]" }, function(input)
         if input then
           local Service = require("bookmarks.domain.service")
@@ -137,7 +138,7 @@ return {
     end,
 
     -- Example: Create list for current project
-    create_project_list = function()
+    ["Create project list"] = function()
       local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
       local Service = require("bookmarks.domain.service")
       local new_list = Service.create_list(project_name)
@@ -146,8 +147,8 @@ return {
     end,
 
     -- Example: Open BookmarksTree
-    open_bookmark_tree = function()
-      vim.cmd[[BookmarksTree]]
+    ["Open bookmark tree"] = function()
+      vim.cmd([[BookmarksTree]])
     end,
   },
 

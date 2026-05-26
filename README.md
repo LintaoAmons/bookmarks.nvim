@@ -2,7 +2,7 @@
 
 - Simple: Add, Rename and Remove bookmarks with only one command, less shortcuts more productivity.
 - Persistent: save your bookmarks into a sqlite db file
-- Accessible: Find your bookmark by telescope or Treeview with ease.
+- Accessible: Find your bookmark by snacks.nvim picker, telescope, or Treeview with ease.
 - Informative: mark with a name or description, so you can record more information.
 - Visibility: display icon and name at the marked lines, and highlight marked lines.
 - Lists: arrange your bookmarks in lists, organise the bookmarks in your way.
@@ -39,12 +39,12 @@ return {
   "LintaoAmons/bookmarks.nvim",
   -- pin the plugin at specific version for stability
   -- backup your bookmark sqlite db when there are breaking changes (major version change)
-  tag = "3.2.0",
+  tag = "v4.0.0",
   dependencies = {
     {"kkharji/sqlite.lua"},
-    {"nvim-telescope/telescope.nvim"},  -- currently has only telescopes supported, but PRs for other pickers are welcome 
-    {"stevearc/dressing.nvim"}, -- optional: better UI
-    {"GeorgesAlkhouri/nvim-aider"} -- optional: for Aider integration
+    -- picker backend (choose one):
+    {"folke/snacks.nvim"},              -- default picker backend
+    -- {"nvim-telescope/telescope.nvim"}, -- set picker.picker_backend = "telescope" to use
   },
   config = function()
     local opts = {} -- check the "./lua/bookmarks/default-config.lua" file for all the options
@@ -53,6 +53,18 @@ return {
 }
 
 -- run :BookmarksInfo to see the running status of the plugin
+```
+
+### Picker Backend
+
+The default picker backend is **snacks.nvim**. To use telescope instead:
+
+```lua
+require("bookmarks").setup({
+  picker = {
+    picker_backend = "telescope", -- "snacks" (default) or "telescope"
+  },
+})
 ```
 
 > Check the [default-config.lua](./lua/bookmarks/default-config.lua) file for all the configuration options.
@@ -66,35 +78,52 @@ return {
 | Command         | Description                                                                                                                         |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `BookmarksMark` | Mark current line into active BookmarkList. Rename existing bookmark under cursor. Toggle it off if the new name is an empty string |
-| `BookmarksGoto` | Go to bookmark at current active BookmarkList with telescope                                                                        |
+| `BookmarksGoto` | Go to bookmark at current active BookmarkList                                                                                       |
 | `BookmarksNewList` | Create a new bookmark list, but I normally use `BookmarksTree` to create new list |
-| `BookmarksLists`   | Pick a bookmark list with telescope                                               |
+| `BookmarksLists`   | Pick a bookmark list                                                              |
 | `BookmarksCommands`        | Find bookmark commands and trigger it                    |
 
 > [!NOTE]
-> Those Telescope shortcuts are also available
+> These shortcuts are available in the picker (both snacks and telescope)
 
 | Shortcut | Action for bookmarks                       | Action for lists                 |
 | -------- | ------------------------------------------ | -------------------------------- |
 | `Enter`  | Go to selected bookmark                    | set selected list as active list |
-| `<C-x>`  | Open selected bookmark in horizontal split | -                                |
-| `<C-v>`  | Open selected bookmark in vertical split   | -                                |
-| `<C-t>`  | Open selected bookmark in new tab          | -                                |
 | `<C-d>`  | Delete selected bookmark                   | Delete selected list             |
 
 and you can bind the commands to a shortcut or create a custom command out of it.
 
 ```lua
-vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").name_of_the_command_function() end, { desc = "Booksmark Clear Line" })
--- e.g.
-vim.keymap.set({ "n", "v" }, "Bd", function() require("bookmarks.commands").delete_mark_of_current_file() end, { desc = "Booksmark Clear Line" })
+-- call built-in commands directly
+vim.keymap.set({ "n", "v" }, "Bd", function()
+  require("bookmarks.commands")["Delete marks of current file"]()
+end, { desc = "Bookmark Clear Line" })
+
 -- or create your custom commands
-vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function() require("bookmarks.commands").delete_mark_of_current_file() end, {})
+vim.api.nvim_create_user_command("BookmarksClearCurrentFile", function()
+  require("bookmarks.commands")["Delete marks of current file"]()
+end, {})
 ```
 
-Change the `name_of_the_command_function` to the one you want to use, you can find all the names goes alone with the plugin in [https://github.com/LintaoAmons/bookmarks.nvim/blob/better-treeview-visual/lua/bookmarks/commands/init.lua](https://github.com/LintaoAmons/bookmarks.nvim/blob/main/lua/bookmarks/commands/init.lua)
+You can find all the built-in command names in [commands/init.lua](https://github.com/LintaoAmons/bookmarks.nvim/blob/main/lua/bookmarks/commands/init.lua).
 
-And you can also extend the plugin by creating your own custom commands and put them into the config.
+You can also extend the plugin by creating your own custom commands and put them into the config:
+
+```lua
+require("bookmarks").setup({
+  commands = {
+    ["Mark warning"] = function()
+      vim.ui.input({ prompt = "[Warn Bookmark]" }, function(input)
+        if input then
+          local Service = require("bookmarks.domain.service")
+          Service.toggle_mark("⚠ " .. input)
+          require("bookmarks.sign").safe_refresh_signs()
+        end
+      end)
+    end,
+  },
+})
+```
 
 ### Treeview
 
@@ -183,6 +212,7 @@ This plugin doesn't provide any default keybinding. I recommend you to have thes
 vim.keymap.set({ "n", "v" }, "mm", "<cmd>BookmarksMark<cr>", { desc = "Mark current line into active BookmarkList." })
 vim.keymap.set({ "n", "v" }, "mo", "<cmd>BookmarksGoto<cr>", { desc = "Go to bookmark at current active BookmarkList" })
 vim.keymap.set({ "n", "v" }, "ma", "<cmd>BookmarksCommands<cr>", { desc = "Find and trigger a bookmark command." })
+vim.keymap.set({ "n", "v" }, "md", "<cmd>BookmarksDesc<cr>", { desc = "Add description to bookmark under cursor." })
 ```
 
 ## Advanced Usage
