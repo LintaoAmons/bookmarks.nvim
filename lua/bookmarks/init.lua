@@ -81,7 +81,7 @@ M.bookmark_lists = function()
   end)
 end
 
-M.create_bookmark_list = Commands.new_list
+M.create_bookmark_list = Commands["New list"]
 
 M.info = function()
   require("bookmarks.info").open()
