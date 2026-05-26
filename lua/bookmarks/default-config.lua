@@ -16,6 +16,7 @@
 ---@field desc_format fun(bookmark: Bookmarks.Node): string Function to format bookmark description
 
 ---@class Bookmarks.Config.Picker
+---@field picker_backend? "snacks" | "telescope" Picker backend to use (default: "snacks")
 ---@field sort_by string | fun(bookmarks: Bookmarks.Node[]): nil Sort logic for bookmark list
 ---@field entry_display? fun(bookmark: Bookmarks.Node, bookmarks: Bookmarks.Node[]): string Telescope entry display generation logic
 
@@ -99,8 +100,11 @@ return {
     end,
   },
 
-  -- Telescope/picker configurations
+  -- Picker configurations
   picker = {
+    -- Picker backend: "snacks" (default) or "telescope"
+    ---@type "snacks" | "telescope"
+    picker_backend = "snacks",
     -- Sort logic for bookmark list
     -- Built-in options: "last_visited", "created_date"
     -- Or provide custom sort function

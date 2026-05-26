@@ -1,7 +1,7 @@
 local Repo = require("bookmarks.domain.repo")
 local Service = require("bookmarks.domain.service")
 local Node = require("bookmarks.domain.node")
-local Actions = require("bookmarks.picker.actions")
+local Actions = require("bookmarks.picker.telescope.actions")
 
 local has_telescope, _ = pcall(require, "telescope")
 if not has_telescope then
