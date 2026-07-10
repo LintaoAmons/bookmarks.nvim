@@ -33,7 +33,7 @@ local M = {}
 M.config = function()
   require("bookmarks").setup({})
 
-  vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter" }, {
+  vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter", "FocusGained" }, {
     group = vim.api.nvim_create_augroup("BookmarksGroup", {}),
     pattern = { "*" },
     callback = M.find_or_create_project_bookmark_group,
